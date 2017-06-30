@@ -69,7 +69,6 @@ public class OCNModelsManifest extends HybridManifest implements ModelBinders {
                 forOptional(MapService.class).setBinding().to(OCNMapService.class);
                 forOptional(ServerService.class).setBinding().to(OCNServerService.class);
                 forOptional(SessionService.class).setBinding().to(OCNSessionService.class);
-                forOptional(TournamentService.class).setBinding().to(OCNTournamentService.class);
                 forOptional(UserService.class).setBinding().to(OCNUserService.class);
                 forOptional(WhisperService.class).setBinding().to(OCNWhisperService.class);
             }
