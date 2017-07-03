@@ -106,10 +106,6 @@ public final class PGM extends JavaPlugin {
         return mapLibrary;
     }
 
-    public AchievementManager getAchievementManager() {
-        return achievementManager;
-    }
-
     private MatchTabManager matchTabManager;
 
     private void setupSentry() {
