@@ -1,11 +1,5 @@
 package tc.oc.pgm;
 
-import java.util.Optional;
-import java.util.logging.Level;
-import java.util.logging.Logger;
-import javax.inject.Inject;
-import javax.inject.Provider;
-
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.event.Listener;
@@ -18,6 +12,7 @@ import tc.oc.commons.bukkit.teleport.NavigatorInterface;
 import tc.oc.commons.core.commands.CommandRegistry;
 import tc.oc.inject.ProtectedBinder;
 import tc.oc.minecraft.logging.BetterRaven;
+import tc.oc.pgm.achievements.AchievementManager;
 import tc.oc.pgm.antigrief.CraftingProtect;
 import tc.oc.pgm.channels.ChannelCommands;
 import tc.oc.pgm.commands.MapCommands;
@@ -45,6 +40,12 @@ import tc.oc.pgm.start.StartCommands;
 import tc.oc.pgm.tablist.MatchTabManager;
 import tc.oc.pgm.timelimit.TimeLimitCommands;
 import tc.oc.pgm.tokens.gui.MainTokenButton;
+
+import javax.inject.Inject;
+import javax.inject.Provider;
+import java.util.Optional;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 import static com.google.common.base.Preconditions.checkState;
 
@@ -86,6 +87,12 @@ public final class PGM extends JavaPlugin {
 
     public Logger getRootMapLogger() {
         return mapdevLogger;
+    }
+
+    private AchievementManager achievementManager;
+
+    public static AchievementManager getAchievementManager() {
+        return pgm == null ? null : pgm.achievementManager;
     }
 
     private PollManager pollManager;
@@ -136,6 +143,7 @@ public final class PGM extends JavaPlugin {
             return;
         }
 
+        this.achievementManager = new AchievementManager(this);
         this.pollManager = new PollManager(this);
         this.pollableMaps = new PollableMaps();
 
