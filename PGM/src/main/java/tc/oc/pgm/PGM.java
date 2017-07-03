@@ -70,6 +70,7 @@ public final class PGM extends JavaPlugin {
     @Inject private MapdevLogger mapdevLogger;
     @Inject private NavigatorInterface navigatorInterface;
     @Inject private Provider<MatchLoader> matchLoader;
+    @Inject private AchievementManager achievementManager;
 
     private MatchManager matchManager;
 
@@ -89,12 +90,6 @@ public final class PGM extends JavaPlugin {
         return mapdevLogger;
     }
 
-    private AchievementManager achievementManager;
-
-    public static AchievementManager getAchievementManager() {
-        return pgm == null ? null : pgm.achievementManager;
-    }
-
     private PollManager pollManager;
 
     public static PollManager getPollManager() {
@@ -109,6 +104,10 @@ public final class PGM extends JavaPlugin {
 
     public MapLibrary getMapLibrary() {
         return mapLibrary;
+    }
+
+    public AchievementManager getAchievementManager() {
+        return achievementManager;
     }
 
     private MatchTabManager matchTabManager;
