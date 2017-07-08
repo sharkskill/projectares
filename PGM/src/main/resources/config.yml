@@ -93,6 +93,7 @@ tokens:
 
 mvp:
   enabled: true
+  players-required: 10
 
 poll:
   enabled: true
