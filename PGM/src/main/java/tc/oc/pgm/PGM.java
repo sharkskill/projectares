@@ -31,6 +31,7 @@ import tc.oc.pgm.goals.GoalCommands;
 import tc.oc.pgm.listeners.FormattingListener;
 import tc.oc.pgm.listeners.ItemTransferListener;
 import tc.oc.pgm.logging.MapTagger;
+import tc.oc.pgm.logging.PlayerVersionLogger;
 import tc.oc.pgm.map.MapLibrary;
 import tc.oc.pgm.map.MapNotFoundException;
 import tc.oc.pgm.mapratings.MapRatingsCommands;
@@ -69,6 +70,7 @@ public final class PGM extends JavaPlugin {
     @Inject private MapdevLogger mapdevLogger;
     @Inject private NavigatorInterface navigatorInterface;
     @Inject private Provider<MatchLoader> matchLoader;
+    @Inject private PlayerVersionLogger playerVersionLogger;
 
     private MatchManager matchManager;
 
@@ -138,6 +140,8 @@ public final class PGM extends JavaPlugin {
 
         this.pollManager = new PollManager(this);
         this.pollableMaps = new PollableMaps();
+
+        Bukkit.getScheduler().scheduleSyncRepeatingTask(this, () -> playerVersionLogger.logPlayerVersions(), 20 * 60 * 15, 20 * 60 * 15);
 
         this.registerListeners();
 
