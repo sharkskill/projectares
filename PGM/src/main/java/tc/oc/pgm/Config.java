@@ -34,10 +34,6 @@ public class Config {
         public static boolean enabled() {
             return getConfiguration().getBoolean("mvp.enabled", true);
         }
-
-        public static int playersRequired() {
-            return getConfiguration().getInt("mvp.players-required", 10);
-        }
     }
 
     public static class Token {
