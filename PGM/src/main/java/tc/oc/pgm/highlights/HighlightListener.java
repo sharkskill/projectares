@@ -2,10 +2,10 @@ package tc.oc.pgm.highlights;
 
 import net.md_5.bungee.api.ChatColor;
 import net.md_5.bungee.api.chat.BaseComponent;
-import net.md_5.bungee.api.chat.TranslatableComponent;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
-import tc.oc.commons.bukkit.chat.NameStyle;
+import tc.oc.commons.bukkit.chat.PlayerComponent;
+import tc.oc.commons.bukkit.nick.IdentityProvider;
 import tc.oc.commons.bukkit.tokens.TokenUtil;
 import tc.oc.commons.core.chat.Component;
 import tc.oc.pgm.Config;
@@ -20,10 +20,12 @@ import javax.inject.Inject;
 public class HighlightListener implements Listener {
 
     private final MatchScheduler scheduler;
+    private final IdentityProvider identityProvider;
 
     @Inject
-    HighlightListener(MatchScheduler scheduler) {
+    HighlightListener(MatchScheduler scheduler, IdentityProvider identityProvider) {
         this.scheduler = scheduler;
+        this.identityProvider = identityProvider;
     }
 
     @EventHandler
@@ -33,7 +35,7 @@ public class HighlightListener implements Listener {
             MatchPlayer bestPlayer = null;
             double bestPlayerPoints = 0;
 
-            if (event.getMatch().getParticipatingPlayers().size() < 10) {
+            if (event.getMatch().getParticipatingPlayers().size() < Config.MVP.playersRequired()) {
                 return;
             }
 
@@ -74,25 +76,19 @@ public class HighlightListener implements Listener {
             }
 
             if (bestPlayer != null) {
-                final BaseComponent title = new Component(new TranslatableComponent("broadcast.gameOver.mvp"), ChatColor.AQUA, ChatColor.BOLD);
-                Component subtitle;
+                BaseComponent title = new Component(ChatColor.AQUA, ChatColor.BOLD).translate("broadcast.gameOver.mvp");
+                BaseComponent subtitle;
 
-                if (Config.Token.enabled()) {
-                    if (Math.random() < Config.Token.mvpChance()) {
-                        String appendMe;
-                        if (Math.random() > 0.25) {
-                            TokenUtil.giveMutationTokens(TokenUtil.getUser(bestPlayer.getBukkit()), 1);
-                            appendMe = ChatColor.YELLOW + ": +1 Mutation Token!";
-                        } else {
-                            TokenUtil.giveMapTokens(TokenUtil.getUser(bestPlayer.getBukkit()), 1);
-                            appendMe = ChatColor.YELLOW + ": +1 SetNext Token!";
-                        }
-                        subtitle = new Component(bestPlayer.getDisplayName() + appendMe);
+                if (Config.Token.enabled() && Math.random() < Config.Token.mvpChance()) {
+                    if (Math.random() > 0.25) {
+                        TokenUtil.giveMutationTokens(TokenUtil.getUser(bestPlayer.getBukkit()), 1);
+                        subtitle = new Component(ChatColor.YELLOW).translate("broadcast.gameOver.mvp.token.subtitle", new PlayerComponent(identityProvider.createIdentity(bestPlayer.getBukkit())), new Component(ChatColor.YELLOW).translate("mvp.token.type.mutation"));
                     } else {
-                        subtitle = new Component(bestPlayer.getStyledName(NameStyle.COLOR));
+                        TokenUtil.giveMapTokens(TokenUtil.getUser(bestPlayer.getBukkit()), 1);
+                        subtitle = new Component(ChatColor.YELLOW).translate("broadcast.gameOver.mvp.token.subtitle", new PlayerComponent(identityProvider.createIdentity(bestPlayer.getBukkit())), new Component(ChatColor.YELLOW).translate("mvp.token.type.map"));
                     }
                 } else {
-                    subtitle = new Component(bestPlayer.getStyledName(NameStyle.COLOR));
+                    subtitle = new PlayerComponent(identityProvider.createIdentity(bestPlayer.getBukkit()));
                 }
 
                 for (MatchPlayer viewer : event.getMatch().getPlayers()) {
