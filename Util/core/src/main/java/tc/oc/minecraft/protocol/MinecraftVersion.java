@@ -36,22 +36,20 @@ public enum MinecraftVersion {
     }
 
     public String version() {
-        return String.valueOf(major) + "." + String.valueOf(minor) + (patch != 0 ? "." + patch : "");
+        return major + "." + minor + (patch != 0 ? "." + patch : "");
     }
 
     public String simplifiedVersion() {
-        return String.valueOf(major) + "." + String.valueOf(minor);
+        return major + "." + minor;
     }
 
     public static String describeProtocol(int protocol) {
-        final MinecraftVersion mv = byProtocol(protocol);
-        return mv != null ? mv.version()
-                : "unknown." + protocol;
+        return describeProtocol(protocol, false);
     }
 
-    public static String describeProtocolSimplified(int protocol) {
+    public static String describeProtocol(int protocol, boolean simplified) {
         final MinecraftVersion mv = byProtocol(protocol);
-        return mv != null ? mv.simplifiedVersion()
+        return mv != null ? (simplified ? mv.simplifiedVersion() : mv.version())
                 : "unknown." + protocol;
     }
 

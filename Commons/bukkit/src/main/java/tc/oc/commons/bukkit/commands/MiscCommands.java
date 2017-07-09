@@ -60,38 +60,22 @@ public class MiscCommands implements Commands {
     public void listPlayerVersions(final CommandContext args, final CommandSender sender) throws CommandException {
         Audience audience = audiences.get(sender);
         if (args.hasFlag('a')) {
-            if (args.hasFlag('d')) {
-                Map<Integer, Integer> playerCountVersionMap = new HashMap<>();
-                userStore.stream().forEach(player -> {
-                    int version = player.getProtocolVersion();
-                    playerCountVersionMap.put(version, playerCountVersionMap.getOrDefault(version, 0) + 1);
-                });
+            Map<String, Integer> playerCountVersionMap = new HashMap<>();
+            userStore.stream().forEach(player -> {
+                String version = MinecraftVersion.describeProtocol(player.getProtocolVersion(), args.hasFlag('d'));
+                playerCountVersionMap.put(version, playerCountVersionMap.getOrDefault(version, 0) + 1);
+            });
 
-                audience.sendMessage(new HeaderComponent(new Component(ChatColor.AQUA).translate("list.player.versions.title")));
-                for (Map.Entry<Integer, Integer> entry : playerCountVersionMap.entrySet()) {
-                    audience.sendMessage(new TranslatableComponent("list.player.versions.message." + (entry.getValue() == 1 ? "singular" : "plural"),
-                            ChatColor.AQUA + entry.getValue().toString(),
-                            ChatColor.AQUA + MinecraftVersion.describeProtocol(entry.getKey()),
-                            String.format("%.1f", 100 * entry.getValue() / (double) userStore.count()) + "%"));
-                }
-            } else {
-                Map<String, Integer> playerCountVersionMap = new HashMap<>();
-                userStore.stream().forEach(player -> {
-                    int version = player.getProtocolVersion();
-                    playerCountVersionMap.put(MinecraftVersion.describeProtocolSimplified(version), playerCountVersionMap.getOrDefault(version, 0) + 1);
-                });
-
-                audience.sendMessage(new HeaderComponent(new Component(ChatColor.AQUA).translate("list.player.versions.title")));
-                for (Map.Entry<String, Integer> entry : playerCountVersionMap.entrySet()) {
-                    audience.sendMessage(new TranslatableComponent("list.player.versions.message." + (entry.getValue() == 1 ? "singular" : "plural"),
-                            ChatColor.AQUA + entry.getValue().toString(),
-                            ChatColor.AQUA + entry.getKey(),
-                            String.format("%.1f", 100 * entry.getValue() / (double) userStore.count()) + "%"));
-                }
+            audience.sendMessage(new HeaderComponent(new Component(ChatColor.AQUA).translate("list.player.versions.title")));
+            for (Map.Entry<String, Integer> entry : playerCountVersionMap.entrySet()) {
+                audience.sendMessage(new TranslatableComponent("list.player.versions.message." + (entry.getValue() == 1 ? "singular" : "plural"),
+                        ChatColor.AQUA + entry.getValue().toString(),
+                        ChatColor.AQUA + entry.getKey(),
+                        String.format("%.1f", 100 * entry.getValue() / (double) userStore.count()) + "%"));
             }
         } else {
             Player player = CommandUtils.getPlayerOrSelf(args, sender, 0);
-            audience.sendMessage(new TranslatableComponent("list.player.version.singular.message", new PlayerComponent(identityProvider.createIdentity(player)), ChatColor.AQUA + MinecraftVersion.describeProtocol(player.getProtocolVersion())));
+            audience.sendMessage(new TranslatableComponent("list.player.version.singular.message", new PlayerComponent(identityProvider.createIdentity(player)), ChatColor.AQUA + MinecraftVersion.describeProtocol(player.getProtocolVersion(), false)));
         }
     }
 
