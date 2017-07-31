@@ -119,6 +119,15 @@ public class Config {
         public static boolean preciseProgress() {
             return getConfiguration().getBoolean("scoreboard.precise-progress", false);
         }
+
+        public static boolean showIP() {
+            return getConfiguration().getBoolean("scoreboard.show-ip", false);
+        }
+
+        public static String getIP() {
+            return getConfiguration().getString("scoreboard.ip");
+        }
+
     }
 
     public static class PlayerList implements Listener {
