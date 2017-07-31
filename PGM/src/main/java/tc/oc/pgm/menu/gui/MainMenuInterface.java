@@ -3,18 +3,13 @@ package tc.oc.pgm.menu.gui;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
-import tc.oc.commons.bukkit.chat.PlayerComponent;
 import tc.oc.commons.bukkit.gui.buttons.Button;
 import tc.oc.commons.bukkit.gui.interfaces.ChestInterface;
 import tc.oc.commons.bukkit.stats.StatsUtil;
-import tc.oc.commons.bukkit.tokens.TokenUtil;
 import tc.oc.commons.bukkit.util.Constants;
 import tc.oc.commons.bukkit.util.ItemCreator;
-import tc.oc.commons.core.chat.Component;
 import tc.oc.pgm.PGMTranslations;
 import tc.oc.pgm.tokens.gui.MainTokenButton;
-import tc.oc.pgm.tokens.gui.MutationTokenInterface;
-import tc.oc.pgm.tokens.gui.TokenPurchaseInterface;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -42,7 +37,7 @@ public class MainMenuInterface extends ChestInterface {
     public void updateButtons() {
         List<Button> buttons = new ArrayList<>();
 
-        MainTokenButton.getInstance().setSlot(11);
+        MainTokenButton.getInstance().setSlot(10);
         buttons.add(MainTokenButton.getInstance());
 
         HashMap<String, Double> stats = StatsUtil.getStats(getPlayer());
@@ -57,15 +52,25 @@ public class MainMenuInterface extends ChestInterface {
                         .addLore(ChatColor.AQUA + PGMTranslations.get().t("stats.ui.wools", getPlayer()) + ChatColor.BLUE + String.format("%,d", (int)(double)stats.get("wool_placed")))
                         .addLore(ChatColor.AQUA + PGMTranslations.get().t("stats.ui.cores", getPlayer()) + ChatColor.BLUE + String.format("%,d", (int)(double)stats.get("cores_leaked")))
                         .addLore(ChatColor.AQUA + PGMTranslations.get().t("stats.ui.monuments", getPlayer()) + ChatColor.BLUE + String.format("%,d", (int)(double)stats.get("destroyables_destroyed")))
-                , 13));
+                , 12));
 
         buttons.add(new Button(
                 new ItemCreator(Material.BOOK_AND_QUILL)
                         .setName(Constants.PREFIX + "Settings")
-                , 15) {
+                , 14) {
             @Override
             public void function(Player player) {
                 player.openInventory(new SettingsInterface(player).getInventory());
+            }
+        });
+
+        buttons.add(new Button(
+                new ItemCreator(Material.BOOK_AND_QUILL)
+                        .setName(Constants.PREFIX + "Achievements")
+                , 16) {
+            @Override
+            public void function(Player player) {
+                player.openInventory(new AchievementsInterface(player).getInventory());
             }
         });
 

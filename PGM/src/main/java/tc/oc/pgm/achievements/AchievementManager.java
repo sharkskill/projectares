@@ -23,13 +23,16 @@ public class AchievementManager {
         this.pm = parent.getServer().getPluginManager();
         this.registerAchievement(this.killAchievements = new KillAchievements());
         this.registerAchievement(this.objectiveAchievements = new ObjectiveAchievements());
-
     }
 
     private void registerAchievement(Achievement achievement) {
         this.achievements.add(achievement);
 
         if (achievement instanceof Listener) pm.registerEvents((Listener) achievement, parent);
+    }
+
+    public Set getAchievements() {
+        return achievements;
     }
 
     public KillAchievements getKillAchievements() {

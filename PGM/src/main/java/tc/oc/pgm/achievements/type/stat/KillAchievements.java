@@ -20,7 +20,6 @@ public class KillAchievements extends StatAchievement implements Listener {
 
     public KillAchievements() {
         super("Kills", ChatColor.AQUA + ChatColor.BOLD.toString() + "Kills", "Reach x amount of kills", numbers);
-        isSpecialAchievement = false;
     }
 
     @EventHandler
