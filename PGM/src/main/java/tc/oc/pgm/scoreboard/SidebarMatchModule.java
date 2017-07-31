@@ -1,17 +1,5 @@
 package tc.oc.pgm.scoreboard;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Objects;
-import java.util.Set;
-import javax.annotation.Nullable;
-import javax.inject.Inject;
-
 import com.google.common.collect.ImmutableSet;
 import com.google.common.collect.Ordering;
 import net.md_5.bungee.api.ChatColor;
@@ -24,24 +12,18 @@ import org.bukkit.scoreboard.DisplaySlot;
 import org.bukkit.scoreboard.Objective;
 import org.bukkit.scoreboard.Scoreboard;
 import org.bukkit.scoreboard.Team;
-import java.time.Duration;
 import tc.oc.commons.bukkit.chat.ComponentRenderers;
 import tc.oc.commons.bukkit.chat.NameStyle;
 import tc.oc.commons.bukkit.util.NullCommandSender;
 import tc.oc.commons.core.chat.Component;
 import tc.oc.commons.core.scheduler.Task;
 import tc.oc.pgm.Config;
+import tc.oc.pgm.blitz.BlitzEvent;
+import tc.oc.pgm.blitz.BlitzMatchModule;
+import tc.oc.pgm.blitz.Lives;
 import tc.oc.pgm.blitz.LivesEvent;
 import tc.oc.pgm.destroyable.Destroyable;
-import tc.oc.pgm.events.FeatureChangeEvent;
-import tc.oc.pgm.events.ListenerScope;
-import tc.oc.pgm.events.MatchPlayerDeathEvent;
-import tc.oc.pgm.events.MatchResultChangeEvent;
-import tc.oc.pgm.events.MatchScoreChangeEvent;
-import tc.oc.pgm.events.PartyAddEvent;
-import tc.oc.pgm.events.PartyRemoveEvent;
-import tc.oc.pgm.events.PartyRenameEvent;
-import tc.oc.pgm.events.PlayerPartyChangeEvent;
+import tc.oc.pgm.events.*;
 import tc.oc.pgm.ffa.Tribute;
 import tc.oc.pgm.goals.Goal;
 import tc.oc.pgm.goals.GoalMatchModule;
@@ -50,20 +32,18 @@ import tc.oc.pgm.goals.events.GoalCompleteEvent;
 import tc.oc.pgm.goals.events.GoalProximityChangeEvent;
 import tc.oc.pgm.goals.events.GoalStatusChangeEvent;
 import tc.oc.pgm.goals.events.GoalTouchEvent;
-import tc.oc.pgm.blitz.Lives;
-import tc.oc.pgm.blitz.BlitzEvent;
-import tc.oc.pgm.blitz.BlitzMatchModule;
-import tc.oc.pgm.match.Competitor;
-import tc.oc.pgm.match.Match;
-import tc.oc.pgm.match.MatchModule;
-import tc.oc.pgm.match.MatchScope;
-import tc.oc.pgm.match.Party;
+import tc.oc.pgm.match.*;
 import tc.oc.pgm.score.ScoreMatchModule;
 import tc.oc.pgm.spawns.events.ParticipantSpawnEvent;
 import tc.oc.pgm.teams.events.TeamRespawnsChangeEvent;
 import tc.oc.pgm.victory.VictoryMatchModule;
 import tc.oc.pgm.wool.MonumentWool;
 import tc.oc.pgm.wool.MonumentWoolFactory;
+
+import javax.annotation.Nullable;
+import javax.inject.Inject;
+import java.time.Duration;
+import java.util.*;
 
 import static tc.oc.commons.core.util.Nullables.castOrNull;
 
@@ -470,6 +450,9 @@ public class SidebarMatchModule extends MatchModule implements Listener {
                     }
                 }
             }
+
+            rows.add("          ");
+            rows.add(ChatColor.AQUA + "play.stratus.network");
 
             // Need at least one row for the sidebar to show
             if(rows.isEmpty()) {
