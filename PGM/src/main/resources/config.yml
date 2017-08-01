@@ -198,7 +198,6 @@ scoreboard:
   show-proximity: false
   precise-progress: false
   show-ip: true
-  ip: '&Bplay.stratus.network'
 
 wool:
   auto-refill: true

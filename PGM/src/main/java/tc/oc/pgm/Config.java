@@ -3,6 +3,7 @@ package tc.oc.pgm;
 import javax.annotation.Nullable;
 
 import org.bukkit.Bukkit;
+import org.bukkit.ChatColor;
 import org.bukkit.configuration.Configuration;
 import org.bukkit.configuration.InvalidConfigurationException;
 import org.bukkit.configuration.file.YamlConfiguration;
@@ -12,6 +13,8 @@ import org.bukkit.event.Listener;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.time.Duration;
+import java.util.List;
+
 import tc.oc.commons.bukkit.configuration.ConfigUtils;
 import tc.oc.commons.core.util.TimeUtils;
 import tc.oc.pgm.events.ConfigLoadEvent;
@@ -121,13 +124,8 @@ public class Config {
         }
 
         public static boolean showIP() {
-            return getConfiguration().getBoolean("scoreboard.show-ip", false);
+            return getConfiguration().getBoolean("scoreboard.show-ip");
         }
-
-        public static String getIP() {
-            return getConfiguration().getString("scoreboard.ip");
-        }
-
     }
 
     public static class PlayerList implements Listener {
