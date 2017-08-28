@@ -10,7 +10,7 @@ public interface QueueClientConfiguration {
      * Addresses to connect to in order. If connection to one fails try the
      * next one in the list.
      */
-    List<Address> getAddresses();
+    List<String> getAddresses();
 
     /**
      * Name of user to connect as.

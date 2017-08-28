@@ -116,8 +116,8 @@ public class Transaction<T extends Message> extends TimeoutFuture<T> {
         this.callSite = new Exception().getStackTrace();
         this.replyQueue = replyQueue;
 
-        final Metadata finalRequestProps = requestProps = replyQueue.client().getProperties(request, requestProps);
-        finalRequestProps.setReplyTo(this.replyQueue.name());
+        requestProps = replyQueue.client().getProperties(request, requestProps);
+        final Metadata finalRequestProps = new Metadata(requestProps.builder().replyTo(this.replyQueue.name()).build());
 
         this.requestId = checkNotNull(finalRequestProps.getMessageId());
         this.requestType = request.getClass();

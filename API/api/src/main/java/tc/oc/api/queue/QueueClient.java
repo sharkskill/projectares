@@ -1,10 +1,15 @@
 package tc.oc.api.queue;
 
 import java.io.IOException;
+import java.net.InetAddress;
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Date;
+import java.util.List;
 import java.util.Map;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ThreadFactory;
+import java.util.concurrent.TimeoutException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.annotation.Nullable;
@@ -24,6 +29,7 @@ import com.rabbitmq.client.Channel;
 import com.rabbitmq.client.Connection;
 import com.rabbitmq.client.ConnectionFactory;
 import java.time.Duration;
+
 import tc.oc.api.connectable.Connectable;
 import tc.oc.api.config.ApiConstants;
 import tc.oc.api.message.Message;
@@ -36,6 +42,7 @@ import tc.oc.commons.core.logging.Loggers;
 import tc.oc.commons.core.reflect.Types;
 import tc.oc.commons.core.util.Joiners;
 import tc.oc.commons.core.util.MapUtils;
+import tc.oc.commons.core.util.ThrowingRunnable;
 
 import static com.google.common.base.Preconditions.checkNotNull;
 
@@ -99,43 +106,48 @@ public class QueueClient implements Connectable {
         }
     }
 
-    private static void mergeProperties(Metadata to, BasicProperties from) {
-        if(from.getMessageId() != null) to.setMessageId(from.getMessageId());
-        if(from.getDeliveryMode() != null) to.setDeliveryMode(from.getDeliveryMode());
-        if(from.getExpiration() != null) to.setExpiration(from.getExpiration());
-        if(from.getCorrelationId() != null) to.setCorrelationId(from.getCorrelationId());
-        if(from.getReplyTo() != null) to.setReplyTo(from.getReplyTo());
+    private static Metadata mergeProperties(Metadata to, BasicProperties from) {
+        AMQP.BasicProperties.Builder builder = to.builder();
+        if(from.getMessageId() != null) builder.messageId(from.getMessageId());
+        if(from.getDeliveryMode() != null) builder.deliveryMode(from.getDeliveryMode());
+        if(from.getExpiration() != null) builder.expiration(from.getExpiration());
+        if(from.getCorrelationId() != null) builder.correlationId(from.getCorrelationId());
+        if(from.getReplyTo() != null) builder.replyTo(from.getReplyTo());
 
         final Map<String, Object> headers = from.getHeaders();
         if(headers != null && !headers.isEmpty()) {
-            to.setHeaders(MapUtils.merge(to.getHeaders(), headers));
+            builder.headers(MapUtils.merge(to.getHeaders(), headers));
         }
+        return new Metadata(builder.build());
     }
 
     public Metadata getProperties(Message message, @Nullable BasicProperties properties) {
         Metadata amqp = cloneProperties(DEFAULT_PROPERTIES);
+        AMQP.BasicProperties.Builder builder = amqp.builder();
 
-        amqp.setMessageId(idFactory.newId());
-        amqp.setTimestamp(new Date());
+        builder.messageId(idFactory.newId());
+        builder.timestamp(new Date());
 
-        amqp.setType(messageRegistry.typeName(message.getClass()));
+        builder.type(messageRegistry.typeName(message.getClass()));
         if(message instanceof ModelMessage) {
-            amqp.setHeaders(MapUtils.merge(amqp.getHeaders(),
+            builder.headers(MapUtils.merge(amqp.getHeaders(),
                                            Metadata.MODEL_NAME,
                                            modelRegistry.meta(((ModelMessage) message).model()).name()));
         }
 
         MessageDefaults.ExpirationMillis expiration = Types.inheritableAnnotation(message.getClass(), MessageDefaults.ExpirationMillis.class);
         if(expiration != null) {
-            amqp.setExpiration(String.valueOf(expiration.value()));
+            builder.expiration(String.valueOf(expiration.value()));
         }
 
         MessageDefaults.Persistent persistent = Types.inheritableAnnotation(message.getClass(), MessageDefaults.Persistent.class);
         if(persistent != null) {
-            amqp.setDeliveryMode(persistent.value() ? 2 : 1);
+            builder.deliveryMode(persistent.value() ? 2 : 1);
         }
 
-        if(properties != null) mergeProperties(amqp, properties);
+        amqp = new Metadata(builder.build());
+
+        if(properties != null) amqp = mergeProperties(amqp, properties);
 
         return amqp;
     }
@@ -206,8 +218,8 @@ public class QueueClient implements Connectable {
         factory.setUsername(this.config.getUsername());
         factory.setPassword(this.config.getPassword());
         factory.setVirtualHost(this.config.getVirtualHost());
-
         factory.setAutomaticRecoveryEnabled(true);
+        factory.setTopologyRecoveryEnabled(true);
         factory.setConnectionTimeout(this.config.getConnectionTimeout());
         factory.setNetworkRecoveryInterval(this.config.getNetworkRecoveryInterval());
 
@@ -218,13 +230,33 @@ public class QueueClient implements Connectable {
         return factory;
     }
 
+    public void processTimeoutIntoIOException(ThrowingRunnable<Exception> runnable) throws IOException {
+        try {
+            runnable.runThrows();
+        } catch(Exception e) {
+            if(e instanceof IOException) throw (IOException) e;
+            if(e instanceof TimeoutException) throw new IOException("Timeout exception", e.getCause());
+            throw new IOException(e);
+        }
+    }
+
     @Override
     public void connect() throws IOException {
-        if(config.getAddresses().isEmpty()) {
+        List<String> addresses = config.getAddresses();
+        if(addresses.isEmpty()) {
             logger.warning("Skipping AMQP connection because no addresses are configured");
         } else {
-            logger.info("Connecting to AMQP API at " + Joiners.onCommaSpace.join(config.getAddresses()));
-            this.connection = this.createConnectionFactory().newConnection(this.config.getAddresses().toArray(new Address[0]));
+            logger.info("Connecting to AMQP API at " + Joiners.onCommaSpace.join(addresses));
+            processTimeoutIntoIOException(() -> this.connection = this.createConnectionFactory().newConnection(() -> {
+                List<Address> resolved = new ArrayList<>();
+                for(String address : addresses) {
+                    for(InetAddress inet : InetAddress.getAllByName(address)) {
+                        resolved.add(new Address(inet.getHostAddress()));
+                    }
+                }
+                Collections.shuffle(resolved);
+                return resolved;
+            }));
             this.channel = this.connection.createChannel();
         }
     }
@@ -234,7 +266,7 @@ public class QueueClient implements Connectable {
         ExecutorUtils.shutdownImpatiently(executorService, logger, SHUTDOWN_TIMEOUT);
 
         if(channel != null) {
-            channel.close();
+            processTimeoutIntoIOException(channel::close);
             connection.close();
         }
     }

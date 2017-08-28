@@ -1,10 +1,8 @@
 package tc.oc.api.queue;
 
 import java.util.List;
-import java.util.stream.Collectors;
 import javax.inject.Inject;
 
-import com.rabbitmq.client.Address;
 import tc.oc.minecraft.api.configuration.Configuration;
 import tc.oc.minecraft.api.configuration.ConfigurationSection;
 
@@ -13,7 +11,6 @@ import static com.google.common.base.Preconditions.checkNotNull;
 public class QueueClientConfigurationImpl implements QueueClientConfiguration {
 
     public static final String SECTION = "queue";
-    
     public static final String NETWORK_RECOVERY_INTERVAL_PATH = "network-recovery-interval";
     public static final String CONNECTION_TIMEOUT_PATH = "connection-timeout";
     public static final String VIRTUAL_HOST_PATH = "virtual-host";
@@ -29,8 +26,8 @@ public class QueueClientConfigurationImpl implements QueueClientConfiguration {
     }
 
     @Override
-    public List<Address> getAddresses() {
-        return config.getStringList(ADDRESSES_PATH).stream().map(Address::new).collect(Collectors.toList());
+    public List<String> getAddresses() {
+        return config.getStringList(ADDRESSES_PATH);
     }
 
     @Override
