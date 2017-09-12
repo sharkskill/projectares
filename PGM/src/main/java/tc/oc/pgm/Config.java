@@ -126,6 +126,10 @@ public class Config {
         public static boolean showIP() {
             return getConfiguration().getBoolean("scoreboard.show-ip");
         }
+
+        public static String networkIP() {
+            return getConfiguration().getString("scoreboard.network-ip");
+        }
     }
 
     public static class PlayerList implements Listener {

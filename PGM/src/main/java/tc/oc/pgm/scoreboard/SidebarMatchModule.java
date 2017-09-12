@@ -479,7 +479,7 @@ public class SidebarMatchModule extends MatchModule implements Listener {
 
             if (Config.Scoreboard.showIP()) {
                 rows.add("");
-                rows.add(ChatColor.AQUA + minecraftService.getLocalServer().datacenter() + ".stratus.network");
+                rows.add(ChatColor.AQUA + minecraftService.getLocalServer().datacenter() + Config.Scoreboard.networkIP());
             }
 
             // Need at least one row for the sidebar to show
