@@ -41,8 +41,14 @@ public enum Mutation {
     BOMBER     (BomberMutation.class,      Material.TNT),
     BREAD      (BreadMutation.class,       Material.BREAD),
     BOAT       (BoatMutation.class,        Material.BOAT, false),
-    TOOLS      (ToolsMutation.class,       Material.DIAMOND_PICKAXE),
-    APOCALYPSE (ApocalypseMutation.class,  Material.NETHER_STAR);
+    TOOLS      (ToolsMutation.class,       Material.STONE_PICKAXE),
+    SUPERTOOLS (ToolsMutation.class,       Material.IRON_PICKAXE),
+    ULTRATOOLS (ToolsMutation.class,       Material.DIAMOND_PICKAXE),
+    APOCALYPSE (ApocalypseMutation.class,  Material.NETHER_STAR),
+    SLAPPYFISH (SlappyFishMutation.class,  Material.RAW_FISH),
+    SWIFT      (SwiftMutation.class,       Material.SUGAR),
+    OP         (OpMutation.class,          Material.GOLDEN_APPLE),
+    SPONGE     (SpongeMutation.class,      Material.SPONGE);
 
     public static final String TYPE_KEY = "mutation.type.";
     public static final String DESCRIPTION_KEY = ".desc";

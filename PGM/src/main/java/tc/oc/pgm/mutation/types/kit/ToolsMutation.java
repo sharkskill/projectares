@@ -13,6 +13,7 @@ import tc.oc.pgm.match.MatchPlayer;
 import tc.oc.pgm.match.MatchState;
 import tc.oc.pgm.mutation.types.KitMutation;
 
+import javax.tools.Tool;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.WeakHashMap;
@@ -21,17 +22,22 @@ import java.util.stream.Collectors;
 public class ToolsMutation extends KitMutation{
 
     final static FreeItemKit[] TOOLS = new FreeItemKit[] {
-            new FreeItemKit(new ItemBuilder(item(Material.DIAMOND_PICKAXE)).enchant(Enchantment.DIG_SPEED, 3).name("Quick Pick").unbreakable(true).get()),
-            new FreeItemKit(new ItemBuilder(item(Material.DIAMOND_AXE)).enchant(Enchantment.DIG_SPEED, 3).name("Quick Axe").unbreakable(true).get()),
-            new FreeItemKit(new ItemBuilder(item(Material.DIAMOND_SPADE)).enchant(Enchantment.DIG_SPEED, 3).name("Quick Shovel").unbreakable(true).get()),
-            new FreeItemKit(new ItemBuilder(item(Material.SHEARS)).enchant(Enchantment.DIG_SPEED, 3).name("Quick Shears").unbreakable(true).get()),
-            new FreeItemKit(new ItemBuilder(item(Material.GLASS)).amount(64).get())
+            new FreeItemKit(new ItemBuilder(item(Material.DIAMOND_PICKAXE)).enchant(Enchantment.DIG_SPEED, 2).name("Quick Pick").unbreakable(true).get()),
+            new FreeItemKit(new ItemBuilder(item(Material.DIAMOND_AXE)).enchant(Enchantment.DIG_SPEED, 2).name("Quick Axe").unbreakable(true).get()),
+            new FreeItemKit(new ItemBuilder(item(Material.DIAMOND_SPADE)).enchant(Enchantment.DIG_SPEED, 2).name("Quick Shovel").unbreakable(true).get()),
+            new FreeItemKit(new ItemBuilder(item(Material.SHEARS)).enchant(Enchantment.DIG_SPEED, 2).name("Quick Shears").unbreakable(true).get()),
+            new FreeItemKit(new ItemBuilder(item(Material.GLASS)).amount(16).get())
     };
 
     final WeakHashMap<MatchPlayer, List<ItemStack>> toolsRemoved;
 
     public ToolsMutation(Match match) {
         super(match, true, TOOLS);
+        toolsRemoved = new WeakHashMap<>();
+    }
+
+    public ToolsMutation(Match match, FreeItemKit[] tools) {
+        super(match, true, tools);
         toolsRemoved = new WeakHashMap<>();
     }
 
