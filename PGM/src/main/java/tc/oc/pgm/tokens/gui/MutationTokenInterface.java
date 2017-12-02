@@ -1,5 +1,6 @@
 package tc.oc.pgm.tokens.gui;
 
+import net.md_5.bungee.api.chat.TranslatableComponent;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.enchantments.Enchantment;
@@ -40,7 +41,7 @@ public class MutationTokenInterface extends SinglePageInterface {
 
     private Button getMutationButton(Mutation mutation) {
         ItemCreator itemCreator = new ItemCreator(mutation.getGuiDisplay())
-                .setName(Constants.PREFIX + getMutationName(mutation, this.getPlayer()))
+                .setName((player.hasPermission(mutation.getName()) ? Constants.PREFIX : Constants.ERROR) + getMutationName(mutation, this.getPlayer()))
                 .addLore(Constants.SUBTEXT + getMutationDescription(mutation, this.getPlayer()))
                 .setHideFlags(ItemCreator.HideFlag.ALL);
         if (MutationCommands.getInstance().getMutationQueue().mutations().contains(mutation)) {
@@ -52,7 +53,9 @@ public class MutationTokenInterface extends SinglePageInterface {
                 if (hasEnoughTokens(player)) {
                     player.closeInventory();
                     MutationMatchModule module = PGM.getMatchManager().getCurrentMatch(player).getMatchModule(MutationMatchModule.class);
-                    if (MutationCommands.getInstance().getMutationQueue().mutations().contains(mutation)) {
+                    if (!player.hasPermission(mutation.getName())) {
+                        player.sendMessage(new TranslatableComponent("command.mutation.error.premium"));
+                    } else if (MutationCommands.getInstance().getMutationQueue().mutations().contains(mutation)) {
                         player.sendMessage(ChatColor.RED + "The " + getMutationName(mutation, player)
                                 + " mutation is already enabled!");
                     } else if (PGM.getMatchManager().getCurrentMatch(player).isStarting()) {

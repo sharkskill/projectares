@@ -199,6 +199,8 @@ public class PollCommands implements Commands {
                 throw newCommandException(sender, new TranslatableComponent(true ? "command.mutation.error.enabled" : "command.mutation.error.disabled", mutation.getComponent(net.md_5.bungee.api.ChatColor.RED)));
             } else if (!mutation.isPollable() && !sender.hasPermission("poll.mutation.override")) {
                 throw newCommandException(sender, new TranslatableComponent("command.mutation.error.illegal", mutationString));
+            } else if (!sender.hasPermission(mutation.getName())) {
+                throw newCommandException(sender, new TranslatableComponent("command.mutation.error.premium", mutationString));
             }
 
             startPoll(new PollMutation(PGM.getPollManager(), Bukkit.getServer(), sender, mutation, module));
