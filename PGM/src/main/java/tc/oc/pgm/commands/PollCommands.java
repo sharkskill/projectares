@@ -20,6 +20,7 @@ import tc.oc.pgm.PGM;
 import tc.oc.pgm.map.PGMMap;
 import tc.oc.pgm.mutation.Mutation;
 import tc.oc.pgm.mutation.MutationMatchModule;
+import tc.oc.pgm.mutation.MutationQueue;
 import tc.oc.pgm.mutation.command.MutationCommands;
 import tc.oc.pgm.polls.Poll;
 import tc.oc.pgm.polls.PollCustom;
@@ -39,6 +40,8 @@ public class PollCommands implements Commands {
 
     @Inject
     private static RestartManager restartManager;
+    @Inject
+    private static MutationQueue mutationQueue;
 
     @Command(
         aliases = {"poll"},

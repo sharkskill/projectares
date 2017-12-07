@@ -1,5 +1,6 @@
 package tc.oc.pgm.tokens.gui;
 
+import com.google.inject.Inject;
 import net.md_5.bungee.api.chat.TranslatableComponent;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
@@ -16,12 +17,15 @@ import tc.oc.pgm.PGMTranslations;
 import tc.oc.pgm.menu.gui.MainMenuInterface;
 import tc.oc.pgm.mutation.Mutation;
 import tc.oc.pgm.mutation.MutationMatchModule;
+import tc.oc.pgm.mutation.MutationQueue;
 import tc.oc.pgm.mutation.command.MutationCommands;
 
 import java.util.ArrayList;
 import java.util.List;
 
 public class MutationTokenInterface extends SinglePageInterface {
+
+    @Inject MutationQueue mutationQueue;
 
     public MutationTokenInterface(Player player) {
         super(player, new ArrayList<>(), 54, "Token Menu - Mutations");
@@ -44,7 +48,7 @@ public class MutationTokenInterface extends SinglePageInterface {
                 .setName((player.hasPermission(mutation.getName()) ? Constants.PREFIX : Constants.ERROR) + getMutationName(mutation, this.getPlayer()))
                 .addLore(Constants.SUBTEXT + getMutationDescription(mutation, this.getPlayer()))
                 .setHideFlags(ItemCreator.HideFlag.ALL);
-        if (MutationCommands.getInstance().getMutationQueue().mutations().contains(mutation)) {
+        if (mutationQueue.mutations().contains(mutation)) {
             itemCreator.addEnchantment(Enchantment.DURABILITY, 1);
         }
         return new Button(itemCreator) {
@@ -55,7 +59,7 @@ public class MutationTokenInterface extends SinglePageInterface {
                     MutationMatchModule module = PGM.getMatchManager().getCurrentMatch(player).getMatchModule(MutationMatchModule.class);
                     if (!player.hasPermission(mutation.getName())) {
                         player.sendMessage(new TranslatableComponent("command.mutation.error.premium"));
-                    } else if (MutationCommands.getInstance().getMutationQueue().mutations().contains(mutation)) {
+                    } else if (mutationQueue.mutations().contains(mutation)) {
                         player.sendMessage(ChatColor.RED + "The " + getMutationName(mutation, player)
                                 + " mutation is already enabled!");
                     } else if (PGM.getMatchManager().getCurrentMatch(player).isStarting()) {
