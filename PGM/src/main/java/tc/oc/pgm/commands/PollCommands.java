@@ -17,11 +17,13 @@ import tc.oc.commons.core.formatting.StringUtils;
 import tc.oc.commons.core.restart.RestartManager;
 import tc.oc.pgm.Config;
 import tc.oc.pgm.PGM;
+import tc.oc.pgm.PGMTranslations;
 import tc.oc.pgm.map.PGMMap;
 import tc.oc.pgm.mutation.Mutation;
 import tc.oc.pgm.mutation.MutationMatchModule;
 import tc.oc.pgm.mutation.command.MutationCommands;
 import tc.oc.pgm.polls.Poll;
+import tc.oc.pgm.polls.PollCooldown;
 import tc.oc.pgm.polls.PollCustom;
 import tc.oc.pgm.polls.PollEndReason;
 import tc.oc.pgm.polls.PollKick;
@@ -39,6 +41,8 @@ public class PollCommands implements Commands {
 
     @Inject
     private static RestartManager restartManager;
+    @Inject
+    private static PollCooldown pollCooldown;
 
     @Command(
         aliases = {"poll"},
@@ -145,6 +149,9 @@ public class PollCommands implements Commands {
             if (PGM.getMatchManager().hasMapSet()) {
                 throw newCommandException(sender, new TranslatableComponent("poll.map.alreadyset"));
             }
+            if (pollCooldown.mapCooldown() != 0 && !sender.hasPermission("poll.map.override")) {
+                throw new CommandException(PGMTranslations.get().t(pollCooldown.mapCooldown() == 1 ? "poll.oncooldown.map.singular" : "poll.oncooldown.map.plural", sender, pollCooldown.mapCooldown()));
+            }
             if (sender instanceof Player) {
                 Player player = (Player) sender;
                 if (TokenUtil.getUser(player).maptokens() < 1) {
@@ -187,6 +194,10 @@ public class PollCommands implements Commands {
                 if (TokenUtil.getUser(player).mutationtokens() < 1) {
                     throw newCommandException(sender, new TranslatableComponent("tokens.mutation.fail"));
                 }
+            }
+
+            if (pollCooldown.mutationCooldown() != 0 && !sender.hasPermission("poll.mutation.override")) {
+                throw new CommandException(PGMTranslations.get().t(pollCooldown.mutationCooldown() == 1 ? "poll.oncooldown.mutation.singular" : "poll.oncooldown.mutation.plural", sender, pollCooldown.mapCooldown()));
             }
 
             String mutationString = args.getString(0);

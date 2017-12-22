@@ -96,6 +96,9 @@ mvp:
 
 poll:
   enabled: true
+  cooldown:
+    map: 0
+    mutation: 0
   maps:
     path:
 

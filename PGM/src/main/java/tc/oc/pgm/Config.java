@@ -69,6 +69,14 @@ public class Config {
         public static boolean enabled() {
             return getConfiguration().getBoolean("poll.enabled", true);
         }
+
+        public static int mapCooldown() {
+            return getConfiguration().getInt("poll.cooldown.map", 0);
+        }
+
+        public static int mutationCooldown() {
+            return getConfiguration().getInt("poll.cooldown.mutation", 0);
+        }
     }
 
     public static class Broadcast {

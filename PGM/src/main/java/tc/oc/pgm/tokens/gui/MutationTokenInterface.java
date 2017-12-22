@@ -1,5 +1,7 @@
 package tc.oc.pgm.tokens.gui;
 
+import com.google.inject.Inject;
+import net.md_5.bungee.api.chat.TranslatableComponent;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.enchantments.Enchantment;
@@ -16,11 +18,14 @@ import tc.oc.pgm.menu.gui.MainMenuInterface;
 import tc.oc.pgm.mutation.Mutation;
 import tc.oc.pgm.mutation.MutationMatchModule;
 import tc.oc.pgm.mutation.command.MutationCommands;
+import tc.oc.pgm.polls.PollCooldown;
 
 import java.util.ArrayList;
 import java.util.List;
 
 public class MutationTokenInterface extends SinglePageInterface {
+
+    @Inject PollCooldown pollCooldown;
 
     public MutationTokenInterface(Player player) {
         super(player, new ArrayList<>(), 54, "Token Menu - Mutations");
@@ -60,6 +65,8 @@ public class MutationTokenInterface extends SinglePageInterface {
                             player.sendMessage(ChatColor.RED + "The " + getMutationName(mutation, player)
                                     + " mutation is already enabled!");
                         }
+                    } else if (pollCooldown.mutationCooldown() != 0) {
+                        player.sendMessage(new TranslatableComponent(pollCooldown.mutationCooldown() == 1 ? "poll.oncooldown.mutation.singular" : "poll.oncooldown.mutation.plural", pollCooldown.mutationCooldown()));
                     } else {
                         player.openInventory(new MutationConfirmInterface(player, mutation).getInventory());
                     }
