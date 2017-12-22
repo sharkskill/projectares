@@ -5,6 +5,7 @@ import java.util.UUID;
 import javax.annotation.Nullable;
 
 import org.bukkit.Bukkit;
+import org.bukkit.Color;
 import org.bukkit.DyeColor;
 import org.bukkit.Material;
 import org.bukkit.Skin;
@@ -16,6 +17,7 @@ import org.bukkit.inventory.EquipmentSlot;
 import org.bukkit.inventory.ItemFlag;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
+import org.bukkit.inventory.meta.LeatherArmorMeta;
 import org.bukkit.inventory.meta.SkullMeta;
 import org.bukkit.material.Dye;
 import org.bukkit.material.MaterialData;
@@ -202,6 +204,13 @@ public class ItemBuilder<S extends ItemBuilder<?>> {
         // this gets a bit more complicated.
         stack.setDurability(stack.getData().getData());
 
+        return self();
+    }
+
+    public S armorColor(Color color) {
+        if (ItemUtils.isArmor(stack) && meta() instanceof LeatherArmorMeta) {
+            ((LeatherArmorMeta) meta).setColor(color);
+        }
         return self();
     }
 

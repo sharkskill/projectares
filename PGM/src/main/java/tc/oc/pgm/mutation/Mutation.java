@@ -48,7 +48,8 @@ public enum Mutation {
     SLAPPYFISH (SlappyFishMutation.class,  Material.RAW_FISH),
     SWIFT      (SwiftMutation.class,       Material.SUGAR),
     OP         (OpMutation.class,          Material.GOLDEN_APPLE),
-    SPONGE     (SpongeMutation.class,      Material.SPONGE);
+    SPONGE     (SpongeMutation.class,      Material.SPONGE),
+    KILLSTREAK (KillStreakMutation.class,  Material.DIAMOND_SWORD);
 
     public static final String TYPE_KEY = "mutation.type.";
     public static final String DESCRIPTION_KEY = ".desc";
