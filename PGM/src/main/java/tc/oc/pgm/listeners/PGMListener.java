@@ -1,5 +1,6 @@
 package tc.oc.pgm.listeners;
 
+import java.util.Set;
 import java.util.logging.Logger;
 import javax.inject.Inject;
 
@@ -26,8 +27,12 @@ import tc.oc.pgm.events.MatchBeginEvent;
 import tc.oc.pgm.events.MatchEndEvent;
 import tc.oc.pgm.events.MatchLoadEvent;
 import tc.oc.pgm.gamerules.GameRulesModule;
+import tc.oc.pgm.match.Competitor;
+import tc.oc.pgm.match.Match;
 import tc.oc.pgm.match.MatchManager;
+import tc.oc.pgm.match.MatchPlayer;
 import tc.oc.pgm.modules.TimeLockModule;
+import tc.oc.pgm.victory.VictoryMatchModule;
 
 /**
  * TODO: Break this down into more specific responsibilities

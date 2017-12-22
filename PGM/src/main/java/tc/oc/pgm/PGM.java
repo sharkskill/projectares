@@ -70,7 +70,6 @@ public final class PGM extends JavaPlugin {
     @Inject private MapdevLogger mapdevLogger;
     @Inject private NavigatorInterface navigatorInterface;
     @Inject private Provider<MatchLoader> matchLoader;
-    @Inject private AchievementManager achievementManager;
 
     private MatchManager matchManager;
 
@@ -107,6 +106,8 @@ public final class PGM extends JavaPlugin {
     }
 
     private MatchTabManager matchTabManager;
+
+    private AchievementManager achievementManager;
 
     private void setupSentry() {
         // Tag Sentry events with the current map

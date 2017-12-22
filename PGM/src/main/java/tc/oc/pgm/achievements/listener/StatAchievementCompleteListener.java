@@ -16,7 +16,9 @@ public class StatAchievementCompleteListener implements Listener {
         StatAchievement statAchievement = event.getStatAchievement();
         int statAmount = event.getStatAmount();
 
-        player.sendMessage(ChatColor.GREEN + ChatColor.BOLD.toString() + "Achievement Unlocked" + ChatColor.GRAY + " \u00BB " + ChatColor.BLUE + "Reached " + statAmount + statAchievement.getDisplayName());
+        player.sendMessage(ChatColor.STRIKETHROUGH.toString() + "------------------------------------");
+        player.sendMessage(ChatColor.BOLD + "Achievement Unlocked" + ChatColor.GRAY + " \u00BB " + ChatColor.BLUE + "Reached " + statAmount + statAchievement.getDisplayName());
+        player.sendMessage(ChatColor.STRIKETHROUGH.toString() + "------------------------------------");
 
         if (event.isSpecialAchievement()) Bukkit.broadcastMessage(ChatColor.BLUE + player.getName() + " has reached " + statAmount + statAchievement.getDisplayName());
     }

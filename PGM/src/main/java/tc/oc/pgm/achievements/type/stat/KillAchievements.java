@@ -23,7 +23,7 @@ public class KillAchievements extends StatAchievement implements Listener {
     }
 
     @EventHandler
-    public void onKill(MatchPlayerDeathEvent event) {
+    public void onPlayerDeath(MatchPlayerDeathEvent event) {
         if (event.getKiller() != null && event.getOnlineKiller() != null && event.isEnemyKill()) {
             Player player = event.getOnlineKiller().getBukkit();
             HashMap<String, Double> stats = StatsUtil.getStats(event.getOnlineKiller().getBukkit());
