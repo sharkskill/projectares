@@ -36,6 +36,8 @@ public class PollCooldown implements PluginFacet, Listener {
 
     @EventHandler()
     public void onPollEnd(PollEndEvent pollEndEvent) {
+        if (!pollEndEvent.getPoll().isSuccessful()) return;
+
         if (pollEndEvent.poll instanceof PollNextMap) {
             mapCooldown = Config.Poll.mapCooldown() + 1;
         } else if (pollEndEvent.poll instanceof PollMutation) {
