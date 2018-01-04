@@ -19,6 +19,7 @@ import tc.oc.commons.bukkit.channels.AdminChannel;
 import tc.oc.commons.bukkit.chat.Audiences;
 import tc.oc.commons.bukkit.chat.BukkitSound;
 import tc.oc.commons.bukkit.settings.SettingManagerProvider;
+import tc.oc.commons.core.chat.Audience;
 import tc.oc.commons.core.plugin.PluginFacet;
 import tc.oc.minecraft.scheduler.MainThreadExecutor;
 
@@ -78,9 +79,10 @@ public class ReportAnnouncer implements PluginFacet, MessageListener {
             adminChannel.viewers()
                         .filter(viewer -> viewer.hasPermission(ReportPermissions.RECEIVE))
                         .forEach(viewer -> {
-                            audiences.get(viewer).sendMessages(formatted);
+                            Audience audience = audiences.get(viewer);
+                            audience.sendMessages(formatted);
                             if (viewer instanceof Player && (boolean)settings.getManager((Player)viewer).getValue(SOUND_SETTING)) {
-                                audiences.get(viewer).playSound(REPORT_SOUND);
+                                audience.playSound(REPORT_SOUND);
                             }
                         });
         }
