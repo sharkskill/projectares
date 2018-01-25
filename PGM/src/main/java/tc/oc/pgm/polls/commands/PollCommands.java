@@ -7,13 +7,11 @@ import com.sk89q.minecraft.util.commands.CommandPermissions;
 import com.sk89q.minecraft.util.commands.NestedCommand;
 import net.md_5.bungee.api.ChatColor;
 import org.bukkit.command.CommandSender;
-import org.bukkit.entity.Player;
 import tc.oc.api.docs.PlayerId;
 import tc.oc.commons.bukkit.chat.PlayerComponent;
 import tc.oc.commons.bukkit.nick.IdentityProvider;
 import tc.oc.commons.core.chat.Audiences;
 import tc.oc.commons.core.chat.Component;
-import tc.oc.commons.core.commands.Commands;
 import tc.oc.commons.core.commands.TranslatableCommandException;
 import tc.oc.pgm.commands.CommandUtils;
 import tc.oc.pgm.polls.Poll;
@@ -22,7 +20,7 @@ import tc.oc.pgm.polls.PollManager;
 
 import javax.inject.Inject;
 
-public class PollCommands implements Commands {
+public class PollCommands {
 
     private final PollManager pollManager;
     private final IdentityProvider identityProvider;
@@ -63,7 +61,7 @@ public class PollCommands implements Commands {
                 currentPoll.voteAgainst(voter);
                 sender.sendMessage(new Component(ChatColor.RED).translate("poll.vote.against"));
             } else {
-                throw new TranslatableCommandException("poll.vote.value.invalid");
+                throw new TranslatableCommandException("poll.vote.invalidValue");
             }
         } else {
             throw new TranslatableCommandException("poll.noPollRunning");

@@ -11,9 +11,9 @@ import java.util.Map;
 
 public abstract class Poll implements Runnable {
 
-    public static String boldAqua = ChatColor.BOLD + "" + ChatColor.AQUA;
-    public static String normalize = ChatColor.RESET + "" + ChatColor.DARK_AQUA;
-    public static String separator = ChatColor.RESET + " | ";
+    public static final String boldAqua = ChatColor.BOLD + "" + ChatColor.AQUA;
+    public static final String normalize = ChatColor.RESET + "" + ChatColor.DARK_AQUA;
+    public static final String separator = ChatColor.RESET + " | ";
 
     protected final PollManager pollManager;
     protected final PlayerId initiator;

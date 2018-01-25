@@ -8,7 +8,7 @@ import tc.oc.commons.core.chat.Audiences;
 import tc.oc.commons.core.plugin.PluginFacet;
 import tc.oc.pgm.polls.event.PollEndEvent;
 
-public class PollListener implements PluginFacet, Listener {
+public class PollListener implements Listener {
 
     private final Audiences audiences;
 

@@ -13,14 +13,13 @@ import tc.oc.commons.bukkit.tokens.TokenUtil;
 import tc.oc.commons.core.commands.TranslatableCommandException;
 import tc.oc.commons.core.formatting.StringUtils;
 import tc.oc.commons.core.restart.RestartManager;
-import tc.oc.pgm.Config;
 import tc.oc.pgm.commands.CommandUtils;
 import tc.oc.pgm.map.PGMMap;
 import tc.oc.pgm.match.MatchManager;
 import tc.oc.pgm.mutation.Mutation;
 import tc.oc.pgm.mutation.MutationQueue;
-import tc.oc.pgm.mutation.command.MutationCommands;
 import tc.oc.pgm.polls.PollBlacklist;
+import tc.oc.pgm.polls.PollConfig;
 import tc.oc.pgm.polls.types.PollCustom;
 import tc.oc.pgm.polls.types.PollKick;
 import tc.oc.pgm.polls.PollManager;
@@ -28,7 +27,6 @@ import tc.oc.pgm.polls.types.PollMutation;
 import tc.oc.pgm.polls.types.PollNextMap;
 
 import javax.inject.Inject;
-import java.util.Collection;
 import java.util.List;
 
 public class PollSubCommands {
@@ -44,19 +42,21 @@ public class PollSubCommands {
     private final UserStore userStore;
     private final OnlinePlayers onlinePlayers;
     private final MatchManager matchManager;
+    private final PollConfig pollConfig;
 
     @Inject
     PollSubCommands(RestartManager restartManager,
-                 MutationQueue mutationQueue,
-                 PollManager pollManager,
-                 PollCustom.Factory pollCustomFactory,
-                 PollNextMap.Factory pollMapFactory,
-                 PollMutation.Factory pollMutationFactory,
-                 PollKick.Factory pollKickFactory,
-                 PollBlacklist pollBlacklist,
-                 UserStore userStore,
-                 OnlinePlayers onlinePlayers,
-                 MatchManager matchManager) {
+                    MutationQueue mutationQueue,
+                    PollManager pollManager,
+                    PollCustom.Factory pollCustomFactory,
+                    PollNextMap.Factory pollMapFactory,
+                    PollMutation.Factory pollMutationFactory,
+                    PollKick.Factory pollKickFactory,
+                    PollBlacklist pollBlacklist,
+                    UserStore userStore,
+                    OnlinePlayers onlinePlayers,
+                    MatchManager matchManager,
+                    PollConfig pollConfig) {
         this.restartManager = restartManager;
         this.mutationQueue = mutationQueue;
         this.pollManager = pollManager;
@@ -68,6 +68,7 @@ public class PollSubCommands {
         this.userStore = userStore;
         this.onlinePlayers = onlinePlayers;
         this.matchManager = matchManager;
+        this.pollConfig = pollConfig;
     }
 
 
@@ -105,7 +106,7 @@ public class PollSubCommands {
             return CommandUtils.completeMapName(mapName);
         }
 
-        if(!Config.Poll.enabled()) {
+        if(!pollConfig.enabled()) {
             throw new TranslatableCommandException("poll.disabled");
         }
 
@@ -147,7 +148,7 @@ public class PollSubCommands {
             return StringUtils.complete(args.getSuggestionContext().getPrefix(), mutationQueue.mutationsAvailable().stream().map(mutation -> mutation.name().toLowerCase()));
         }
 
-        if(!Config.Poll.enabled()) {
+        if(!pollConfig.enabled()) {
             throw new TranslatableCommandException("poll.disabled");
         }
 
@@ -161,7 +162,7 @@ public class PollSubCommands {
         if(mutation == null) {
             throw new TranslatableCommandException("command.mutation.error.find", mutationString);
         } else if(mutationQueue.mutations().contains(mutation)) {
-            throw new TranslatableCommandException(true ? "command.mutation.error.enabled" : "command.mutation.error.disabled", mutation.getComponent(net.md_5.bungee.api.ChatColor.RED));
+            throw new TranslatableCommandException("command.mutation.error.enabled", mutation.getComponent(net.md_5.bungee.api.ChatColor.RED));
         } else if(!mutation.isPollable() && !sender.hasPermission("poll.mutation.override")) {
             throw new TranslatableCommandException("command.mutation.error.illegal", mutationString);
         }
