@@ -1,6 +1,5 @@
 package tc.oc.commons.bukkit.commands;
 
-import com.google.common.util.concurrent.Futures;
 import com.sk89q.minecraft.util.commands.Command;
 import com.sk89q.minecraft.util.commands.CommandContext;
 import com.sk89q.minecraft.util.commands.CommandException;
@@ -15,7 +14,6 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.command.ConsoleCommandSender;
 import org.bukkit.entity.Player;
 import tc.oc.api.bukkit.users.BukkitUserStore;
-import tc.oc.api.docs.User;
 import tc.oc.api.docs.virtual.UserDoc;
 import tc.oc.api.users.UserService;
 import tc.oc.commons.bukkit.chat.Audiences;
@@ -102,14 +100,10 @@ public class MiscCommands implements Commands {
     public void listPlayerLocales(final CommandContext args, final CommandSender sender) throws CommandException {
         Audience audience = audiences.get(sender);
         if (args.hasFlag('a')) {
-            Map<String, Integer> playerLocaleMap = new HashMap<>();
-            userStore.stream().forEach(player -> {
-                String locale = player.getLocale();
-                playerLocaleMap.put(locale, playerLocaleMap.getOrDefault(locale, 0) + 1);
-            });
+            Map<String, Long> playerLocaleMap = userStore.stream().collect(java.util.stream.Collectors.groupingBy(Player::getLocale, java.util.stream.Collectors.counting()));
 
             audience.sendMessage(new HeaderComponent(new Component(ChatColor.AQUA).translate("list.player.locales.title")));
-            for (Map.Entry<String, Integer> entry : playerLocaleMap.entrySet()) {
+            for (Map.Entry<String, Long> entry : playerLocaleMap.entrySet()) {
                 audience.sendMessage(new TranslatableComponent("list.player.locales.message." + (entry.getValue() == 1 ? "singular" : "plural"),
                         ChatColor.AQUA + entry.getValue().toString(),
                         ChatColor.AQUA + entry.getKey(),
