@@ -25,5 +25,8 @@ public class TerrainManifest extends HybridManifest implements MapBinders, Match
 
         bind(BlockPhysicsListener.class).in(MatchScoped.class);
         matchListener(BlockPhysicsListener.class);
+
+        bind(ChunkLoaderListener.class).in(MatchScoped.class);
+        matchListener(ChunkLoaderListener.class);
     }
 }

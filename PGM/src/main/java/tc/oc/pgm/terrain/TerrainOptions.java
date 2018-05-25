@@ -11,12 +11,16 @@ public class TerrainOptions implements WorldConfigurator {
     private final boolean vanilla;
     private final long seed;
     private final boolean initialPhysics;
+    private final boolean keepChunksLoaded;
+    private final int loadChunks;
 
-    public TerrainOptions(Path worldFolder, boolean vanilla, Long seed, boolean initialPhysics) {
+    public TerrainOptions(Path worldFolder, boolean vanilla, Long seed, boolean initialPhysics, boolean keepChunksLoaded, int loadChunks) {
         this.worldFolder = worldFolder;
         this.vanilla = vanilla;
         this.seed = seed != null ? seed : new Random().nextLong();
         this.initialPhysics = initialPhysics;
+        this.keepChunksLoaded = keepChunksLoaded;
+        this.loadChunks = loadChunks;
     }
 
     public Path worldFolder() {
@@ -25,6 +29,14 @@ public class TerrainOptions implements WorldConfigurator {
 
     boolean initialPhysics() {
         return initialPhysics;
+    }
+
+    public boolean keepChunksLoaded() {
+        return keepChunksLoaded;
+    }
+
+    public int loadChunks() {
+        return loadChunks;
     }
 
     @Override

@@ -34,6 +34,8 @@ public class TerrainParser implements ElementParser<TerrainOptions> {
         boolean vanilla = false;
         Long seed = null;
         boolean initialPhysics = false;
+        boolean keepChunksLoaded = false;
+        int loadChunks = 0;
 
         for(Element elTerrain : doc.getRootElement().getChildren("terrain")) {
             vanilla = XMLUtils.parseBoolean(elTerrain.getAttribute("vanilla"), vanilla);
@@ -48,8 +50,19 @@ public class TerrainParser implements ElementParser<TerrainOptions> {
                     seed = (long) seedText.hashCode();
                 }
             }
+
+
+            keepChunksLoaded = XMLUtils.parseBoolean(elTerrain.getAttribute("keep-chunks-loaded"), keepChunksLoaded);
+            String loadChunksText = elTerrain.getAttributeValue("load-chunks");
+            if (loadChunksText != null) {
+                try {
+                    loadChunks = Integer.parseInt(loadChunksText);
+                } catch(NumberFormatException e) {
+
+                }
+            }
         }
 
-        return new TerrainOptions(worldFolder, vanilla, seed, initialPhysics);
+        return new TerrainOptions(worldFolder, vanilla, seed, initialPhysics, keepChunksLoaded, loadChunks);
     }
 }

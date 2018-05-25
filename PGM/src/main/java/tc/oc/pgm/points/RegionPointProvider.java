@@ -19,6 +19,7 @@ import tc.oc.commons.core.random.RandomUtils;
 import tc.oc.pgm.match.Match;
 import tc.oc.pgm.regions.Region;
 import tc.oc.pgm.regions.Union;
+import tc.oc.pgm.worldborder.WorldBorderMatchModule;
 
 public class RegionPointProvider extends Inspectable.Impl implements PointProvider {
 

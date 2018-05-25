@@ -58,8 +58,9 @@ public class KillRewardModule implements MapModule, MatchModuleFactory<KillRewar
             }
             Filter filter = context.needModule(FilterParser.class).property(elKillReward, "filter").optional(StaticFilter.ALLOW);
             Kit kit = context.needModule(KitParser.class).property(elKillReward, "kit").optional(KitNode.EMPTY);
+            boolean drop = XMLUtils.parseBoolean(elKillReward.getAttribute("drop"), false);
 
-            rewards.add(new KillReward(items.build(), filter, kit));
+            rewards.add(new KillReward(items.build(), filter, kit, drop));
         }
 
         return new KillRewardModule(rewards);
