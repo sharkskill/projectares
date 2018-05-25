@@ -110,7 +110,8 @@ public class SpawnParser {
             booleans.property(el, "spread").optional(),
             booleans.property(el, "exclusive").optional(),
             booleans.property(el, "persistent").optional(),
-            booleans.property(el, "use-last-location").optional()
+            booleans.property(el, "use-last-location").optional(),
+            booleans.property(el, "load-chunks").optional()
         );
     }
 

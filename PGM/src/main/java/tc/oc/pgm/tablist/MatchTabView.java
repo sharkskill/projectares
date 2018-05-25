@@ -16,6 +16,7 @@ import org.bukkit.event.EventPriority;
 import org.bukkit.event.HandlerList;
 import org.bukkit.event.Listener;
 
+import tc.oc.api.docs.virtual.MapDoc;
 import tc.oc.commons.bukkit.nick.PlayerIdentityChangeEvent;
 import tc.oc.commons.bukkit.tablist.TabEntry;
 import tc.oc.commons.bukkit.tablist.TabManager;
@@ -29,6 +30,7 @@ import tc.oc.pgm.events.PlayerPartyChangeEvent;
 import tc.oc.pgm.match.Match;
 import tc.oc.pgm.match.MatchPlayer;
 import tc.oc.pgm.match.Party;
+import tc.oc.pgm.modules.InfoModule;
 import tc.oc.pgm.teams.Team;
 import tc.oc.pgm.teams.TeamMatchModule;
 
@@ -97,7 +99,9 @@ public class MatchTabView extends TabView implements Listener {
             // Minimum rows required to show all staff observers
             int observerRows = Math.min(availableRows, Numbers.divideRoundingUp(observingStaff, this.getWidth()));
 
-            if(tmm != null) {
+            final boolean isUHC = match.getMap().getContext().needModule(InfoModule.class).getGamemodes().contains(MapDoc.Gamemode.uhc);
+
+            if(tmm != null && !isUHC) {
                 // Render participating teams
                 Iterator<Team> iter = tmm.teams().sorted(this.teamOrder).iterator();
 
@@ -129,6 +133,7 @@ public class MatchTabView extends TabView implements Listener {
 
                 // Expand participant rows to fill whatever if left
                 participantRows = availableRows - addRowIfAny(observerRows);
+
 
                 this.renderTeam(participants, getManager().getFreeForAllEntry(match), true, 0, this.getWidth(), 0, participantRows);
 

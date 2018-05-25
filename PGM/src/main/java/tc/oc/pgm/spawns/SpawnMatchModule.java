@@ -25,17 +25,12 @@ import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.player.PlayerInitialSpawnEvent;
 import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
+import org.bukkit.util.ImVector;
 import org.jdom2.Element;
 import tc.oc.commons.bukkit.event.CoarsePlayerMoveEvent;
 import tc.oc.commons.core.random.RandomUtils;
 import tc.oc.commons.core.util.ThrowingConsumer;
-import tc.oc.pgm.events.CompetitorRemoveEvent;
-import tc.oc.pgm.events.ListenerScope;
-import tc.oc.pgm.events.MatchBeginEvent;
-import tc.oc.pgm.events.MatchEndEvent;
-import tc.oc.pgm.events.MatchPlayerDeathEvent;
-import tc.oc.pgm.events.ObserverInteractEvent;
-import tc.oc.pgm.events.PlayerChangePartyEvent;
+import tc.oc.pgm.events.*;
 import tc.oc.pgm.filters.Filter;
 import tc.oc.pgm.filters.query.IQuery;
 import tc.oc.pgm.kits.Kit;
@@ -272,6 +267,24 @@ public class SpawnMatchModule extends MatchModule implements Listener {
     @EventHandler(priority = EventPriority.HIGH, ignoreCancelled = true)
     public void onObserverInteract(final ObserverInteractEvent event) {
         dispatchEvent(event.getPlayer(), state -> state.onEvent(event));
+    }
+
+    @EventHandler
+    public void matchLoad(final MatchLoadEvent event) {
+        final int SPAWN_CHUNK_RADIUS = 1;
+        match.getLogger().info("Spawn Chunks Loading: " + SPAWN_CHUNK_RADIUS * SPAWN_CHUNK_RADIUS * getSpawns().size());
+        for (Spawn spawn : getSpawns()) {
+            if (spawn.attributes().loadChunks) {
+                ImVector vector = spawn.pointProvider().getRegion().getBounds().center();
+                for (int x = (int)(vector.getX()/16) - SPAWN_CHUNK_RADIUS; x <= (int)(vector.getX()/16) + SPAWN_CHUNK_RADIUS; x++) {
+                    for (int z = (int)(vector.getZ()/16) - SPAWN_CHUNK_RADIUS; z <= (int)(vector.getZ()/16) + SPAWN_CHUNK_RADIUS; z++) {
+                        if (!event.getMatch().getWorld().isChunkLoaded(x, z)) {
+                            event.getMatch().getWorld().loadChunk(x, z);
+                        }
+                    }
+                }
+            }
+        }
     }
 
     @EventHandler

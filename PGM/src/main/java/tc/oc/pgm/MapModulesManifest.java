@@ -10,6 +10,8 @@ import tc.oc.pgm.ffa.FreeForAllModule;
 import tc.oc.pgm.gamerules.GameRulesModule;
 import tc.oc.pgm.ghostsquadron.GhostSquadronModule;
 import tc.oc.pgm.goals.GoalModule;
+import tc.oc.pgm.goldenhead.GoldenHeadModule;
+import tc.oc.pgm.graceperiod.GracePeriodModule;
 import tc.oc.pgm.hunger.HungerModule;
 import tc.oc.pgm.itemmeta.ItemModifyModule;
 import tc.oc.pgm.killreward.KillRewardModule;
@@ -28,6 +30,7 @@ import tc.oc.pgm.score.ScoreModule;
 import tc.oc.pgm.spawns.SpawnModule;
 import tc.oc.pgm.stamina.StaminaModule;
 import tc.oc.pgm.timelimit.TimeLimitModule;
+import tc.oc.pgm.uhc.UHCModule;
 import tc.oc.pgm.worldborder.WorldBorderModule;
 
 /**
@@ -48,6 +51,7 @@ public class MapModulesManifest extends HybridManifest {
         install(new SpawnModule.Factory());
         install(new TimeLimitModule.Factory());
         install(new BlitzModule.Factory());
+        install(new UHCModule.Factory());
 
         // MapModules with static parse methods
         install(new StaticMethodMapModuleFactory<EventRuleModule>(){});
@@ -76,5 +80,8 @@ public class MapModulesManifest extends HybridManifest {
         install(new StaticMethodMapModuleFactory<WorldBorderModule>(){});
         install(new StaticMethodMapModuleFactory<StaminaModule>(){});
         install(new StaticMethodMapModuleFactory<MutationMapModule>(){});
+        install(new StaticMethodMapModuleFactory<KillChestModule>(){});
+        install(new StaticMethodMapModuleFactory<GoldenHeadModule>(){});
+        install(new StaticMethodMapModuleFactory<GracePeriodModule>(){});
     }
 }

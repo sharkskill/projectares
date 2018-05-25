@@ -24,8 +24,9 @@ public class SpawnAttributes extends Inspectable.Impl {
     public final @Inspect boolean exclusive;
     public final @Inspect boolean persistent;
     public final @Inspect boolean useLastParticipatingLocation;
+    public final @Inspect boolean loadChunks;
 
-    public SpawnAttributes(PointProviderAttributes providerAttributes, Filter filter, Optional<Kit> kit, boolean sequential, boolean spread, boolean exclusive, boolean persistent, boolean useLastParticipatingLocation) {
+    public SpawnAttributes(PointProviderAttributes providerAttributes, Filter filter, Optional<Kit> kit, boolean sequential, boolean spread, boolean exclusive, boolean persistent, boolean useLastParticipatingLocation, boolean loadChunks) {
         this.filter = checkNotNull(filter);
         this.providerAttributes = checkNotNull(providerAttributes);
         this.kit = checkNotNull(kit);
@@ -34,10 +35,11 @@ public class SpawnAttributes extends Inspectable.Impl {
         this.exclusive = exclusive;
         this.persistent = persistent;
         this.useLastParticipatingLocation = useLastParticipatingLocation;
+        this.loadChunks = loadChunks;
     }
 
     public SpawnAttributes() {
-        this(new PointProviderAttributes(), StaticFilter.ABSTAIN, Optional.empty(), false, false, false, false, false);
+        this(new PointProviderAttributes(), StaticFilter.ABSTAIN, Optional.empty(), false, false, false, false, false, false);
     }
 
     @Override
@@ -66,7 +68,8 @@ public class SpawnAttributes extends Inspectable.Impl {
                                  Optional<Boolean> spread,
                                  Optional<Boolean> exclusive,
                                  Optional<Boolean> persistent,
-                                 Optional<Boolean> useLastParticipatingLocation) {
+                                 Optional<Boolean> useLastParticipatingLocation,
+                                 Optional<Boolean> loadChunks) {
 
         return new SpawnAttributes(providerAttributes,
                                    AllFilter.of(filter, this.filter),
@@ -75,6 +78,7 @@ public class SpawnAttributes extends Inspectable.Impl {
                                    spread.orElse(this.spread),
                                    exclusive.orElse(this.exclusive),
                                    persistent.orElse(this.persistent),
-                                   useLastParticipatingLocation.orElse(this.useLastParticipatingLocation));
+                                   useLastParticipatingLocation.orElse(this.useLastParticipatingLocation),
+                                   loadChunks.orElse(this.loadChunks));
     }
 }

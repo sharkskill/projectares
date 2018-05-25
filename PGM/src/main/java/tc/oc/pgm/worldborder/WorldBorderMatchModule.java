@@ -4,13 +4,17 @@ import java.util.List;
 import java.util.Map;
 import javax.annotation.Nullable;
 
-import org.bukkit.EntityLocation;
+import org.bukkit.Location;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
+import org.bukkit.event.block.BlockBreakEvent;
+import org.bukkit.event.block.BlockPlaceEvent;
+import org.bukkit.event.player.PlayerMoveEvent;
 import org.bukkit.event.player.PlayerTeleportEvent;
 import java.time.Duration;
-import tc.oc.commons.bukkit.event.CoarsePlayerMoveEvent;
+
+import org.bukkit.util.Vector;
 import tc.oc.commons.bukkit.util.WorldBorderUtils;
 import tc.oc.commons.core.util.DefaultMapAdapter;
 import tc.oc.pgm.events.ListenerScope;
@@ -30,6 +34,9 @@ public class WorldBorderMatchModule extends MatchModule implements Listener {
     private final Map<WorldBorder, Boolean> results = new DefaultMapAdapter<>(false);
     private @Nullable WorldBorder appliedBorder;
     private @Nullable Duration appliedAt;
+    private boolean bedrock;
+    private WorldBorder initial;
+    private boolean appliedInitial = false;
 
     public WorldBorderMatchModule(Match match, List<WorldBorder> borders) {
         super(match);
@@ -50,6 +57,8 @@ public class WorldBorderMatchModule extends MatchModule implements Listener {
         if(initial != null) {
             logger.fine("Initializing with " + initial);
             apply(initial);
+            this.initial = initial;
+            appliedInitial = true;
         } else {
             reset();
         }
@@ -73,11 +82,22 @@ public class WorldBorderMatchModule extends MatchModule implements Listener {
         super.disable();
     }
 
-    private void apply(WorldBorder border) {
-        logger.fine("Applying " + border);
+    @Nullable
+    public WorldBorder getAppliedBorder() {
+        return appliedBorder;
+    }
 
-        border.apply(getMatch().getWorld().getWorldBorder(), appliedBorder != null);
+    private void apply(WorldBorder border) {
+        if (this.appliedInitial && this.initial == border) {
+            return;
+        }
+        logger.fine("Applying " + border);
+        Match match = getMatch();
+        org.bukkit.WorldBorder existingBorder = match.getWorld().getWorldBorder();
+        double oldSize = appliedBorder != null ? appliedBorder.size : existingBorder.getSize();
+        border.apply(match, existingBorder, appliedBorder != null, oldSize);
         appliedBorder = border;
+        this.bedrock = appliedBorder.bedrock;
         appliedAt = getMatch().runningTime();
     }
 
@@ -154,21 +174,51 @@ public class WorldBorderMatchModule extends MatchModule implements Listener {
      */
     @EventHandler(priority = EventPriority.HIGH)
     public void onPlayerTeleport(final PlayerTeleportEvent event) {
-        if(event.getCause() == PlayerTeleportEvent.TeleportCause.PLUGIN) {
-            if(WorldBorderUtils.isInsideBorder(event.getFrom()) &&
-               !WorldBorderUtils.isInsideBorder(event.getTo())) {
+        if(event.getCause() == PlayerTeleportEvent.TeleportCause.PLUGIN && getMatch().hasStarted()) {
+            Vector center = appliedBorder != null ? appliedBorder.center : getMatch().getWorld().getWorldBorder().getCenter().toVector();
+            double size = appliedBorder != null ? appliedBorder.size : getMatch().getWorld().getWorldBorder().getSize();
+            if(WorldBorderUtils.isInsideBorder(center, size, event.getFrom()) &&
+               !WorldBorderUtils.isInsideBorder(center, size, event.getTo())) {
                 event.setCancelled(true);
             }
         }
     }
 
     @EventHandler(priority = EventPriority.HIGH)
-    public void onPlayerMove(final CoarsePlayerMoveEvent event) {
+    public void onPlayerMove(final PlayerMoveEvent event) {
         MatchPlayer player = getMatch().getPlayer(event.getPlayer());
-        if(player != null && player.isObserving()) {
-            EntityLocation location = event.getTo();
-            if(WorldBorderUtils.clampToBorder(location)) {
+        if(player != null && !player.isObserving() && bedrock && getMatch().hasStarted()) {
+            Location location = event.getTo();
+            Vector center = appliedBorder != null ? appliedBorder.center : getMatch().getWorld().getWorldBorder().getCenter().toVector();
+            double size = appliedBorder != null ? appliedBorder.size : getMatch().getWorld().getWorldBorder().getSize();
+            if(WorldBorderUtils.clampToBorder(center, size - 0.2, location)) {
                 event.setTo(location);
+            }
+        }
+    }
+
+    @EventHandler(priority = EventPriority.HIGH)
+    public void onBlockPlace(final BlockPlaceEvent event) {
+        MatchPlayer player = getMatch().getPlayer(event.getPlayer());
+        if(player != null && bedrock) {
+            Location location = event.getBlockPlaced().getLocation();
+            Vector center = appliedBorder != null ? appliedBorder.center : getMatch().getWorld().getWorldBorder().getCenter().toVector();
+            double size = appliedBorder != null ? appliedBorder.size : getMatch().getWorld().getWorldBorder().getSize();
+            if(WorldBorderUtils.clampToBorder(center, size - 0.2, location)) {
+                event.setCancelled(true);
+            }
+        }
+    }
+
+    @EventHandler(priority = EventPriority.HIGH)
+    public void onBlockBreak(final BlockBreakEvent event) {
+        MatchPlayer player = getMatch().getPlayer(event.getPlayer());
+        if(player != null && bedrock) {
+            Location location = event.getBlock().getLocation();
+            Vector center = appliedBorder != null ? appliedBorder.center : getMatch().getWorld().getWorldBorder().getCenter().toVector();
+            double size = appliedBorder != null ? appliedBorder.size : getMatch().getWorld().getWorldBorder().getSize();
+            if(WorldBorderUtils.clampToBorder(center, size - 0.2, location)) {
+                event.setCancelled(true);
             }
         }
     }

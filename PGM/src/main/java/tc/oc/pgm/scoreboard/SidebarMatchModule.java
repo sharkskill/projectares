@@ -26,11 +26,13 @@ import org.bukkit.scoreboard.Scoreboard;
 import org.bukkit.scoreboard.Team;
 import java.time.Duration;
 
+import tc.oc.api.docs.virtual.MapDoc;
 import tc.oc.api.minecraft.MinecraftService;
 import tc.oc.commons.bukkit.chat.ComponentRenderers;
 import tc.oc.commons.bukkit.chat.NameStyle;
 import tc.oc.commons.bukkit.util.NullCommandSender;
 import tc.oc.commons.core.chat.Component;
+import tc.oc.commons.core.formatting.PeriodFormats;
 import tc.oc.commons.core.scheduler.Task;
 import tc.oc.pgm.Config;
 import tc.oc.pgm.blitz.LivesEvent;
@@ -55,17 +57,16 @@ import tc.oc.pgm.goals.events.GoalTouchEvent;
 import tc.oc.pgm.blitz.Lives;
 import tc.oc.pgm.blitz.BlitzEvent;
 import tc.oc.pgm.blitz.BlitzMatchModule;
-import tc.oc.pgm.match.Competitor;
-import tc.oc.pgm.match.Match;
-import tc.oc.pgm.match.MatchModule;
-import tc.oc.pgm.match.MatchScope;
-import tc.oc.pgm.match.Party;
+import tc.oc.pgm.match.*;
+import tc.oc.pgm.modules.InfoModule;
+import tc.oc.pgm.playerstats.StatsUserFacet;
 import tc.oc.pgm.score.ScoreMatchModule;
 import tc.oc.pgm.spawns.events.ParticipantSpawnEvent;
 import tc.oc.pgm.teams.events.TeamRespawnsChangeEvent;
 import tc.oc.pgm.victory.VictoryMatchModule;
 import tc.oc.pgm.wool.MonumentWool;
 import tc.oc.pgm.wool.MonumentWoolFactory;
+import tc.oc.pgm.worldborder.WorldBorderMatchModule;
 
 import static tc.oc.commons.core.util.Nullables.castOrNull;
 
@@ -173,6 +174,15 @@ public class SidebarMatchModule extends MatchModule implements Listener {
             ),
             32
         );
+
+        if (isUHC()) {
+            getMatch().getScheduler(MatchScope.RUNNING).createRepeatingTask(0, 20, this::renderSidebarDebounce);
+        }
+    }
+
+    private boolean isUHC() {
+        final InfoModule infoModule = getMatch().getMap().getContext().needModule(InfoModule.class);
+        return infoModule.getGamemodes().contains(MapDoc.Gamemode.uhc);
     }
 
     private boolean hasScores() {
@@ -383,99 +393,123 @@ public class SidebarMatchModule extends MatchModule implements Listener {
 
             List<String> rows = new ArrayList<>(MAX_ROWS);
 
-            // Scores/Blitz
-            if(hasScores || hasIndividualLives || (hasTeamLives && competitorsWithGoals.isEmpty())) {
-                for(Competitor competitor : getMatch().needMatchModule(VictoryMatchModule.class).rankedCompetitors()) {
-                    String text;
-                    if(hasScores) {
-                        text = renderScore(competitor, viewingParty);
-                    } else {
-                        text = renderBlitz(competitor, viewingParty);
-                    }
-                    if(text.length() != 0) text += " ";
-                    rows.add(text + ComponentRenderers.toLegacyText(competitor.getStyledName(NameStyle.GAME), NullCommandSender.INSTANCE));
+            if (isUHC()) {
+                rows.add(ChatColor.YELLOW + "Time: " + ChatColor.WHITE + PeriodFormats.formatColons(this.match.runningTime()).toPlainText());
+                rows.add("");
+
+                int teamKills = 0;
+                for (MatchPlayer player : viewingParty.getPlayers()) {
+                    teamKills += player.getUserContext().facet(StatsUserFacet.class).matchKills();
                 }
+                rows.add(ChatColor.YELLOW + "Kills: " + ChatColor.WHITE + teamKills);
+                rows.add("");
 
-                if(!competitorsWithGoals.isEmpty() || !sharedGoals.isEmpty()) {
-                    // Blank row between scores and goals
-                    rows.add("");
-                }
-            }
+                rows.add(ChatColor.YELLOW + "Players Left: " + ChatColor.WHITE + getMatch().getParticipatingPlayers().size());
+                rows.add("");
 
-            boolean firstTeam = true;
-
-            // Shared goals i.e. not grouped under a specific team
-            for(Goal goal : sharedGoals) {
-                firstTeam = false;
-                rows.add(this.renderGoal(goal, null, viewingParty));
-            }
-
-            // Team-specific goals
-            List<Competitor> sortedCompetitors = new ArrayList<>(competitorsWithGoals);
-            if(viewingParty instanceof Competitor) {
-                // Participants see competitors in arbitrary order, with their own at the top
-                Collections.sort(sortedCompetitors, Ordering.arbitrary());
-
-                // Bump viewing party to the top of the list
-                if(sortedCompetitors.remove(viewingParty)) {
-                    sortedCompetitors.add(0, (Competitor) viewingParty);
+                WorldBorderMatchModule borderMatchModule = getMatch().getMatchModule(WorldBorderMatchModule.class);
+                if (borderMatchModule != null) {
+                    String borderSize = borderMatchModule.getAppliedBorder() != null ? Integer.toString((int)((borderMatchModule.getAppliedBorder().getSize()) / 2)) : "\u221e"; // ∞;
+                    rows.add(ChatColor.YELLOW + "Border: " + ChatColor.WHITE + borderSize);
                 }
             } else {
-                // Observers see the competitors sorted by closeness to winning
-                Collections.sort(sortedCompetitors, match.needMatchModule(VictoryMatchModule.class).victoryOrder());
-            }
-
-            for(Competitor competitor : sortedCompetitors) {
-                if(!firstTeam) {
-                    // Add a blank row between teams
-                    rows.add("");
-                }
-                firstTeam = false;
-
-                // Add a row for the team name
-                rows.add(ComponentRenderers.toLegacyText(competitor.getStyledName(NameStyle.GAME),
-                                                         NullCommandSender.INSTANCE));
-
-                // Add lives status under the team name
-                if(hasTeamLives) {
-                    blitz.lives(competitor).ifPresent(l -> rows.add(ComponentRenderers.toLegacyText(l.status(), NullCommandSender.INSTANCE)));
-                }
-
-                if(isCompactWool()) {
-                    String woolText = " ";
-                    boolean firstWool = true;
-
-                    List<Goal> sortedWools = new ArrayList<>(gmm.getGoals(competitor));
-                    Collections.sort(sortedWools, new Comparator<Goal>() { @Override public int compare(Goal a, Goal b) {
-                            return a.getName().compareToIgnoreCase(b.getName());
-                    }});
-
-                    for(Goal goal : sortedWools) {
-                        if(goal instanceof MonumentWool && goal.isVisible()) {
-                            MonumentWool wool = (MonumentWool) goal;
-                            if(!firstWool) {
-                                woolText += "   ";
-                            }
-                            firstWool = false;
-                            woolText += wool.renderSidebarStatusColor(competitor, viewingParty);
-                            woolText += wool.renderSidebarStatusText(competitor, viewingParty);
+                // Scores/Blitz
+                if(hasScores || hasIndividualLives || (hasTeamLives && competitorsWithGoals.isEmpty())) {
+                    for(Competitor competitor : getMatch().needMatchModule(VictoryMatchModule.class).rankedCompetitors()) {
+                        String text;
+                        if(hasScores) {
+                            text = renderScore(competitor, viewingParty);
+                        } else {
+                            text = renderBlitz(competitor, viewingParty);
                         }
+                        if(text.length() != 0) text += " ";
+                        rows.add(text + ComponentRenderers.toLegacyText(competitor.getStyledName(NameStyle.GAME), NullCommandSender.INSTANCE));
                     }
 
-                    rows.add(woolText);
+                    if(!competitorsWithGoals.isEmpty() || !sharedGoals.isEmpty()) {
+                        // Blank row between scores and goals
+                        rows.add("");
+                    }
+                }
 
+                boolean firstTeam = true;
+
+                // Shared goals i.e. not grouped under a specific team
+                for(Goal goal : sharedGoals) {
+                    firstTeam = false;
+                    rows.add(this.renderGoal(goal, null, viewingParty));
+                }
+
+                // Team-specific goals
+                List<Competitor> sortedCompetitors = new ArrayList<>(competitorsWithGoals);
+                if(viewingParty instanceof Competitor) {
+                    // Participants see competitors in arbitrary order, with their own at the top
+                    Collections.sort(sortedCompetitors, Ordering.arbitrary());
+
+                    // Bump viewing party to the top of the list
+                    if(sortedCompetitors.remove(viewingParty)) {
+                        sortedCompetitors.add(0, (Competitor) viewingParty);
+                    }
                 } else {
-                    // Add a row for each of this team's goals
-                    for(Goal goal : gmm.getGoals()) {
-                        if(!goal.isShared() && goal.canComplete(competitor) && goal.isVisible()) {
-                            rows.add(this.renderGoal(goal, competitor, viewingParty));
+                    // Observers see the competitors sorted by closeness to winning
+                    Collections.sort(sortedCompetitors, match.needMatchModule(VictoryMatchModule.class).victoryOrder());
+                }
+
+                for(Competitor competitor : sortedCompetitors) {
+                    if(!firstTeam) {
+                        // Add a blank row between teams
+                        rows.add("");
+                    }
+                    firstTeam = false;
+
+                    // Add a row for the team name
+                    rows.add(ComponentRenderers.toLegacyText(competitor.getStyledName(NameStyle.GAME),
+                            NullCommandSender.INSTANCE));
+
+                    // Add lives status under the team name
+                    if(hasTeamLives) {
+                        blitz.lives(competitor).ifPresent(l -> rows.add(ComponentRenderers.toLegacyText(l.status(), NullCommandSender.INSTANCE)));
+                    }
+
+                    if(isCompactWool()) {
+                        String woolText = " ";
+                        boolean firstWool = true;
+
+                        List<Goal> sortedWools = new ArrayList<>(gmm.getGoals(competitor));
+                        Collections.sort(sortedWools, new Comparator<Goal>() { @Override public int compare(Goal a, Goal b) {
+                            return a.getName().compareToIgnoreCase(b.getName());
+                        }});
+
+                        for(Goal goal : sortedWools) {
+                            if(goal instanceof MonumentWool && goal.isVisible()) {
+                                MonumentWool wool = (MonumentWool) goal;
+                                if(!firstWool) {
+                                    woolText += "   ";
+                                }
+                                firstWool = false;
+                                woolText += wool.renderSidebarStatusColor(competitor, viewingParty);
+                                woolText += wool.renderSidebarStatusText(competitor, viewingParty);
+                            }
+                        }
+
+                        rows.add(woolText);
+
+                    } else {
+                        // Add a row for each of this team's goals
+                        for(Goal goal : gmm.getGoals()) {
+                            if(!goal.isShared() && goal.canComplete(competitor) && goal.isVisible()) {
+                                rows.add(this.renderGoal(goal, competitor, viewingParty));
+                            }
                         }
                     }
                 }
             }
+
 
             if(Config.Scoreboard.showIp()) {
-                rows.add("");
+                if (!isUHC()) {
+                    rows.add("");
+                }
                 rows.add(ChatColor.AQUA + minecraftService.getLocalServer().domain());
             }
 

@@ -12,6 +12,7 @@ import org.bukkit.event.Event;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
+import org.bukkit.event.entity.PlayerDeathEvent;
 import tc.oc.pgm.events.ListenerScope;
 import tc.oc.pgm.events.MatchPlayerDeathEvent;
 import tc.oc.pgm.events.PlayerPartyChangeEvent;
@@ -60,10 +61,23 @@ public class KillRewardMatchModule extends MatchModule implements Listener {
         });
     }
 
-    @EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
+    public void giveRewards(MatchPlayer victim, MatchPlayer killer, Collection<KillReward> rewards, PlayerDeathEvent event) {
+        rewards.forEach(reward -> {
+            if (reward.drop) {
+                reward.items.forEach(stack -> event.getDrops().add(stack));
+            } else {
+                // Apply kit first so it can not override reward items
+                reward.kit.apply(killer);
+                reward.items.forEach(stack -> ItemKitApplicator.fireEventAndTransfer(killer, stack));
+            }
+        });
+    }
+
+    @EventHandler(priority = EventPriority.LOW, ignoreCancelled = true)
     public void onDeath(MatchPlayerDeathEvent event) {
         if(!event.isChallengeKill()) return;
         MatchPlayer killer = event.getOnlineKiller();
+        MatchPlayer victim = event.getVictim();
         if(killer == null) return;
 
         List<KillReward> rewards = rewards(event);
@@ -75,7 +89,7 @@ public class KillRewardMatchModule extends MatchModule implements Listener {
             // and this is a relatively simple way to handle that case.
             deadPlayerRewards.putAll(killer, rewards);
         } else {
-            giveRewards(killer, rewards);
+            giveRewards(victim, killer, rewards, event.getParent());
         }
     }
 

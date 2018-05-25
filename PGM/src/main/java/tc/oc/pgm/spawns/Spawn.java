@@ -17,6 +17,8 @@ public interface Spawn extends FeatureDefinition {
 
     SpawnAttributes attributes();
 
+    PointProvider pointProvider();
+
     Optional<Kit> getKit();
 
     boolean allows(MatchPlayer player);
@@ -39,6 +41,11 @@ class SpawnImpl extends FeatureDefinition.Impl implements Spawn {
     @Override
     public SpawnAttributes attributes() {
         return attributes;
+    }
+
+    @Override
+    public PointProvider pointProvider() {
+        return pointProvider;
     }
 
     @Override

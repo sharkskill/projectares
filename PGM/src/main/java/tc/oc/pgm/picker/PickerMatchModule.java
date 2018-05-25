@@ -32,6 +32,7 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.inventory.meta.LeatherArmorMeta;
 import org.bukkit.material.MaterialData;
+import tc.oc.api.docs.virtual.MapDoc;
 import tc.oc.commons.bukkit.chat.ComponentRenderContext;
 import tc.oc.commons.bukkit.event.ObserverKitApplyEvent;
 import tc.oc.commons.bukkit.item.ItemUtils;
@@ -57,6 +58,7 @@ import tc.oc.pgm.blitz.BlitzMatchModule;
 import tc.oc.pgm.match.MatchModule;
 import tc.oc.pgm.match.MatchPlayer;
 import tc.oc.pgm.match.MatchScope;
+import tc.oc.pgm.modules.InfoModule;
 import tc.oc.pgm.spawns.events.DeathKitApplyEvent;
 import tc.oc.pgm.teams.Team;
 import tc.oc.pgm.teams.TeamMatchModule;
@@ -461,6 +463,8 @@ public class PickerMatchModule extends MatchModule implements Listener {
         final List<ItemStack> slots = new ArrayList<>();
 
         final Set<Team> teams = getChoosableTeams(player);
+        final boolean isUHC = match.getMap().getContext().needModule(InfoModule.class).getGamemodes().contains(MapDoc.Gamemode.uhc);
+
         if(!teams.isEmpty()) {
             // Auto-join button at start of row
             if(teams.size() > 1) {
@@ -472,7 +476,7 @@ public class PickerMatchModule extends MatchModule implements Listener {
             }
 
             // Team buttons
-            if(teams.size() > 1 || !hasJoined(player)) {
+            if(!isUHC && (teams.size() > 1 || !hasJoined(player))) {
                 for(Team team : teams) {
                     slots.add(createTeamJoinButton(player, team));
                 }

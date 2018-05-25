@@ -10,6 +10,7 @@ import net.md_5.bungee.api.ChatColor;
 import net.md_5.bungee.api.chat.BaseComponent;
 import net.md_5.bungee.api.chat.TranslatableComponent;
 import org.bukkit.command.CommandSender;
+import tc.oc.api.docs.virtual.MapDoc;
 import tc.oc.commons.bukkit.chat.Audiences;
 import tc.oc.commons.bukkit.chat.HeaderComponent;
 import tc.oc.commons.core.chat.Audience;
@@ -22,6 +23,7 @@ import tc.oc.pgm.ffa.FreeForAllMatchModule;
 import tc.oc.pgm.goals.Goal;
 import tc.oc.pgm.goals.GoalComponent;
 import tc.oc.pgm.goals.GoalMatchModule;
+import tc.oc.pgm.modules.InfoModule;
 import tc.oc.pgm.score.ScoreMatchModule;
 import tc.oc.pgm.teams.Team;
 import tc.oc.pgm.teams.TeamMatchModule;
@@ -54,7 +56,9 @@ public class MatchFormatter {
         final FreeForAllMatchModule ffamm = match.getMatchModule(FreeForAllMatchModule.class);
         final List<BaseComponent> teamCountParts = Lists.newArrayList();
 
-        if(tmm != null) {
+        final boolean isUHC = match.getMap().getContext().needModule(InfoModule.class).getGamemodes().contains(MapDoc.Gamemode.uhc);
+
+        if(tmm != null && !isUHC) {
             for(Team team : tmm.getTeams()) {
                 final Component msg = new Component(ChatColor.GRAY)
                     .extra(StringUtils.removeEnd(team.getName(), " Team"), team.getColor())
@@ -73,6 +77,11 @@ public class MatchFormatter {
                                    .extra(": ")
                                    .extra(match.getParticipatingPlayers().size(), ChatColor.WHITE)
                                    .extra("/" + ffamm.getMaxPlayers()));
+        } else if (isUHC) {
+            teamCountParts.add(new Component(ChatColor.GRAY)
+                    .extra(new TranslatableComponent("command.match.matchInfo.players"), ChatColor.YELLOW)
+                    .extra(": ")
+                    .extra(match.getParticipatingPlayers().size(), ChatColor.WHITE));
         }
 
         teamCountParts.add(new Component(ChatColor.GRAY)
