@@ -68,16 +68,16 @@ public class SnapshotMatchModule extends MatchModule implements Listener {
         return getOriginalBlock(pos.getBlockX(), pos.getBlockY(), pos.getBlockZ());
     }
 
-    // Listen on lowest priority so that the original block is available to other handlers of this event
-    @EventHandler(priority = EventPriority.LOWEST, ignoreCancelled = true)
-    public void onBlockChange(BlockTransformEvent event) {
-        Chunk chunk = event.getOldState().getChunk();
-        ChunkVector chunkVector = ChunkVector.of(chunk);
-        if(!chunkSnapshots.containsKey(chunkVector)) {
-            logger.fine("Copying chunk at " + chunkVector);
-            ChunkSnapshot chunkSnapshot = chunk.getChunkSnapshot();
-            chunkSnapshot.updateBlock(event.getOldState()); // ChunkSnapshot is very likely to have the post-event state already, so we have to correct it
-            chunkSnapshots.put(chunkVector, chunkSnapshot);
-        }
-    }
+//    // Listen on lowest priority so that the original block is available to other handlers of this event
+//    @EventHandler(priority = EventPriority.LOWEST, ignoreCancelled = true)
+//    public void onBlockChange(BlockTransformEvent event) {
+//        Chunk chunk = event.getOldState().getChunk();
+//        ChunkVector chunkVector = ChunkVector.of(chunk);
+//        if(!chunkSnapshots.containsKey(chunkVector)) {
+//            logger.fine("Copying chunk at " + chunkVector);
+//            ChunkSnapshot chunkSnapshot = chunk.getChunkSnapshot();
+//            chunkSnapshot.updateBlock(event.getOldState()); // ChunkSnapshot is very likely to have the post-event state already, so we have to correct it
+//            chunkSnapshots.put(chunkVector, chunkSnapshot);
+//        }
+//    }
 }
