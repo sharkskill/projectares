@@ -1,5 +1,6 @@
 package tc.oc.pgm.kits;
 
+import java.time.Duration;
 import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Stream;
@@ -8,6 +9,7 @@ import javax.inject.Inject;
 import com.google.common.collect.Range;
 import org.bukkit.inventory.ItemStack;
 import org.jdom2.Element;
+import tc.oc.commons.bukkit.freeze.PlayerFreezer;
 import tc.oc.commons.bukkit.inventory.ArmorType;
 import tc.oc.commons.bukkit.inventory.Slot;
 import tc.oc.pgm.blitz.LivesKit;
@@ -47,6 +49,7 @@ public class KitDefinitionParser extends MagicMethodFeatureParser<Kit> implement
     @Inject protected PropertyBuilderFactory<Boolean, ?> booleanParser;
     @Inject protected MapLogger mapLogger;
     @Inject protected ItemModifier itemModifier;
+    @Inject protected PlayerFreezer playerFreezer;
 
     private Stream<Kit> parseParentKits(Element el) throws InvalidXMLException {
         return Node.attributes(el, "parent", "parents")
@@ -237,6 +240,11 @@ public class KitDefinitionParser extends MagicMethodFeatureParser<Kit> implement
     @MethodParser
     private Kit team_switch(Element el) throws InvalidXMLException {
         return new TeamSwitchKit(teamParser.property(el, "team").required());
+    }
+
+    @MethodParser
+    private Kit freeze(Element el) throws InvalidXMLException {
+        return new FreezeKit(XMLUtils.parseDuration(el.getAttribute("duration"), Duration.ofSeconds(0)), playerFreezer);
     }
 
     @MethodParser
