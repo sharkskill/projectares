@@ -271,7 +271,7 @@ public class SpawnMatchModule extends MatchModule implements Listener {
 
     @EventHandler
     public void matchLoad(final MatchLoadEvent event) {
-        final int SPAWN_CHUNK_RADIUS = 1;
+        final int SPAWN_CHUNK_RADIUS = 8;
         match.getLogger().info("Spawn Chunks Loading: " + SPAWN_CHUNK_RADIUS * SPAWN_CHUNK_RADIUS * getSpawns().size());
         for (Spawn spawn : getSpawns()) {
             if (spawn.attributes().loadChunks) {
