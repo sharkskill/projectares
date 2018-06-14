@@ -58,7 +58,9 @@ public class WorldBorderModule implements MapModule, MatchModuleFactory<WorldBor
                 XMLUtils.parseNumber(Node.fromAttr(el, "warning-distance"), Double.class, 5d),
                 XMLUtils.parseDuration(Node.fromAttr(el, "warning-time"), Duration.ofSeconds(15)),
                 XMLUtils.parseBoolean(Node.fromAttr(el, "teleport"), false),
-                XMLUtils.parseBoolean(Node.fromAttr(el, "bedrock"), false)
+                XMLUtils.parseBoolean(Node.fromAttr(el, "bedrock"), false),
+                XMLUtils.parseBoolean(Node.fromAttr(el, "broadcast"), false),
+                after
             );
 
             borders.add(border);

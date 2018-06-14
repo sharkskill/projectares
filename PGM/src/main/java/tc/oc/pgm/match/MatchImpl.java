@@ -63,6 +63,7 @@ import tc.oc.pgm.events.MatchBeginEvent;
 import tc.oc.pgm.events.MatchEndEvent;
 import tc.oc.pgm.events.MatchLoadEvent;
 import tc.oc.pgm.events.MatchPlayerAddEvent;
+import tc.oc.pgm.events.MatchPlayerRemoveEvent;
 import tc.oc.pgm.events.MatchPostCommitEvent;
 import tc.oc.pgm.events.MatchPreCommitEvent;
 import tc.oc.pgm.events.MatchStateChangeEvent;
@@ -718,6 +719,8 @@ public class MatchImpl implements Match {
             // As with enable, facets are disabled after the player is removed
             // from their party and all collections.
             player.disableAll();
+
+            callEvent(new MatchPlayerRemoveEvent(this, player));
         } catch(Exception e) {
             exceptionHandler.handleException(e);
         }

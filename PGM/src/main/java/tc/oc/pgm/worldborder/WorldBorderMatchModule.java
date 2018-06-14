@@ -4,6 +4,9 @@ import java.util.List;
 import java.util.Map;
 import javax.annotation.Nullable;
 
+import net.md_5.bungee.api.ChatColor;
+import net.md_5.bungee.api.chat.BaseComponent;
+import net.md_5.bungee.api.chat.TranslatableComponent;
 import org.bukkit.Location;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
@@ -16,6 +19,8 @@ import java.time.Duration;
 
 import org.bukkit.util.Vector;
 import tc.oc.commons.bukkit.util.WorldBorderUtils;
+import tc.oc.commons.core.chat.Component;
+import tc.oc.commons.core.formatting.PeriodFormats;
 import tc.oc.commons.core.util.DefaultMapAdapter;
 import tc.oc.pgm.events.ListenerScope;
 import tc.oc.pgm.goals.events.GoalEvent;
@@ -91,13 +96,24 @@ public class WorldBorderMatchModule extends MatchModule implements Listener {
         if (this.appliedInitial && this.initial == border) {
             return;
         }
+
         logger.fine("Applying " + border);
         Match match = getMatch();
+
+        if (match.hasStarted()) {
+            BaseComponent alert = new Component(ChatColor.GRAY, ChatColor.BOLD)
+                    .extra("[")
+                    .extra(new Component(new TranslatableComponent("prefixed.alert"), ChatColor.YELLOW))
+                    .extra("] ")
+                    .extra((new Component(new TranslatableComponent("match.worldborder.shrunk"), ChatColor.AQUA)).bold(false));
+            match.sendMessage(alert);
+        }
+
         org.bukkit.WorldBorder existingBorder = match.getWorld().getWorldBorder();
         double oldSize = appliedBorder != null ? appliedBorder.size : existingBorder.getSize();
         border.apply(match, existingBorder, appliedBorder != null, oldSize);
         appliedBorder = border;
-        this.bedrock = appliedBorder.bedrock;
+        bedrock = appliedBorder.bedrock;
         appliedAt = getMatch().runningTime();
     }
 
@@ -123,6 +139,18 @@ public class WorldBorderMatchModule extends MatchModule implements Listener {
         boolean applied = false;
 
         for(WorldBorder border : borders) {
+            if (border.broadcast && border.after != null) {
+                Duration durationUntilShrink = border.after.minus(getMatch().runningTime());
+                if (!durationUntilShrink.isNegative() && isBroadcastTime(durationUntilShrink)) {
+                    BaseComponent alert = new Component(ChatColor.GRAY, ChatColor.BOLD)
+                            .extra("[")
+                            .extra(new Component(new TranslatableComponent("prefixed.alert"), ChatColor.YELLOW))
+                            .extra("] ")
+                            .extra((new Component(new TranslatableComponent("match.worldborder.shrinking", PeriodFormats.formatColons(durationUntilShrink)), ChatColor.AQUA)).bold(false));
+                    match.sendMessage(alert);
+                }
+            }
+
             boolean newResult = border.filter.query(match).isAllowed();
             boolean oldResult = results.put(border, newResult);
             if(newResult) lastMatched = border;
@@ -143,6 +171,27 @@ public class WorldBorderMatchModule extends MatchModule implements Listener {
         }
 
         return applied;
+    }
+
+    private boolean isBroadcastTime(Duration durationUntilShrink) {
+        long minutes = durationUntilShrink.toMinutes();
+        long seconds = durationUntilShrink.getSeconds() - (minutes * 60);
+
+        return (minutes <= 5 &&
+               (minutes == 5 && seconds == 0  ||
+                minutes == 4 && seconds == 0  ||
+                minutes == 3 && seconds == 0  ||
+                minutes == 2 && seconds == 0  ||
+                minutes == 1 && seconds == 0  ||
+                minutes == 0 && seconds == 45 ||
+                minutes == 0 && seconds == 30 ||
+                minutes == 0 && seconds == 15 ||
+                minutes == 0 && seconds == 10 ||
+                minutes == 0 && seconds == 5  ||
+                minutes == 0 && seconds == 4  ||
+                minutes == 0 && seconds == 3  ||
+                minutes == 0 && seconds == 2  ||
+                minutes == 0 && seconds == 1));
     }
 
     /**

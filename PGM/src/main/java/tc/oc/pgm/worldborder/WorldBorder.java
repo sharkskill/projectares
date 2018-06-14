@@ -28,8 +28,10 @@ public class WorldBorder {
     final Duration warningTime;         // Show red vignette to players when the border is moving and will reach them within this time
     final boolean teleport;             // Teleport players who are outside of the border
     final boolean bedrock;              // Use a bedrock border
+    final boolean broadcast;            // Broadcast before the border shrinks
+    final Duration after;
 
-    public WorldBorder(Filter filter, Vector center, double size, Duration duration, double damage, double buffer, double warningDistance, Duration warningTime, boolean teleport, boolean bedrock) {
+    public WorldBorder(Filter filter, Vector center, double size, Duration duration, double damage, double buffer, double warningDistance, Duration warningTime, boolean teleport, boolean bedrock, boolean broadcast, Duration after) {
         this.filter = checkNotNull(filter);
         this.center = checkNotNull(center);
         this.size = size;
@@ -40,6 +42,8 @@ public class WorldBorder {
         this.warningTime = checkNotNull(warningTime);
         this.teleport = teleport;
         this.bedrock = bedrock;
+        this.broadcast = broadcast;
+        this.after = after;
     }
 
     public double getSize() {

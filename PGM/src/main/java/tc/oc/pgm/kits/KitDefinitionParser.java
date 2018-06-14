@@ -244,7 +244,10 @@ public class KitDefinitionParser extends MagicMethodFeatureParser<Kit> implement
 
     @MethodParser
     private Kit freeze(Element el) throws InvalidXMLException {
-        return new FreezeKit(XMLUtils.parseDuration(el.getAttribute("duration"), Duration.ofSeconds(0)), playerFreezer);
+        return new FreezeKit(XMLUtils.parseDuration(el.getAttribute("duration"), Duration.ofSeconds(0)),
+                XMLUtils.parseDuration(el.getAttribute("before")),
+                XMLUtils.parseDuration(el.getAttribute("after")),
+                playerFreezer);
     }
 
     @MethodParser

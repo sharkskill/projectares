@@ -26,6 +26,7 @@ import tc.oc.pgm.picker.PickerManifest;
 import tc.oc.pgm.playerstats.StatsManifest;
 import tc.oc.pgm.raindrops.RaindropManifest;
 import tc.oc.pgm.regions.RegionManifest;
+import tc.oc.pgm.rejoin.RejoinManifest;
 import tc.oc.pgm.scoreboard.ScoreboardManifest;
 import tc.oc.pgm.structure.StructureManifest;
 import tc.oc.pgm.teams.TeamManifest;
@@ -56,6 +57,7 @@ public class PGMModulesManifest extends HybridManifest {
         install(new DamageManifest());
         install(new ClassManifest());
         install(new ItemKeepManifest());
+        install(new RejoinManifest());
         install(new PlayerPhysicsManifest());
         install(new TNTManifest());
         install(new TutorialManifest());

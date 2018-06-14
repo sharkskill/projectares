@@ -394,7 +394,7 @@ public class SidebarMatchModule extends MatchModule implements Listener {
             List<String> rows = new ArrayList<>(MAX_ROWS);
 
             if (isUHC()) {
-                rows.add(ChatColor.YELLOW + "Time: " + ChatColor.WHITE + PeriodFormats.formatColons(this.match.runningTime()).toPlainText());
+                rows.add(ChatColor.YELLOW + "Time: " + ChatColor.WHITE + PeriodFormats.formatColonsLong(this.match.runningTime()).toPlainText());
                 rows.add("");
 
                 int teamKills = 0;
