@@ -12,6 +12,8 @@ import org.bukkit.Location;
 import org.bukkit.Server;
 import org.bukkit.command.CommandSender;
 import org.bukkit.command.ConsoleCommandSender;
+import org.bukkit.entity.Entity;
+import org.bukkit.entity.Monster;
 import org.bukkit.entity.Player;
 import tc.oc.api.bukkit.users.BukkitUserStore;
 import tc.oc.api.docs.virtual.UserDoc;
@@ -189,6 +191,20 @@ public class MiscCommands implements Commands {
                 }
             }
         );
+    }
+
+    @Command(
+            aliases = { "clearlag" },
+            desc = "Remove entities that can cause server lag"
+    )
+    @CommandPermissions("clearlag")
+    public void clearLag(final CommandContext args, final CommandSender sender) throws CommandException {
+        Player player = CommandUtils.getPlayerOrSelf(args, sender, 0);
+        for (Entity entity : player.getWorld().getLivingEntities()) {
+            if (entity instanceof Monster) {
+                entity.remove();
+            }
+        }
     }
 
     @Command(

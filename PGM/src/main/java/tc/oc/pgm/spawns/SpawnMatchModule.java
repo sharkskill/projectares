@@ -30,6 +30,7 @@ import org.jdom2.Element;
 import tc.oc.commons.bukkit.event.CoarsePlayerMoveEvent;
 import tc.oc.commons.core.random.RandomUtils;
 import tc.oc.commons.core.util.ThrowingConsumer;
+import tc.oc.pgm.Config;
 import tc.oc.pgm.events.*;
 import tc.oc.pgm.filters.Filter;
 import tc.oc.pgm.filters.query.IQuery;
@@ -271,13 +272,13 @@ public class SpawnMatchModule extends MatchModule implements Listener {
 
     @EventHandler
     public void matchLoad(final MatchLoadEvent event) {
-        final int SPAWN_CHUNK_RADIUS = 8;
-        match.getLogger().info("Spawn Chunks Loading: " + SPAWN_CHUNK_RADIUS * SPAWN_CHUNK_RADIUS * getSpawns().size());
+        int spawnChunksRadius = Config.Chunks.spawnChunksRadius();
+        match.getLogger().info("Spawn Chunks Loading: " + spawnChunksRadius * spawnChunksRadius * getSpawns().size());
         for (Spawn spawn : getSpawns()) {
             if (spawn.attributes().loadChunks) {
                 ImVector vector = spawn.pointProvider().getRegion().getBounds().center();
-                for (int x = (int)(vector.getX()/16) - SPAWN_CHUNK_RADIUS; x <= (int)(vector.getX()/16) + SPAWN_CHUNK_RADIUS; x++) {
-                    for (int z = (int)(vector.getZ()/16) - SPAWN_CHUNK_RADIUS; z <= (int)(vector.getZ()/16) + SPAWN_CHUNK_RADIUS; z++) {
+                for (int x = (int)(vector.getX()/16) - spawnChunksRadius; x <= (int)(vector.getX()/16) + spawnChunksRadius; x++) {
+                    for (int z = (int)(vector.getZ()/16) - spawnChunksRadius; z <= (int)(vector.getZ()/16) + spawnChunksRadius; z++) {
                         if (!event.getMatch().getWorld().isChunkLoaded(x, z)) {
                             event.getMatch().getWorld().loadChunk(x, z);
                         }

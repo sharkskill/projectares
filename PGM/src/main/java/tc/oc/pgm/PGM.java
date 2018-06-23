@@ -15,6 +15,7 @@ import tc.oc.commons.bukkit.inject.BukkitPluginManifest;
 import tc.oc.commons.bukkit.inventory.Slot;
 import tc.oc.commons.bukkit.logging.MapdevLogger;
 import tc.oc.commons.bukkit.teleport.NavigatorInterface;
+import tc.oc.commons.bukkit.util.NMSHacks;
 import tc.oc.commons.core.commands.CommandRegistry;
 import tc.oc.inject.ProtectedBinder;
 import tc.oc.minecraft.logging.BetterRaven;
@@ -174,6 +175,20 @@ public final class PGM extends JavaPlugin {
 
         new MainTokenButton();
         SettingMenuHelper.initializeSettings();
+
+        try {
+            NMSHacks.replaceBiome("a", "c");
+            NMSHacks.replaceBiome("l", "c");
+            NMSHacks.replaceBiome("p", "c");
+            NMSHacks.replaceBiome("q", "c");
+            NMSHacks.replaceBiome("r", "c");
+            NMSHacks.replaceBiome("w", "c");
+            NMSHacks.replaceBiome("x", "c");
+            NMSHacks.replaceBiome("y", "c");
+            NMSHacks.replaceBiome("z", "c");
+        } catch (NoSuchFieldException|IllegalAccessException e) {
+            this.getLogger().log(Level.SEVERE, "PGM could not remove a biome on the ban list", e);
+        }
     }
 
     @Override

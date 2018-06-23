@@ -5,12 +5,14 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.BlockPhysicsEvent;
 import org.bukkit.event.world.ChunkUnloadEvent;
+import tc.oc.commons.core.util.Comparables;
 import tc.oc.pgm.events.ListenerScope;
 import tc.oc.pgm.events.MatchLoadEvent;
 import tc.oc.pgm.match.Match;
 import tc.oc.pgm.match.MatchScope;
 
 import javax.inject.Inject;
+import java.time.Duration;
 
 /**
  * Freeze block physics after the match ends, and before it starts too,
@@ -29,7 +31,7 @@ public class ChunkLoaderListener implements Listener {
 
     @EventHandler
     public void onChunkUnload(ChunkUnloadEvent event) {
-        if(options.keepChunksLoaded()) {
+        if(options.keepChunksLoaded() && Comparables.lessThan(this.match.runningTime(), Duration.ofMinutes(1))) {
             event.setCancelled(true);
         }
     }

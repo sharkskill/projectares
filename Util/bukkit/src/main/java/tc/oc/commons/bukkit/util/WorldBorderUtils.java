@@ -21,6 +21,50 @@ public class WorldBorderUtils {
                Math.abs(location.getZ() - center.getZ()) < radius;
     }
 
+    public static boolean isOnBorder(Vector center, double size, int x, int z) {
+        double radius = size / 2d;
+        double xMin = center.getX() - radius - 1;
+        double xMax = center.getX() + radius;
+        double zMin = center.getZ() - radius - 1;
+        double zMax = center.getZ() + radius;
+
+        boolean border = false;
+
+        if(x == xMin) {
+            border = true;
+        }
+
+        if(x == xMax) {
+            border = true;
+        }
+
+        if(z == zMin) {
+            border = true;
+        }
+
+        if(z == zMax) {
+            border = true;
+        }
+
+        if(x < xMin) {
+            border = false;
+        }
+
+        if(x > xMax) {
+            border = false;
+        }
+
+        if(z < zMin) {
+            border = false;
+        }
+
+        if(z > zMax) {
+            border = false;
+        }
+
+        return border;
+    }
+
     public static boolean clampToBorder(Location location) {
         return clampToBorder(location.getWorld().getWorldBorder(), location);
     }

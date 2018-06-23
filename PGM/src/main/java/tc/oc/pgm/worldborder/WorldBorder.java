@@ -66,10 +66,11 @@ public class WorldBorder {
             int upperX = (int)center.getX() + (int)(size/2);
             int lowerZ = (int)center.getZ() - (int)(size/2) - 1;
             int upperZ = (int)center.getZ() + (int)(size/2);
+
             for (int x = lowerX + 1; x < upperX; x++) {
                 int highestLowerBlockY = world.getHighestBlockYAt(x, lowerZ);
                 int highestUpperBlockY = world.getHighestBlockYAt(x, upperZ);
-                for (int y = -3; y <= 6; y++) {
+                for (int y = 0; y <= 3; y++) {
                     world.getBlockAt(x, highestLowerBlockY + y, lowerZ).setType(Material.BEDROCK);
                     world.getBlockAt(x, highestUpperBlockY + y, upperZ).setType(Material.BEDROCK);
                 }
@@ -77,7 +78,7 @@ public class WorldBorder {
             for (int z = lowerZ + 1; z < upperZ; z++) {
                 int highestLowerBlockY = world.getHighestBlockYAt(lowerX, z);
                 int highestUpperBlockY = world.getHighestBlockYAt(upperX, z);
-                for (int y = -3; y <= 6; y++) {
+                for (int y = 0; y <= 3; y++) {
                     world.getBlockAt(lowerX, highestLowerBlockY + y, z).setType(Material.BEDROCK);
                     world.getBlockAt(upperX, highestUpperBlockY + y, z).setType(Material.BEDROCK);
                 }

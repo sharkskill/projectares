@@ -30,6 +30,12 @@ public class Config {
         return getConfiguration().getInt("minimum-players", 1);
     }
 
+    public static class Chunks {
+        public static int spawnChunksRadius() {
+            return getConfiguration().getInt("chunks.spawn-chunks-radius", 10);
+        }
+    }
+
     public static class MVP {
         public static boolean enabled() {
             return getConfiguration().getBoolean("mvp.enabled", true);

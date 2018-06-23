@@ -1,5 +1,7 @@
 package tc.oc.commons.bukkit.util;
 
+import java.lang.reflect.Field;
+import java.lang.reflect.Modifier;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
@@ -16,6 +18,8 @@ import com.google.common.collect.Lists;
 import com.mojang.authlib.GameProfile;
 import com.mojang.authlib.properties.Property;
 import net.md_5.bungee.api.chat.BaseComponent;
+import net.minecraft.server.BiomeBase;
+import net.minecraft.server.Biomes;
 import net.minecraft.server.Block;
 import net.minecraft.server.BlockPosition;
 import net.minecraft.server.DataWatcher;
@@ -941,5 +945,20 @@ public class NMSHacks {
 
     public static int playerLatencyMillis(Player player) {
         return ((CraftPlayer) player).getHandle().ping;
+    }
+
+    public static void replaceBiome(String from, String to) throws NoSuchFieldException, IllegalAccessException {
+        Field fromField = Biomes.class.getDeclaredField(from);
+        fromField.setAccessible(true);
+
+        Field modifiersField = Field.class.getDeclaredField("modifiers");
+        modifiersField.setAccessible(true);
+        modifiersField.setInt(fromField, fromField.getModifiers() & ~Modifier.FINAL);
+
+        Field toField = Biomes.class.getDeclaredField(to);
+        toField.setAccessible(true);
+        BiomeBase toBiome = (BiomeBase)toField.get(null);
+
+        fromField.set(null, toBiome);
     }
 }

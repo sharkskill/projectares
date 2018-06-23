@@ -81,10 +81,6 @@ public class RejoinUserFacet implements MatchUserFacet, Listener {
         if(!matchPlayer.getMatch().hasStarted() || matchPlayer.getMatch().isFinished()) return;
 
         rejoins++;
-        if(allowedToRejoin && rejoins >= rules.get().maxRejoins) {
-            blockPlayerFromRejoining(matchPlayer.getMatch(), event.getPlayer().getDisplayName(), true);
-            return;
-        }
 
         final Map<Slot, ItemStack> carrying = new HashMap<>();
         Slot.Player.player().forEach(slot -> slot.item(event.getPlayer())
@@ -92,6 +88,11 @@ public class RejoinUserFacet implements MatchUserFacet, Listener {
 
         inventory.clear();
         inventory.putAll(carrying);
+
+        if(allowedToRejoin && rejoins >= rules.get().maxRejoins) {
+            blockPlayerFromRejoining(matchPlayer.getMatch(), event.getPlayer().getDisplayName(), true);
+            return;
+        }
 
         this.latestParticipatingTeam = matchPlayer.getCompetitor();
         this.latestParticipatingLocation = matchPlayer.getLocation();
@@ -101,7 +102,7 @@ public class RejoinUserFacet implements MatchUserFacet, Listener {
         offlineTask = matchPlayer.getMatch().getScheduler(MatchScope.RUNNING).createRepeatingTask(Duration.ZERO, OFFLINE_CHECK_TIME, new Runnable() {
             @Override
             public void run() {
-                addOfflineTime(match, displayName);
+                addOfflineTime(match, displayName, inventory);
             }
         });
     }
@@ -145,6 +146,7 @@ public class RejoinUserFacet implements MatchUserFacet, Listener {
         latestParticipatingLocation = latestParticipatingLocation.add(0, 0, -1);
         latestParticipatingLocation.getBlock().setType(Material.CHEST);
 
+
         Chest chest = (Chest) latestParticipatingLocation.getBlock().getState();
         inventory.forEach((slot, drop) -> chest.getBlockInventory().addItem(drop));
         inventory.clear();
@@ -153,13 +155,16 @@ public class RejoinUserFacet implements MatchUserFacet, Listener {
                 new Component(ChatColor.RED)
                 .extra(displayName + " ")
                 .extra(new TranslatableComponent("broadcast.rejoin.message"), ChatColor.RED)
+                .extra(" ")
                 .extra(new TranslatableComponent("broadcast.rejoin." + (diedDueToRejoins ? "rejoins" : "offlineTime")), ChatColor.RED));
     }
 
-    private void addOfflineTime(Match match, String displayName) {
+    private void addOfflineTime(Match match, String displayName, Map<Slot, ItemStack> inventory) {
         this.offlineTime = this.offlineTime.plus(OFFLINE_CHECK_TIME);
 
         if (allowedToRejoin && Comparables.greaterThan(offlineTime, rules.get().maxOfflineTime)) {
+            this.inventory.clear();
+            this.inventory.putAll(inventory);
             blockPlayerFromRejoining(match, displayName, false);
         }
     }

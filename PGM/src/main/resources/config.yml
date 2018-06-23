@@ -238,3 +238,6 @@ freeze:
   remove-tnt:
     victim-radius: 10
     sender-radius: 10
+
+chunks:
+  spawn-chunks-radius: 10

@@ -8,6 +8,7 @@ import net.md_5.bungee.api.ChatColor;
 import net.md_5.bungee.api.chat.BaseComponent;
 import net.md_5.bungee.api.chat.TranslatableComponent;
 import org.bukkit.Location;
+import org.bukkit.Material;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
@@ -218,20 +219,20 @@ public class WorldBorderMatchModule extends MatchModule implements Listener {
         update();
     }
 
-    /**
-     * Prevent teleporting outside the border
-     */
-    @EventHandler(priority = EventPriority.HIGH)
-    public void onPlayerTeleport(final PlayerTeleportEvent event) {
-        if(event.getCause() == PlayerTeleportEvent.TeleportCause.PLUGIN && getMatch().hasStarted()) {
-            Vector center = appliedBorder != null ? appliedBorder.center : getMatch().getWorld().getWorldBorder().getCenter().toVector();
-            double size = appliedBorder != null ? appliedBorder.size : getMatch().getWorld().getWorldBorder().getSize();
-            if(WorldBorderUtils.isInsideBorder(center, size, event.getFrom()) &&
-               !WorldBorderUtils.isInsideBorder(center, size, event.getTo())) {
-                event.setCancelled(true);
-            }
-        }
-    }
+//    /**
+//     * Prevent teleporting outside the border
+//     */
+//    @EventHandler(priority = EventPriority.HIGH)
+//    public void onPlayerTeleport(final PlayerTeleportEvent event) {
+//        if(event.getCause() == PlayerTeleportEvent.TeleportCause.PLUGIN && getMatch().hasStarted()) {
+//            Vector center = appliedBorder != null ? appliedBorder.center : getMatch().getWorld().getWorldBorder().getCenter().toVector();
+//            double size = appliedBorder != null ? appliedBorder.size : getMatch().getWorld().getWorldBorder().getSize();
+//            if(WorldBorderUtils.isInsideBorder(center, size, event.getFrom()) &&
+//               !WorldBorderUtils.isInsideBorder(center, size, event.getTo())) {
+//                event.setCancelled(true);
+//            }
+//        }
+//    }
 
     @EventHandler(priority = EventPriority.HIGH)
     public void onPlayerMove(final PlayerMoveEvent event) {
@@ -243,7 +244,40 @@ public class WorldBorderMatchModule extends MatchModule implements Listener {
             if(WorldBorderUtils.clampToBorder(center, size - 0.2, location)) {
                 event.setTo(location);
             }
+
+            int GLASS_RADIUS = 8;
+            for (int x = -GLASS_RADIUS; x <= GLASS_RADIUS; x++) {
+                for (int z = -GLASS_RADIUS; z <= GLASS_RADIUS; z++) {
+                    int potentialX = location.getBlockX() + x;
+                    int potentialZ = location.getBlockZ() + z;
+                    if (WorldBorderUtils.isOnBorder(center, size, potentialX, potentialZ)) {
+                        for (int y = -GLASS_RADIUS; y <= GLASS_RADIUS; y++) {
+                            int potentialY = location.getBlockY() + y;
+                            Location blockLocation = new Location(getMatch().getWorld(), potentialX, potentialY, potentialZ);
+
+
+                            if (blockLocation.getBlock().getType().equals(Material.AIR)) {
+                                double distance = location.distance(blockLocation);
+
+                                Material material = (distance > GLASS_RADIUS - 2) ? Material.AIR : Material.STAINED_GLASS;
+                                byte data = (distance > GLASS_RADIUS - 2) ? (byte)0 : (byte)14;
+                                if (!(material.equals(Material.STAINED_GLASS) && Math.abs(y) > 2)) {
+                                    player.getBukkit().sendBlockChange(blockLocation, material, data);
+                                }
+                            }
+                        }
+                    }
+                }
+            }
         }
+    }
+
+    public boolean isOnBorder(Vector center, double size, int x, int z) {
+        double radius = (size / 2d);
+        return (Math.abs(x - center.getX()) == radius ||
+                Math.abs(z - center.getZ()) == radius) &&
+                (Math.abs(x - center.getX()) <= radius &&
+                        Math.abs(z - center.getZ()) <= radius);
     }
 
     @EventHandler(priority = EventPriority.HIGH)
