@@ -240,4 +240,4 @@ freeze:
     sender-radius: 10
 
 chunks:
-  spawn-chunks-radius: 10
+  spawn-chunks-radius: 8
