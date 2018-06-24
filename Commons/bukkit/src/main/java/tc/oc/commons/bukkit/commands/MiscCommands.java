@@ -12,6 +12,7 @@ import org.bukkit.Location;
 import org.bukkit.Server;
 import org.bukkit.command.CommandSender;
 import org.bukkit.command.ConsoleCommandSender;
+import org.bukkit.entity.Animals;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Monster;
 import org.bukkit.entity.Player;
@@ -199,10 +200,17 @@ public class MiscCommands implements Commands {
     )
     @CommandPermissions("clearlag")
     public void clearLag(final CommandContext args, final CommandSender sender) throws CommandException {
-        Player player = CommandUtils.getPlayerOrSelf(args, sender, 0);
+        Player player = CommandUtils.senderToPlayer(sender);
+        double odds = args.getDouble(0, 0.25);
         for (Entity entity : player.getWorld().getLivingEntities()) {
             if (entity instanceof Monster) {
                 entity.remove();
+            }
+            if (entity instanceof Animals) {
+                double random = Math.random();
+                if (random < odds) {
+                    entity.remove();
+                }
             }
         }
     }

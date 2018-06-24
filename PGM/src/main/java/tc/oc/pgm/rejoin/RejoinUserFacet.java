@@ -12,6 +12,7 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerQuitEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.PlayerInventory;
+import org.bukkit.potion.PotionEffect;
 import tc.oc.commons.bukkit.event.targeted.TargetedEventHandler;
 import tc.oc.commons.bukkit.inventory.Slot;
 import tc.oc.commons.core.chat.Component;
@@ -31,6 +32,7 @@ import tc.oc.pgm.teams.TeamMatchModule;
 import javax.inject.Inject;
 import java.time.Duration;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -45,6 +47,11 @@ public class RejoinUserFacet implements MatchUserFacet, Listener {
     private final MatchPlayerFinder matchPlayerFinder;
     private final Optional<RejoinRules> rules;
     private final Map<Slot, ItemStack> inventory = new HashMap<>();
+    private double health;
+    private int exp;
+    private float saturation;
+    private int foodLevel;
+    private Collection<PotionEffect> effects;
 
     private Competitor latestParticipatingTeam;
     private Location latestParticipatingLocation;
@@ -89,6 +96,17 @@ public class RejoinUserFacet implements MatchUserFacet, Listener {
         inventory.clear();
         inventory.putAll(carrying);
 
+        health = event.getPlayer().getHealth();
+
+        exp = event.getPlayer().getTotalExperience();
+
+        saturation = event.getPlayer().getSaturation();
+
+        foodLevel = event.getPlayer().getFoodLevel();
+
+        effects = new ArrayList<>();
+        effects.addAll(event.getPlayer().getActivePotionEffects());
+
         if(allowedToRejoin && rejoins >= rules.get().maxRejoins) {
             blockPlayerFromRejoining(matchPlayer.getMatch(), event.getPlayer().getDisplayName(), true);
             return;
@@ -130,6 +148,11 @@ public class RejoinUserFacet implements MatchUserFacet, Listener {
                     matchPlayer.getBukkit().getInventory().clear();
                     restoreKeptInventory(event.getPlayer().getBukkit());
                     matchPlayer.getBukkit().teleport(latestParticipatingLocation);
+                    matchPlayer.getBukkit().setHealth(health);
+                    matchPlayer.getBukkit().setTotalExperience(exp);
+                    matchPlayer.getBukkit().setSaturation(saturation);
+                    matchPlayer.getBukkit().setFoodLevel(foodLevel);
+                    matchPlayer.getBukkit().addPotionEffects(effects);
                 }
             });
         }

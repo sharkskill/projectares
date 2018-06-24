@@ -2,11 +2,16 @@ package tc.oc.pgm.goldenhead;
 
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
+import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.Server;
+import org.bukkit.SkullType;
+import org.bukkit.block.BlockFace;
+import org.bukkit.block.Skull;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
+import org.bukkit.event.entity.PlayerDeathEvent;
 import org.bukkit.event.player.PlayerItemConsumeEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.ShapedRecipe;
@@ -63,8 +68,20 @@ public class GoldenHeadMatchModule extends MatchModule implements Listener {
     @EventHandler(priority = EventPriority.MONITOR)
     public void onItemConsume(PlayerItemConsumeEvent event) {
         ItemStack item = event.getItem();
-        if (item.hasItemMeta() && item.getItemMeta().getDisplayName().equals(GOLDEN_HEAD_DISPLAY)) {
+        if (item.hasItemMeta() && GOLDEN_HEAD_DISPLAY.equals(item.getItemMeta().getDisplayName())) {
             event.getActor().addPotionEffect(new PotionEffect(PotionEffectType.REGENERATION, 20 * 10, 1));
         }
     }
+
+//    @EventHandler(priority = EventPriority.MONITOR)
+//    public void onDeath(PlayerDeathEvent event) {
+//        Location location = event.getEntity().getLocation();
+//        location.getBlock().setType(Material.NETHER_FENCE);
+//        location.add(0, 1, 0);
+//        location.getBlock().setType(Material.SKULL);
+//        Skull skull = (Skull) location.getBlock().getState();
+//        skull.setSkullType(SkullType.PLAYER);
+//        skull.setRotation(BlockFace.NORTH);
+//        skull.setOwner(event.getEntity().getName());
+//    }
 }
