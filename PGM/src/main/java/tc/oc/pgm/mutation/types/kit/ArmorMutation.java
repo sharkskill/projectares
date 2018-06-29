@@ -10,6 +10,7 @@ import tc.oc.pgm.kits.ItemKitApplicator;
 import tc.oc.pgm.kits.SlotItemKit;
 import tc.oc.pgm.match.Match;
 import tc.oc.pgm.match.MatchPlayer;
+import tc.oc.pgm.mutation.Mutation;
 import tc.oc.pgm.mutation.types.KitMutation;
 
 import java.util.List;
@@ -30,8 +31,8 @@ public class ArmorMutation extends KitMutation {
 
     final WeakHashMap<MatchPlayer, ItemStack> weapons;
 
-    public ArmorMutation(Match match) {
-        super(match, true, ARMOR);
+    public ArmorMutation(Match match, Mutation mutation) {
+        super(match, mutation, true, ARMOR);
         this.kits.add(SWORD);
         weapons = new WeakHashMap<>();
     }

@@ -12,6 +12,7 @@ import tc.oc.pgm.mutation.command.MutationCommands;
 import tc.oc.pgm.mutation.types.MutationModule;
 import tc.oc.commons.core.random.ImmutableWeightedRandomChooser;
 
+import java.time.Duration;
 import java.util.*;
 import java.util.logging.Level;
 import java.util.stream.Stream;
@@ -57,6 +58,8 @@ public class MutationMatchModule extends MatchModule {
 
     @Inject private MutationQueue mutationQueue;
 
+    private Duration broadcastTime = Duration.ofMinutes(1);
+
     public MutationMatchModule(Match match, MutationOptions options) {
         super(match);
         this.chance = options.chance;
@@ -67,12 +70,24 @@ public class MutationMatchModule extends MatchModule {
         this.modules = new HashMap<>();
     }
 
+    public Duration broadcastTime() {
+        return broadcastTime;
+    }
+
+    public void broadcastTime(Duration duration) {
+        this.broadcastTime = duration;
+    }
+
     public final ImmutableMap<Mutation, Boolean> mutations() {
         return ImmutableMap.copyOf(mutations);
     }
 
     public final ImmutableSet<Mutation> mutationsActive() {
         return ImmutableSet.copyOf(Collections2.filter(mutations().keySet(), mutations::get));
+    }
+
+    public final ImmutableSet<Mutation> scenariosActive() {
+        return ImmutableSet.copyOf(Collections2.filter(mutations().keySet(), input -> mutations.get(input) && input.isScenario()));
     }
 
     public final ImmutableSet<Mutation> mutationsHistorical() {
@@ -135,7 +150,7 @@ public class MutationMatchModule extends MatchModule {
     public void mutate(Mutation mutation) throws Throwable {
         Class<? extends MutationModule> loader = mutation.loader();
         if(loader == null) return;
-        MutationModule module = modules.containsKey(loader) ? modules.get(loader) : loader.getDeclaredConstructor(Match.class).newInstance(match);
+        MutationModule module = modules.containsKey(loader) ? modules.get(loader) : loader.getDeclaredConstructor(Match.class, Mutation.class).newInstance(match, mutation);
         if(mutations.get(mutation)) {
             module.enable();
             modules.put(loader, module);

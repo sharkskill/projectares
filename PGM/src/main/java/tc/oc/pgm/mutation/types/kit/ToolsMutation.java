@@ -12,6 +12,7 @@ import tc.oc.pgm.kits.ItemKitApplicator;
 import tc.oc.pgm.match.Match;
 import tc.oc.pgm.match.MatchPlayer;
 import tc.oc.pgm.match.MatchState;
+import tc.oc.pgm.mutation.Mutation;
 import tc.oc.pgm.mutation.types.KitMutation;
 
 import java.util.ArrayList;
@@ -31,8 +32,8 @@ public class ToolsMutation extends KitMutation{
 
     final WeakHashMap<MatchPlayer, List<ItemStack>> toolsRemoved;
 
-    public ToolsMutation(Match match) {
-        super(match, true, TOOLS);
+    public ToolsMutation(Match match, Mutation mutation) {
+        super(match, mutation, true, TOOLS);
         toolsRemoved = new WeakHashMap<>();
     }
 

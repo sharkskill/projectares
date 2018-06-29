@@ -15,6 +15,7 @@ import tc.oc.pgm.kits.Kit;
 import tc.oc.pgm.kits.KitPlayerFacet;
 import tc.oc.pgm.match.Match;
 import tc.oc.pgm.match.MatchPlayer;
+import tc.oc.pgm.mutation.Mutation;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -37,8 +38,8 @@ public class KitMutation extends MutationModule.Impl {
     protected final List<KillReward> rewards;
     protected final boolean force;
 
-    public KitMutation(Match match, boolean force) {
-        super(match);
+    public KitMutation(Match match, Mutation mutation, boolean force) {
+        super(match, mutation);
         this.kits = new ArrayList<>();
         this.playerKits = new WeakHashMap<>();
         this.savedSlots = new WeakHashMap<>();
@@ -47,8 +48,8 @@ public class KitMutation extends MutationModule.Impl {
         this.force = force;
     }
 
-    public KitMutation(Match match, boolean force, Kit... kits) {
-        this(match, force);
+    public KitMutation(Match match, Mutation mutation, boolean force, Kit... kits) {
+        this(match, mutation, force);
         Stream.of(kits).forEachOrdered(this.kits::add);
     }
 

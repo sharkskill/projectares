@@ -20,6 +20,7 @@ import tc.oc.pgm.kits.FreeItemKit;
 import tc.oc.pgm.kits.Kit;
 import tc.oc.pgm.match.Match;
 import tc.oc.pgm.match.MatchPlayer;
+import tc.oc.pgm.mutation.Mutation;
 import tc.oc.pgm.mutation.types.EntityMutation;
 
 import javax.annotation.Nonnull;
@@ -48,8 +49,8 @@ public class EquestrianMutation extends EntityMutation<AbstractHorse> {
     final static WeightedRandomChooser<EntityType, Integer> TYPES = new ImmutableWeightedRandomChooser<>(TYPE_MAP);
     final static WeightedRandomChooser<Material, Integer> ARMOR = new ImmutableWeightedRandomChooser<>(ARMOR_MAP);
 
-    public EquestrianMutation(Match match) {
-        super(match, AbstractHorse.class, false);
+    public EquestrianMutation(Match match, Mutation mutation) {
+        super(match, mutation, AbstractHorse.class, false);
     }
 
     @Override

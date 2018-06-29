@@ -33,8 +33,8 @@ public class ElytraMutation extends KitMutation {
     final static ItemKit ELYTRA = new SlotItemKit(item(Material.ELYTRA), Slot.Armor.forType(ArmorType.CHESTPLATE));
     final static DoubleJumpKit JUMP = new DoubleJumpKit(true, 6f, Duration.ofSeconds(30), true);
 
-    public ElytraMutation(Match match) {
-        super(match, true, ELYTRA, JUMP);
+    public ElytraMutation(Match match, Mutation mutation) {
+        super(match, mutation, true, ELYTRA, JUMP);
     }
 
     @Override

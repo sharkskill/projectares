@@ -12,6 +12,7 @@ import tc.oc.commons.core.random.ImmutableWeightedRandomChooser;
 import tc.oc.commons.core.random.WeightedRandomChooser;
 import tc.oc.pgm.match.Match;
 import tc.oc.pgm.match.MatchPlayer;
+import tc.oc.pgm.mutation.Mutation;
 import tc.oc.pgm.mutation.types.KitMutation;
 
 import java.util.HashMap;
@@ -78,8 +79,8 @@ public class EnchantmentMutation extends KitMutation {
 
     Map<Entity, Map<ItemStack, Map<Enchantment, Integer>>> savedEnchantments;
 
-    public EnchantmentMutation(Match match) {
-        super(match, true);
+    public EnchantmentMutation(Match match, Mutation mutation) {
+        super(match, mutation, true);
         this.savedEnchantments = new WeakHashMap<>();
     }
 

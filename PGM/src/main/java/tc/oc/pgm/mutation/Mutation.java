@@ -17,6 +17,13 @@ import tc.oc.pgm.mutation.types.other.RageMutation;
 import tc.oc.pgm.mutation.types.targetable.ApocalypseMutation;
 import tc.oc.pgm.mutation.types.targetable.BomberMutation;
 import tc.oc.pgm.mutation.types.targetable.LightningMutation;
+import tc.oc.pgm.mutation.types.uhc.CutCleanScenario;
+import tc.oc.pgm.mutation.types.uhc.PortalDoorScenario;
+import tc.oc.pgm.mutation.types.uhc.NeophobiaScenario;
+import tc.oc.pgm.mutation.types.uhc.InsomniaScenario;
+import tc.oc.pgm.mutation.types.uhc.RodlessScenario;
+import tc.oc.pgm.mutation.types.uhc.SkyHighScenario;
+import tc.oc.pgm.mutation.types.uhc.TimeBombScenario;
 
 import java.util.stream.Stream;
 
@@ -42,23 +49,37 @@ public enum Mutation {
     BREAD      (BreadMutation.class,       Material.BREAD),
     BOAT       (BoatMutation.class,        Material.BOAT, false),
     TOOLS      (ToolsMutation.class,       Material.DIAMOND_PICKAXE),
-    APOCALYPSE (ApocalypseMutation.class,  Material.NETHER_STAR);
+    APOCALYPSE (ApocalypseMutation.class,  Material.NETHER_STAR),
+    CUTCLEAN   (CutCleanScenario.class,    Material.IRON_INGOT, false, true),
+    SKYHIGH    (SkyHighScenario.class,     Material.EYE_OF_ENDER, false, true),
+    TIMEBOMB   (TimeBombScenario.class,    Material.CHEST, false, true),
+    RODLESS    (RodlessScenario.class,     Material.FISHING_ROD, false, true),
+    NEOPHOBIA  (NeophobiaScenario.class,   Material.WORKBENCH, false, true),
+    PORTALDOOR (PortalDoorScenario.class,  Material.WOOD_DOOR, false, true),
+    INSOMNIA   (InsomniaScenario.class,    Material.BED, false, true);
 
     public static final String TYPE_KEY = "mutation.type.";
     public static final String DESCRIPTION_KEY = ".desc";
+    public static final String BROADCAST_KEY = ".broadcast";
 
     private final @Nullable Class<? extends MutationModule> loader;
     private final Material guiDisplay;
     private final boolean pollable;
+    private final boolean scenario;
 
     Mutation(@Nullable Class<? extends MutationModule> loader, Material guiDisplay) {
-        this(loader, guiDisplay, true);
+        this(loader, guiDisplay, true, false);
     }
 
     Mutation(@Nullable Class<? extends MutationModule> loader, Material guiDisplay, boolean pollable) {
+        this(loader, guiDisplay, pollable, false);
+    }
+
+    Mutation(@Nullable Class<? extends MutationModule> loader, Material guiDisplay, boolean pollable, boolean scenario) {
         this.loader = loader;
         this.guiDisplay = guiDisplay;
         this.pollable = pollable;
+        this.scenario = scenario;
     }
 
     public Class<? extends MutationModule> loader() {
@@ -73,12 +94,20 @@ public enum Mutation {
         return pollable;
     }
 
+    public boolean isScenario() {
+        return scenario;
+    }
+
     public String getName() {
         return TYPE_KEY + name().toLowerCase();
     }
 
     public String getDescription() {
         return getName() + DESCRIPTION_KEY;
+    }
+
+    public String getBroadcast() {
+        return getName() + BROADCAST_KEY;
     }
 
     public BaseComponent getComponent(ChatColor color) {

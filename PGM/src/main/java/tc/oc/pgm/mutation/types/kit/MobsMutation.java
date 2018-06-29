@@ -13,6 +13,7 @@ import tc.oc.pgm.kits.FreeItemKit;
 import tc.oc.pgm.kits.Kit;
 import tc.oc.pgm.match.Match;
 import tc.oc.pgm.match.MatchPlayer;
+import tc.oc.pgm.mutation.Mutation;
 import tc.oc.pgm.mutation.types.EntityMutation;
 
 import java.util.List;
@@ -37,8 +38,8 @@ public class MobsMutation extends EntityMutation<LivingEntity> {
 
     final static Range<Integer> AMOUNT = Range.closed(1, 3);
 
-    public MobsMutation(Match match) {
-        super(match, LivingEntity.class, false);
+    public MobsMutation(Match match, Mutation mutation) {
+        super(match, mutation, LivingEntity.class, false);
     }
 
     @Override

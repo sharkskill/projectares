@@ -8,6 +8,7 @@ import org.bukkit.event.EventPriority;
 import org.bukkit.event.vehicle.VehicleCreateEvent;
 import tc.oc.pgm.kits.FreeItemKit;
 import tc.oc.pgm.match.Match;
+import tc.oc.pgm.mutation.Mutation;
 import tc.oc.pgm.mutation.types.KitMutation;
 
 import java.util.HashSet;
@@ -19,8 +20,8 @@ public class BoatMutation extends KitMutation {
 
     final Set<Vehicle> vehicles;
 
-    public BoatMutation(Match match) {
-        super(match, true, BOAT);
+    public BoatMutation(Match match, Mutation mutation) {
+        super(match, mutation, true, BOAT);
         vehicles = new HashSet<Vehicle>();
     }
 

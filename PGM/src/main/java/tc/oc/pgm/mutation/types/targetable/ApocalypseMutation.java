@@ -21,6 +21,7 @@ import tc.oc.commons.core.random.WeightedRandomChooser;
 import tc.oc.pgm.match.Match;
 import tc.oc.pgm.match.MatchPlayer;
 import tc.oc.pgm.match.Repeatable;
+import tc.oc.pgm.mutation.Mutation;
 import tc.oc.pgm.mutation.types.EntityMutation;
 import tc.oc.pgm.mutation.types.kit.EnchantmentMutation;
 import tc.oc.pgm.mutation.types.TargetMutation;
@@ -115,8 +116,8 @@ public class ApocalypseMutation extends EntityMutation<LivingEntity> implements 
     Instant next; // next time to spawn entities
     final PointProviderAttributes attributes; // attributes to choosing random points
 
-    public ApocalypseMutation(Match match) {
-        super(match, LivingEntity.class, false);
+    public ApocalypseMutation(Match match, Mutation mutation) {
+        super(match, mutation, LivingEntity.class, false);
         this.attributes = new PointProviderAttributes(null, null, true, false);
     }
 
@@ -202,7 +203,7 @@ public class ApocalypseMutation extends EntityMutation<LivingEntity> implements 
     @Override
     public LivingEntity spawn(Location location, Class<LivingEntity> entityClass, @Nullable MatchPlayer owner) {
         LivingEntity entity = super.spawn(location, entityClass, owner);
-        EnchantmentMutation enchant = new EnchantmentMutation(match());
+        EnchantmentMutation enchant = new EnchantmentMutation(match(), mutation());
         EntityEquipment equipment = entity.getEquipment();
         entity.setVelocity(Vector.getRandom());
         ItemStack held = null;

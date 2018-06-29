@@ -27,6 +27,8 @@ public interface MutationModule extends Listener {
 
     Match match();
 
+    Mutation mutation();
+
     default void enable() {
         match().registerEventsAndRepeatables(this);
     }
@@ -51,16 +53,23 @@ public interface MutationModule extends Listener {
     abstract class Impl implements MutationModule {
 
         private final Match match;
+        private final Mutation mutation;
         private final Entropy entropy;
 
-        public Impl(final Match match) {
+        public Impl(final Match match, final Mutation mutation) {
             this.match = match;
+            this.mutation = mutation;
             this.entropy = new AdvancingEntropy(match.entropyForTick().randomLong());
         }
 
         @Override
         public Match match() {
             return match;
+        }
+
+        @Override
+        public Mutation mutation() {
+            return mutation;
         }
 
         @Override

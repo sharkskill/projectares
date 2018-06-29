@@ -5,6 +5,7 @@ import org.bukkit.Location;
 import org.bukkit.util.Vector;
 import tc.oc.pgm.match.Match;
 import tc.oc.pgm.match.MatchPlayer;
+import tc.oc.pgm.mutation.Mutation;
 import tc.oc.pgm.mutation.types.TargetMutation;
 
 import java.time.Duration;
@@ -16,8 +17,8 @@ public class LightningMutation extends TargetMutation.Impl {
     final static Range<Integer> TARGETS = Range.closed(2, 5);
     final static Range<Integer> STRIKES = Range.closed(1, 3);
 
-    public LightningMutation(Match match) {
-        super(match, FREQUENCY);
+    public LightningMutation(Match match, Mutation mutation) {
+        super(match, mutation, FREQUENCY);
     }
 
     @Override

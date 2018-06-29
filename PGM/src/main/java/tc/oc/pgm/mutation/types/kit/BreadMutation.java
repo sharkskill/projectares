@@ -22,6 +22,7 @@ import tc.oc.pgm.kits.FreeItemKit;
 import tc.oc.pgm.kits.Kit;
 import tc.oc.pgm.match.Match;
 import tc.oc.pgm.match.MatchPlayer;
+import tc.oc.pgm.mutation.Mutation;
 import tc.oc.pgm.mutation.types.KitMutation;
 
 import java.util.List;
@@ -62,8 +63,8 @@ public class BreadMutation extends KitMutation {
     final static Range<Integer> DURATION_RANGE = Range.closed(3, 10);
     final static Set<MatchPlayer> playersForBadBread = new WeakHashSet<>();
 
-    public BreadMutation(Match match) {
-        super(match, false);
+    public BreadMutation(Match match, Mutation mutation) {
+        super(match, mutation, false);
     }
 
     @Override

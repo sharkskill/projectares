@@ -5,6 +5,7 @@ import tc.oc.pgm.damage.DisableDamageMatchModule;
 import tc.oc.pgm.kits.Kit;
 import tc.oc.pgm.match.Match;
 import tc.oc.pgm.match.PlayerRelation;
+import tc.oc.pgm.mutation.Mutation;
 import tc.oc.pgm.mutation.types.KitMutation;
 
 import java.util.stream.Collectors;
@@ -17,8 +18,8 @@ public abstract class NoFallMutation extends KitMutation {
 
     Iterable<PlayerRelation> previous;
 
-    public NoFallMutation(Match match, boolean force, Kit... kits) {
-        super(match, force, kits);
+    public NoFallMutation(Match match, Mutation mutation, boolean force, Kit... kits) {
+        super(match, mutation, force, kits);
     }
 
     public DisableDamageMatchModule damage() {

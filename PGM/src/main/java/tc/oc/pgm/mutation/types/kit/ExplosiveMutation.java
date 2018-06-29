@@ -13,6 +13,7 @@ import tc.oc.pgm.kits.ItemKit;
 import tc.oc.pgm.kits.Kit;
 import tc.oc.pgm.match.Match;
 import tc.oc.pgm.match.MatchPlayer;
+import tc.oc.pgm.mutation.Mutation;
 import tc.oc.pgm.mutation.types.KitMutation;
 
 import java.util.List;
@@ -24,8 +25,8 @@ public class ExplosiveMutation extends KitMutation {
 
     final static Range<Integer> RADIUS = Range.openClosed(0, 4);
 
-    public ExplosiveMutation(Match match) {
-        super(match, false);
+    public ExplosiveMutation(Match match, Mutation mutation) {
+        super(match, mutation, false);
         this.rewards.add(new KillReward(TNT));
     }
 

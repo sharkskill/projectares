@@ -20,6 +20,7 @@ import tc.oc.pgm.kits.ItemKit;
 import tc.oc.pgm.kits.Kit;
 import tc.oc.pgm.match.Match;
 import tc.oc.pgm.match.MatchPlayer;
+import tc.oc.pgm.mutation.Mutation;
 import tc.oc.pgm.mutation.types.KitMutation;
 
 import java.util.List;
@@ -37,8 +38,8 @@ public class ProjectileMutation extends KitMutation {
     final static ItemKit BOW = new FreeItemKit(item(Material.BOW));
     final static ItemKit ARROWS = new FreeItemKit(item(Material.ARROW, 16));
 
-    public ProjectileMutation(Match match) {
-        super(match, false);
+    public ProjectileMutation(Match match, Mutation mutation) {
+        super(match, mutation, false);
         this.rewards.add(new KillReward(ARROWS));
     }
 

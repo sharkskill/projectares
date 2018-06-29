@@ -90,6 +90,29 @@ public class TeamCommands implements NestedCommands {
     }
 
     @Command(
+            aliases = {"invite"},
+            desc = "Invite a player to your team",
+            usage = "<player>",
+            min = 1,
+            max = 2
+    )
+    public void invite(CommandContext args, CommandSender sender) throws CommandException, SuggestException {
+        MatchPlayer player = CommandUtils.findSingleMatchPlayer(args, sender, 0);
+
+        if(args.argsLength() >= 2) {
+            String name = args.getString(1);
+            if(name.trim().toLowerCase().startsWith("obs")) {
+                player.getMatch().setPlayerParty(player, player.getMatch().getDefaultParty(), false);
+            } else {
+                Team team = utils.teamArgument(args, 1);
+                utils.module().forceJoin(player, team);
+            }
+        } else {
+            utils.module().forceJoin(player, null);
+        }
+    }
+
+    @Command(
             aliases = {"shuffle"},
             desc = "Shuffle the teams",
             min = 0,

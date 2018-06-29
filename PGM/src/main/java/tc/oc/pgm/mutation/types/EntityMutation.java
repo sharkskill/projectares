@@ -16,6 +16,7 @@ import tc.oc.pgm.events.MatchPlayerDeathEvent;
 import tc.oc.pgm.events.PlayerChangePartyEvent;
 import tc.oc.pgm.match.Match;
 import tc.oc.pgm.match.MatchPlayer;
+import tc.oc.pgm.mutation.Mutation;
 
 import javax.annotation.Nullable;
 import java.time.Instant;
@@ -40,8 +41,8 @@ public class EntityMutation<E extends Entity> extends KitMutation {
     final Map<MatchPlayer, Set<E>> entitiesByPlayer;
     final Map<E, MatchPlayer> playersByEntity;
 
-    public EntityMutation(Match match, Class<E> type, boolean force) {
-        super(match, force);
+    public EntityMutation(Match match, Mutation mutation, Class<E> type, boolean force) {
+        super(match, mutation, force);
         this.type = type;
         this.entities = new WeakHashSet<>();
         this.entitiesByTime = new WeakHashMap<>();

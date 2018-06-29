@@ -12,6 +12,7 @@ import tc.oc.commons.core.util.TimeUtils;
 import tc.oc.pgm.match.Match;
 import tc.oc.pgm.match.MatchPlayer;
 import tc.oc.pgm.match.Repeatable;
+import tc.oc.pgm.mutation.Mutation;
 import tc.oc.time.Time;
 
 /**
@@ -101,8 +102,8 @@ public interface TargetMutation extends MutationModule {
         Duration frequency;
         Instant next;
 
-        public Impl(Match match, Duration frequency) {
-            super(match);
+        public Impl(Match match, Mutation mutation, Duration frequency) {
+            super(match, mutation);
             this.frequency = frequency;
         }
 

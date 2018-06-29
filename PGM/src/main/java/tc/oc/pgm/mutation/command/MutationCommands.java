@@ -46,7 +46,7 @@ public class MutationCommands implements NestedCommands {
 
     public static class Parent implements Commands {
         @Command(
-                aliases = {"mutation", "mutations", "mutate", "mt"},
+                aliases = {"mutation", "mutations", "mutate", "mt", "scenario", "scenarios", "sc"},
                 desc = "Commands to manage match mutations.",
                 usage = "<list|enable|disable>",
                 min = 1,

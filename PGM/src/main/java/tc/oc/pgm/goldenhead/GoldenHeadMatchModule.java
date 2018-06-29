@@ -73,15 +73,17 @@ public class GoldenHeadMatchModule extends MatchModule implements Listener {
         }
     }
 
-//    @EventHandler(priority = EventPriority.MONITOR)
-//    public void onDeath(PlayerDeathEvent event) {
-//        Location location = event.getEntity().getLocation();
-//        location.getBlock().setType(Material.NETHER_FENCE);
-//        location.add(0, 1, 0);
-//        location.getBlock().setType(Material.SKULL);
-//        Skull skull = (Skull) location.getBlock().getState();
-//        skull.setSkullType(SkullType.PLAYER);
-//        skull.setRotation(BlockFace.NORTH);
-//        skull.setOwner(event.getEntity().getName());
-//    }
+    @EventHandler(priority = EventPriority.MONITOR)
+    public void onDeath(PlayerDeathEvent event) {
+        Location location = event.getEntity().getLocation();
+        location.getBlock().setType(Material.NETHER_FENCE);
+        location.add(0, 1, 0);
+        location.getBlock().setType(Material.SKULL);
+        location.getBlock().setData((byte) 1);
+        Skull skull = (Skull) location.getBlock().getState();
+        skull.setSkullType(SkullType.PLAYER);
+        skull.setRotation(BlockFace.NORTH);
+        skull.setOwner(event.getEntity().getName());
+        skull.update();
+    }
 }

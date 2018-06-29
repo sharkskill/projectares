@@ -16,6 +16,7 @@ import com.google.common.collect.ImmutableSet;
 import com.google.common.collect.Ordering;
 import net.md_5.bungee.api.ChatColor;
 import net.md_5.bungee.api.chat.BaseComponent;
+import net.md_5.bungee.api.chat.TranslatableComponent;
 import org.apache.commons.lang.StringUtils;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
@@ -35,6 +36,7 @@ import tc.oc.commons.core.chat.Component;
 import tc.oc.commons.core.formatting.PeriodFormats;
 import tc.oc.commons.core.scheduler.Task;
 import tc.oc.pgm.Config;
+import tc.oc.pgm.PGMTranslations;
 import tc.oc.pgm.blitz.LivesEvent;
 import tc.oc.pgm.destroyable.Destroyable;
 import tc.oc.pgm.events.FeatureChangeEvent;
@@ -59,6 +61,7 @@ import tc.oc.pgm.blitz.BlitzEvent;
 import tc.oc.pgm.blitz.BlitzMatchModule;
 import tc.oc.pgm.match.*;
 import tc.oc.pgm.modules.InfoModule;
+import tc.oc.pgm.mutation.MutationMatchModule;
 import tc.oc.pgm.playerstats.StatsUserFacet;
 import tc.oc.pgm.score.ScoreMatchModule;
 import tc.oc.pgm.spawns.events.ParticipantSpawnEvent;
@@ -410,7 +413,20 @@ public class SidebarMatchModule extends MatchModule implements Listener {
                 WorldBorderMatchModule borderMatchModule = getMatch().getMatchModule(WorldBorderMatchModule.class);
                 if (borderMatchModule != null) {
                     String borderSize = borderMatchModule.getAppliedBorder() != null ? Integer.toString((int)((borderMatchModule.getAppliedBorder().getSize()) / 2)) : "\u221e"; // ∞;
+
                     rows.add(ChatColor.YELLOW + "Border: " + ChatColor.WHITE + borderSize);
+                    rows.add("");
+                }
+
+                final MutationMatchModule mmm = getMatch().getMatchModule(MutationMatchModule.class);
+                if(mmm != null && mmm.scenariosActive().size() > 0 && viewingParty.getPlayers().size() > 0) {
+                    // Use the first player in a party for translations since they are party dependent
+                    MatchPlayer firstPlayer = viewingParty.getPlayers().iterator().next();
+
+                    rows.add(ChatColor.YELLOW + "Scenarios: ");
+
+                    mmm.scenariosActive().forEach(scenario -> rows.add("- " + PGMTranslations.t(scenario.getName(), firstPlayer)));
+                    rows.add("");
                 }
             } else {
                 // Scores/Blitz

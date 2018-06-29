@@ -6,6 +6,7 @@ import org.bukkit.entity.TNTPrimed;
 import org.bukkit.util.Vector;
 import tc.oc.pgm.match.Match;
 import tc.oc.pgm.match.MatchPlayer;
+import tc.oc.pgm.mutation.Mutation;
 import tc.oc.pgm.mutation.types.EntityMutation;
 import tc.oc.pgm.mutation.types.TargetMutation;
 
@@ -22,8 +23,8 @@ public class BomberMutation extends EntityMutation<TNTPrimed> implements TargetM
 
     Instant next;
 
-    public BomberMutation(Match match) {
-        super(match, TNTPrimed.class, false);
+    public BomberMutation(Match match, Mutation mutation) {
+        super(match, mutation, TNTPrimed.class, false);
     }
 
     @Override

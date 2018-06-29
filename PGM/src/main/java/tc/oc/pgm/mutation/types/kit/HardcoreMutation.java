@@ -6,6 +6,7 @@ import tc.oc.pgm.killreward.KillReward;
 import tc.oc.pgm.kits.FreeItemKit;
 import tc.oc.pgm.kits.ItemKit;
 import tc.oc.pgm.match.Match;
+import tc.oc.pgm.mutation.Mutation;
 import tc.oc.pgm.mutation.types.KitMutation;
 import tc.oc.pgm.shield.ShieldKit;
 import tc.oc.pgm.shield.ShieldParameters;
@@ -18,8 +19,8 @@ public class HardcoreMutation extends KitMutation {
 
     String previous; // Stores the previous game rule setting
 
-    public HardcoreMutation(Match match) {
-        super(match, false);
+    public HardcoreMutation(Match match, Mutation mutation) {
+        super(match, mutation, false);
         this.kits.add(SHIELD);
         this.rewards.add(new KillReward(APPLE));
     }

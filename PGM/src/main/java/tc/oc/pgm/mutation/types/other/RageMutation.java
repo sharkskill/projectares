@@ -7,12 +7,13 @@ import org.bukkit.event.EventPriority;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import tc.oc.commons.bukkit.item.ItemUtils;
 import tc.oc.pgm.match.Match;
+import tc.oc.pgm.mutation.Mutation;
 import tc.oc.pgm.mutation.types.MutationModule;
 
 public class RageMutation extends MutationModule.Impl {
 
-    public RageMutation(Match match) {
-        super(match);
+    public RageMutation(Match match, Mutation mutation) {
+        super(match, mutation);
     }
 
     @EventHandler(priority = EventPriority.HIGHEST, ignoreCancelled = true)

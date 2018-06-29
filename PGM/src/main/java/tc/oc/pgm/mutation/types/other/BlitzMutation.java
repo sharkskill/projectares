@@ -8,6 +8,7 @@ import tc.oc.pgm.blitz.BlitzProperties;
 import tc.oc.pgm.blitz.Lives;
 import tc.oc.pgm.match.Match;
 import tc.oc.pgm.match.MatchScope;
+import tc.oc.pgm.mutation.Mutation;
 import tc.oc.pgm.mutation.types.MutationModule;
 import tc.oc.pgm.teams.TeamMatchModule;
 
@@ -16,8 +17,8 @@ public class BlitzMutation extends MutationModule.Impl {
     final static Range<Integer> LIVES = Range.closed(1, 3);
     final static Fraction TEAM_CHANCE = Fraction.ONE_QUARTER;
 
-    public BlitzMutation(Match match) {
-        super(match);
+    public BlitzMutation(Match match, Mutation mutation) {
+        super(match, mutation);
     }
 
     @Override

@@ -13,6 +13,7 @@ import tc.oc.pgm.kits.FreeItemKit;
 import tc.oc.pgm.kits.Kit;
 import tc.oc.pgm.match.Match;
 import tc.oc.pgm.match.MatchPlayer;
+import tc.oc.pgm.mutation.Mutation;
 import tc.oc.pgm.mutation.types.KitMutation;
 
 import java.util.List;
@@ -62,8 +63,8 @@ public class PotionMutation extends KitMutation {
     final static Range<Integer> AMOUNT_RANGE = Range.closed(1, 3);
     final static Range<Integer> AMPLIFIER_RANGE = Range.closed(0, 2);
 
-    public PotionMutation(Match match) {
-        super(match, false);
+    public PotionMutation(Match match, Mutation mutation) {
+        super(match, mutation, false);
     }
 
     @Override

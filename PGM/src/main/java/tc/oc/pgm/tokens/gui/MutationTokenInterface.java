@@ -31,7 +31,7 @@ public class MutationTokenInterface extends SinglePageInterface {
     public void setButtons() {
         List<Button> buttons = new ArrayList<>();
         for (Mutation mutation : Mutation.values()) {
-            if (mutation.isPollable()) {
+            if (mutation.isPollable() && !mutation.isScenario() ) {
                 buttons.add(getMutationButton(mutation));
             }
         }
