@@ -31,7 +31,7 @@ public class ChunkLoaderListener implements Listener {
 
     @EventHandler
     public void onChunkUnload(ChunkUnloadEvent event) {
-        if(options.keepChunksLoaded() && Comparables.lessThan(this.match.runningTime(), Duration.ofMinutes(1))) {
+        if(options.keepChunksLoaded() && Comparables.lessThan(this.match.runningTime(), Duration.ofMinutes(2))) {
             event.setCancelled(true);
         }
     }

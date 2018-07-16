@@ -1,7 +1,6 @@
 package tc.oc.pgm.mutation.types.uhc;
 
 import net.md_5.bungee.api.ChatColor;
-import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
@@ -9,7 +8,6 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.event.block.BlockFromToEvent;
-import org.bukkit.event.block.BlockMultiPlaceEvent;
 import org.bukkit.event.block.BlockPlaceEvent;
 import org.bukkit.event.player.PlayerBucketEmptyEvent;
 import org.bukkit.event.player.PlayerMoveEvent;
@@ -19,12 +17,11 @@ import tc.oc.commons.bukkit.util.BlockUtils;
 import tc.oc.commons.bukkit.util.WorldBorderUtils;
 import tc.oc.commons.core.formatting.PeriodFormats;
 import tc.oc.commons.core.util.Comparables;
-import tc.oc.pgm.PGMTranslations;
-import tc.oc.pgm.events.BlockTransformEvent;
 import tc.oc.pgm.match.Match;
 import tc.oc.pgm.match.MatchPlayer;
 import tc.oc.pgm.mutation.Mutation;
 import tc.oc.pgm.mutation.types.UHCMutation;
+import tc.oc.pgm.worldborder.WorldBorderMatchModule;
 
 import java.time.Duration;
 import java.util.ArrayList;
@@ -39,13 +36,17 @@ public class PortalDoorScenario extends UHCMutation.Impl {
     private final static int BANNED_RADIUS = 1;
     private final static int FLOWING_RADIUS = 3;
     private final static Duration DOOR_COOLDOWN = Duration.ofSeconds(15);
+    private final static int DOOR_DAMAGE_COUNT = 2;
+    private final static int DAMAGE = 1;
 
     private List<Material> doors;
     private List<Material> fallingBlocks;
     private List<Material> bannedBlocks;
+
     private List<Location> placedDoors;
 
     private Map<UUID, Duration> cooldowns;
+    private Map<UUID, Integer> doorCount;
 
     public PortalDoorScenario(Match match, Mutation mutation) {
         super(match, mutation);
@@ -79,13 +80,15 @@ public class PortalDoorScenario extends UHCMutation.Impl {
         placedDoors = new ArrayList<>();
 
         cooldowns = new HashMap<>();
+
+        doorCount = new HashMap<>();
     }
 
     @EventHandler(priority = EventPriority.HIGH)
     public void onPlayerMove(BlockPlaceEvent event) {
         if (placedDoors.size() > 0) {
+            int y = 0;
             for (int x = -BANNED_RADIUS; x <= BANNED_RADIUS; x++) {
-                int y = 0;
                 for (int z = -BANNED_RADIUS; z <= BANNED_RADIUS; z++) {
                     if (x == 0 && z == 0) {
                         continue;
@@ -107,10 +110,19 @@ public class PortalDoorScenario extends UHCMutation.Impl {
                 return;
             }
 
+
+            UUID uuid = event.getPlayer().getUniqueId();
             placedDoors.add(location);
+
+            doorCount.put(uuid, doorCount.containsKey(uuid) ? doorCount.get(uuid) + 1 : 1);
+
+            if (doorCount.get(uuid) >= DOOR_DAMAGE_COUNT) {
+                damage(event.getPlayer(), event.getPlayer().getHealth() - DAMAGE);
+            }
+
             MatchPlayer player = match().getPlayer(event.getPlayer());
             if (player != null) {
-                player.sendMessage(message("mutation.type.doorportal.created"));
+                player.sendMessage(message("mutation.type.portaldoor.created"));
             }
         }
     }
@@ -170,8 +182,9 @@ public class PortalDoorScenario extends UHCMutation.Impl {
         UUID uuid = event.getPlayer().getUniqueId();
         if (placedDoors.size() > 1 && inDoor(event.getTo()) && !inDoor(event.getFrom())) {
             if (!cooldowns.containsKey(uuid)) {
-                cooldowns.put(uuid, match().runningTime());
-                teleport(event.getActor(), event.getTo());
+                if (teleport(event.getActor(), event.getTo())) {
+                    cooldowns.put(uuid, match().runningTime());
+                }
                 return;
             }
 
@@ -179,18 +192,19 @@ public class PortalDoorScenario extends UHCMutation.Impl {
             Duration currentTime = match().runningTime();
             Duration difference = currentTime.minus(cooldown);
             if (Comparables.greaterOrEqual(difference, DOOR_COOLDOWN)) {
-                cooldowns.put(uuid, match().runningTime());
-                teleport(event.getActor(), event.getTo());
+                if (teleport(event.getActor(), event.getTo())) {
+                    cooldowns.put(uuid, match().runningTime());
+                }
             } else {
                 MatchPlayer player = match().getPlayer(event.getPlayer());
                 if (player != null) {
-                    player.sendMessage(message("mutation.type.doorportal.cooldown", ChatColor.RED, PeriodFormats.formatColons(DOOR_COOLDOWN.minus(difference))));
+                    player.sendMessage(message("mutation.type.portaldoor.cooldown", ChatColor.RED, PeriodFormats.formatColons(DOOR_COOLDOWN.minus(difference))));
                 }
             }
         }
     }
 
-    private void teleport(Player player, Location to) {
+    private boolean teleport(Player player, Location to) {
         int tries = 100;
         while (tries > 0) {
             tries--;
@@ -202,14 +216,20 @@ public class PortalDoorScenario extends UHCMutation.Impl {
                     location.getBlockZ() == to.getBlockZ()) {
                 continue;
             }
-            if (!WorldBorderUtils.isInsideBorder(to)) {
-                continue;
+
+            WorldBorderMatchModule borderMatchModule = match().getMatchModule(WorldBorderMatchModule.class);
+            if (borderMatchModule != null && borderMatchModule.getAppliedBorder() != null) {
+                if (!WorldBorderUtils.isInsideBorder(borderMatchModule.getAppliedBorder().getCenter(), borderMatchModule.getAppliedBorder().getSize(), location)) {
+                    continue;
+                }
             }
+
 
             player.teleport(BlockUtils.base(location));
             player.addPotionEffect(new PotionEffect(PotionEffectType.DAMAGE_RESISTANCE, 20 * 3, 1));
-            return;
+            return true;
         }
+        return false;
     }
 
     private boolean inDoor(Location location) {

@@ -37,8 +37,7 @@ public class InsomniaScenario extends UHCMutation.Impl {
                 night &&
                 !sleptPlayers.contains(event.getPlayer().getUniqueId())) {
             if (sleptPlayers.size() == 0) {
-                event.getPlayer().damage(0);
-                event.getPlayer().setHealth(event.getPlayer().getHealth() - DAMAGE);
+                damage(event.getPlayer(), event.getPlayer().getHealth() - DAMAGE);
                 MatchPlayer player = match().getPlayer(event.getPlayer());
                 if (player != null) {
                     player.sendMessage(message("mutation.type.paranoia.damage"));
@@ -50,8 +49,7 @@ public class InsomniaScenario extends UHCMutation.Impl {
                     if (sleptPlayers.contains(player.getUniqueId())) {
                         continue;
                     }
-                    player.getBukkit().damage(0);
-                    player.getBukkit().setHealth(0);
+                    damage(player.getBukkit(), 0);
                     match().sendMessage(message("mutation.type.paranoia.last"));
                 }
             } else {
@@ -74,8 +72,7 @@ public class InsomniaScenario extends UHCMutation.Impl {
             if (!night) {
                 for (MatchPlayer player : match().getParticipatingPlayers()) {
                     if (!sleptPlayers.contains(player.getUniqueId())) {
-                        player.getBukkit().setHealth(0);
-                        player.getBukkit().damage(0);
+                        damage(player.getBukkit(), 0);
                     }
                 }
                 sleptPlayers.clear();

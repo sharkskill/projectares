@@ -1,5 +1,6 @@
 package tc.oc.pgm.broadcast;
 
+import java.time.Duration;
 import java.util.List;
 import javax.inject.Inject;
 
@@ -47,7 +48,7 @@ public class BroadcastScheduler implements Listener {
 
         BroadcastTask(Broadcast broadcast) {
             this.broadcast = broadcast;
-            this.task = scheduler.createRepeatingTask(broadcast.after, broadcast.every, this::send);
+            this.task = scheduler.createRepeatingTask(Duration.ofSeconds(1), Duration.ofSeconds(1), this::send);
         }
 
         void cancel() {
@@ -55,13 +56,21 @@ public class BroadcastScheduler implements Listener {
         }
 
         void send() {
-            final Audience audience = audiences.filter(broadcast.filter);
-            audience.sendMessage(broadcast.getFormattedMessage());
-            audience.playSound(broadcast.getSound());
+            if (broadcast.after.minus(scheduler.match.runningTime()).isNegative() || broadcast.after.minus(scheduler.match.runningTime()).isZero()) {
+                final Audience audience = audiences.filter(broadcast.filter);
+                audience.sendMessage(broadcast.getFormattedMessage());
+                audience.playSound(broadcast.getSound());
 
-            if(++count >= broadcast.count) {
                 cancel();
             }
+
+//            final Audience audience = audiences.filter(broadcast.filter);
+//            audience.sendMessage(broadcast.getFormattedMessage());
+//            audience.playSound(broadcast.getSound());
+//
+//            if(++count >= broadcast.count) {
+//                cancel();
+//            }
         }
     }
 }

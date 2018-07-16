@@ -46,6 +46,10 @@ public class WorldBorder {
         this.after = after;
     }
 
+    public Vector getCenter() {
+        return center;
+    }
+
     public double getSize() {
         return size;
     }

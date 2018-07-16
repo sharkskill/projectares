@@ -18,6 +18,7 @@ import tc.oc.pgm.mutation.types.targetable.ApocalypseMutation;
 import tc.oc.pgm.mutation.types.targetable.BomberMutation;
 import tc.oc.pgm.mutation.types.targetable.LightningMutation;
 import tc.oc.pgm.mutation.types.uhc.CutCleanScenario;
+import tc.oc.pgm.mutation.types.uhc.MoblessScenario;
 import tc.oc.pgm.mutation.types.uhc.PortalDoorScenario;
 import tc.oc.pgm.mutation.types.uhc.NeophobiaScenario;
 import tc.oc.pgm.mutation.types.uhc.InsomniaScenario;
@@ -56,7 +57,8 @@ public enum Mutation {
     RODLESS    (RodlessScenario.class,     Material.FISHING_ROD, false, true),
     NEOPHOBIA  (NeophobiaScenario.class,   Material.WORKBENCH, false, true),
     PORTALDOOR (PortalDoorScenario.class,  Material.WOOD_DOOR, false, true),
-    INSOMNIA   (InsomniaScenario.class,    Material.BED, false, true);
+    INSOMNIA   (InsomniaScenario.class,    Material.BED, false, true),
+    MOBLESS    (MoblessScenario.class,     Material.MONSTER_EGG, false, true);
 
     public static final String TYPE_KEY = "mutation.type.";
     public static final String DESCRIPTION_KEY = ".desc";

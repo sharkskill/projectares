@@ -141,7 +141,7 @@ public class WorldBorderMatchModule extends MatchModule implements Listener {
 
         for(WorldBorder border : borders) {
             if (border.broadcast && border.after != null) {
-                Duration durationUntilShrink = border.after.minus(getMatch().runningTime());
+                Duration durationUntilShrink = border.after.minus(getMatch().runningTime()).plus(Duration.ofSeconds(1));
                 if (!durationUntilShrink.isNegative() && isBroadcastTime(durationUntilShrink)) {
                     BaseComponent alert = new Component(ChatColor.GRAY, ChatColor.BOLD)
                             .extra("[")

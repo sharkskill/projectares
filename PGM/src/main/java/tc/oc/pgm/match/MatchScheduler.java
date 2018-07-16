@@ -27,7 +27,7 @@ import tc.oc.commons.core.util.ThrowingRunnable;
  */
 public class MatchScheduler extends Scheduler {
 
-    private final Match match;
+    public final Match match;
     private final MatchScope scope;
     private final Map<Object, Set<Task>> tasksByInstance = new IdentityHashMap<>();
 

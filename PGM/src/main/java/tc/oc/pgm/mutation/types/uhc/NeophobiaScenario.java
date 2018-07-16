@@ -29,8 +29,7 @@ public class NeophobiaScenario extends UHCMutation.Impl {
         if (!craftedItems.contains(type)) {
             craftedItems.add(type);
 
-            event.getActor().damage(0);
-            event.getActor().setHealth(event.getActor().getHealth() - 1);
+            damage(event.getActor(), event.getActor().getHealth() - 1);
         }
     }
 

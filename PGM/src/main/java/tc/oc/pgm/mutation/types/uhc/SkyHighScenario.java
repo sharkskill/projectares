@@ -47,8 +47,7 @@ public class SkyHighScenario extends UHCMutation.Impl implements TargetMutation 
         players.forEach(player -> {
             Location location = player.getLocation();
             if (location.getY() < MAX_HEIGHT) {
-                player.getBukkit().damage(0);
-                player.getBukkit().setHealth(player.getBukkit().getHealth() - 1);
+                damage(player.getBukkit(), player.getBukkit().getHealth() - 1);
             }
         });
 
