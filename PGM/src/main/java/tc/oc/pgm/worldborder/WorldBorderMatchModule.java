@@ -24,6 +24,7 @@ import tc.oc.commons.core.chat.Component;
 import tc.oc.commons.core.formatting.PeriodFormats;
 import tc.oc.commons.core.util.DefaultMapAdapter;
 import tc.oc.pgm.events.ListenerScope;
+import tc.oc.pgm.events.WorldBorderChangeEvent;
 import tc.oc.pgm.goals.events.GoalEvent;
 import tc.oc.pgm.match.Match;
 import tc.oc.pgm.match.MatchModule;
@@ -110,12 +111,15 @@ public class WorldBorderMatchModule extends MatchModule implements Listener {
             match.sendMessage(alert);
         }
 
+
         org.bukkit.WorldBorder existingBorder = match.getWorld().getWorldBorder();
         double oldSize = appliedBorder != null ? appliedBorder.size : existingBorder.getSize();
         border.apply(match, existingBorder, appliedBorder != null, oldSize);
         appliedBorder = border;
         bedrock = appliedBorder.bedrock;
         appliedAt = getMatch().runningTime();
+
+        match.callEvent(new WorldBorderChangeEvent());
     }
 
     private void reset() {
@@ -147,7 +151,7 @@ public class WorldBorderMatchModule extends MatchModule implements Listener {
                             .extra("[")
                             .extra(new Component(new TranslatableComponent("prefixed.alert"), ChatColor.YELLOW))
                             .extra("] ")
-                            .extra((new Component(new TranslatableComponent("match.worldborder.shrinking", PeriodFormats.formatColons(durationUntilShrink)), ChatColor.AQUA)).bold(false));
+                            .extra((new Component(new TranslatableComponent("match.worldborder.shrinking", PeriodFormats.formatColons(durationUntilShrink), border.getSize()/2), ChatColor.AQUA)).bold(false));
                     match.sendMessage(alert);
                 }
             }

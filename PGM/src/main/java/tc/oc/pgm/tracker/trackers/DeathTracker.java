@@ -1,17 +1,25 @@
 package tc.oc.pgm.tracker.trackers;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.logging.Logger;
 import javax.annotation.Nullable;
 import javax.inject.Inject;
 
+import org.bukkit.Location;
+import org.bukkit.Material;
+import org.bukkit.block.Chest;
+import org.bukkit.entity.EntityType;
+import org.bukkit.entity.TNTPrimed;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.entity.EntityDamageEvent;
 import org.bukkit.event.entity.PlayerDeathEvent;
+import org.bukkit.inventory.ItemStack;
 import tc.oc.commons.core.logging.Loggers;
+import tc.oc.commons.core.util.Comparables;
 import tc.oc.pgm.events.ListenerScope;
 import tc.oc.pgm.events.MatchPlayerDeathEvent;
 import tc.oc.pgm.match.Match;
@@ -75,6 +83,22 @@ public class DeathTracker implements Listener {
         DamageInfo info = getLastDamage(victim);
         if(info == null) info = new GenericDamageInfo(EntityDamageEvent.DamageCause.CUSTOM);
 
-        match.callEvent(new MatchPlayerDeathEvent(event, victim, info, CombatLogTracker.isCombatLog(event)));
+        boolean predicted = CombatLogTracker.isCombatLog(event);
+
+        match.callEvent(new MatchPlayerDeathEvent(event, victim, info, predicted));
+
+        if (predicted) {
+            List<ItemStack> drops = event.getDrops();
+            Location killedLocation = event.getEntity().getLocation();
+
+            killedLocation.getBlock().setType(Material.CHEST);
+
+            killedLocation = killedLocation.add(0, 0, -1);
+            killedLocation.getBlock().setType(Material.CHEST);
+
+            Chest chest = (Chest) killedLocation.getBlock().getState();
+            drops.forEach(drop -> chest.getBlockInventory().addItem(drop));
+            drops.clear();
+        }
     }
 }

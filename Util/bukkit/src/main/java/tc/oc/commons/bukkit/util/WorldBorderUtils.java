@@ -1,6 +1,7 @@
 package tc.oc.commons.bukkit.util;
 
 import org.bukkit.Location;
+import org.bukkit.Material;
 import org.bukkit.WorldBorder;
 import org.bukkit.util.Vector;
 
@@ -83,23 +84,35 @@ public class WorldBorderUtils {
         boolean moved = false;
 
         if(location.getX() < xMin) {
-            location.setX(xMin);
+            location.setX(xMin * 0.97);
             moved = true;
         }
 
         if(location.getX() > xMax) {
-            location.setX(xMax);
+            location.setX(xMax * 0.97);
             moved = true;
         }
 
         if(location.getZ() < zMin) {
-            location.setZ(zMin);
+            location.setZ(zMin * 0.97);
             moved = true;
         }
 
         if(location.getZ() > zMax) {
-            location.setZ(zMax);
+            location.setZ(zMax * 0.97);
             moved = true;
+        }
+
+        if (moved){
+            for (int x = -1; x <= 1; x++) {
+                for (int y = 0; y <= 1; y++) {
+                    for (int z = -1; z <= 1; z++) {
+                        Location newLocation = location.clone();
+                        newLocation.add(x, y, z);
+                        newLocation.getBlock().setType(Material.AIR);
+                    }
+                }
+            }
         }
 
         return moved;

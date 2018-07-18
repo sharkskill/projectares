@@ -8,9 +8,12 @@ import org.bukkit.Server;
 import org.bukkit.SkullType;
 import org.bukkit.block.BlockFace;
 import org.bukkit.block.Skull;
+import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
+import org.bukkit.event.block.BlockBreakEvent;
+import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.entity.PlayerDeathEvent;
 import org.bukkit.event.player.PlayerItemConsumeEvent;
 import org.bukkit.inventory.ItemStack;
@@ -19,12 +22,20 @@ import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.material.MaterialData;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
+import tc.oc.api.util.Permissions;
+import tc.oc.commons.core.util.Comparables;
 import tc.oc.pgm.events.ListenerScope;
+import tc.oc.pgm.events.PlayerBlockTransformEvent;
 import tc.oc.pgm.match.Match;
 import tc.oc.pgm.match.MatchModule;
+import tc.oc.pgm.match.MatchPlayer;
 import tc.oc.pgm.match.MatchScope;
 
 import javax.inject.Inject;
+import java.time.Duration;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.UUID;
 
 @ListenerScope(MatchScope.RUNNING)
 public class GoldenHeadMatchModule extends MatchModule implements Listener {
@@ -72,6 +83,56 @@ public class GoldenHeadMatchModule extends MatchModule implements Listener {
             event.getActor().addPotionEffect(new PotionEffect(PotionEffectType.REGENERATION, 20 * 10, 1));
         }
     }
+
+    private Map<UUID, Integer> xray = new HashMap<>();
+
+    @EventHandler(priority = EventPriority.MONITOR)
+    public void onItemConsume(BlockBreakEvent event) {
+        if (!event.getBlock().getType().equals(Material.DIAMOND_ORE)) {
+            return;
+        }
+        UUID uuid = event.getPlayer().getUniqueId();
+        xray.put(uuid, xray.containsKey(uuid) ? xray.get(uuid) + 1 : 1);
+        if (xray.get(uuid) >= 16) {
+            for (MatchPlayer player : match.getObservingPlayers()) {
+                if (player.getBukkit().hasPermission(Permissions.STAFF)) {
+                    player.sendMessage(ChatColor.RED + "Warning: " + event.getPlayer().getDisplayName() + " has mined " + xray.get(uuid) + " diamonds");
+                }
+            }
+        }
+    }
+
+    private Map<UUID, Duration> fights = new HashMap<UUID, Duration>();
+
+//    @EventHandler(priority = EventPriority.MONITOR)
+//    public void onFight(EntityDamageByEntityEvent event) {
+//        if (event.getDamager() instanceof Player && event.getEntity() instanceof Player) {
+//            if (!fights.containsKey(event.getDamager().getUniqueId())) {
+//                if (!fights.containsKey(event.getEntity().getUniqueId())) {
+//                    fights.put(event.getDamager().getUniqueId(), match.runningTime());
+//                    fights.put(event.getEntity().getUniqueId(), match.runningTime());
+//                    for (MatchPlayer player : match.getObservingPlayers()) {
+//                        player.sendMessage(ChatColor.YELLOW + "A fight has started between " + ((Player) event.getDamager()).getDisplayName() + " and " + ((Player) event.getEntity()).getDisplayName());
+//                    }
+//                    return;
+//                }
+//                Duration difference = match.runningTime().minus(fights.get(event.getEntity().getUniqueId()));
+//                if (Comparables.greaterOrEqual(difference, Duration.ofMinutes(1))) {
+//                    for (MatchPlayer player : match.getObservingPlayers()) {
+//                        player.sendMessage(ChatColor.YELLOW + "A fight has started between " + ((Player) event.getDamager()).getDisplayName() + " and " + ((Player) event.getEntity()).getDisplayName());
+//                    }
+//                }
+//                return;
+//            }
+//            Duration difference = match.runningTime().minus(fights.get(event.getEntity().getUniqueId()));
+//            if (Comparables.greaterOrEqual(difference, Duration.ofMinutes(1))) {
+//                for (MatchPlayer player : match.getObservingPlayers()) {
+//                    player.sendMessage(ChatColor.YELLOW + "A fight has started between " + ((Player) event.getDamager()).getDisplayName() + " and " + ((Player) event.getEntity()).getDisplayName());
+//                }
+//                return;
+//            }
+//        }
+//    }
 
     @EventHandler(priority = EventPriority.MONITOR)
     public void onDeath(PlayerDeathEvent event) {
