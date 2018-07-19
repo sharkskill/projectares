@@ -112,6 +112,9 @@ public class TeamCommands implements NestedCommands {
         if (inviter.equals(invitee)) {
             throw new CommandException(PGMTranslations.get().t("command.team.invite.self", sender));
         }
+        if (inviter.getMatch().hasStarted()) {
+            throw new CommandException(PGMTranslations.get().t("command.team.invite.started", sender));
+        }
         Competitor team = inviter.getCompetitor();
         if (!invitee.isOnline()) {
             throw new CommandException(PGMTranslations.get().t("command.team.invite.offline", sender));
@@ -152,6 +155,9 @@ public class TeamCommands implements NestedCommands {
         MatchPlayer acceptee = CommandUtils.senderToMatchPlayer(sender);
         MatchPlayer accepter = CommandUtils.findSingleMatchPlayer(args, sender, 0);
 
+        if (acceptee.getMatch().hasStarted()) {
+            throw new CommandException(PGMTranslations.get().t("command.team.accept.started", sender));
+        }
         if (acceptee.equals(accepter)) {
             throw new CommandException(PGMTranslations.get().t("command.team.accept.self", sender));
         }
