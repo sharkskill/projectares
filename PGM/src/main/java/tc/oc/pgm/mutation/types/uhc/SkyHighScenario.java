@@ -1,6 +1,8 @@
 package tc.oc.pgm.mutation.types.uhc;
 
 import org.bukkit.Location;
+import org.bukkit.Material;
+import org.bukkit.inventory.ItemStack;
 import tc.oc.commons.core.formatting.PeriodFormats;
 import tc.oc.commons.core.util.Comparables;
 import tc.oc.pgm.match.Match;
@@ -23,6 +25,18 @@ public class SkyHighScenario extends UHCMutation.Impl implements TargetMutation 
 
     public SkyHighScenario(Match match, Mutation mutation) {
         super(match, mutation);
+    }
+
+    @Override
+    public ItemStack[] items() {
+        return new ItemStack[]{
+                new ItemStack(Material.HARD_CLAY, 64),
+                new ItemStack(Material.HARD_CLAY, 64),
+                new ItemStack(Material.HARD_CLAY, 64),
+                new ItemStack(Material.SNOW_BLOCK, 64),
+                new ItemStack(Material.SNOW_BLOCK, 64),
+                new ItemStack(Material.SNOW_BLOCK, 64)
+        };
     }
 
     @Override

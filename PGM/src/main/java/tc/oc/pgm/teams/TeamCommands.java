@@ -3,8 +3,11 @@ package tc.oc.pgm.teams;
 import java.time.Duration;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
+import java.util.UUID;
 import javax.inject.Inject;
 import javax.inject.Singleton;
 
@@ -24,9 +27,11 @@ import tc.oc.commons.core.commands.NestedCommands;
 import tc.oc.commons.core.commands.TranslatableCommandException;
 import tc.oc.pgm.PGMTranslations;
 import tc.oc.pgm.commands.CommandUtils;
+import tc.oc.pgm.match.Competitor;
 import tc.oc.pgm.match.Match;
 import tc.oc.pgm.match.MatchPlayer;
 import tc.oc.pgm.match.MatchScope;
+import tc.oc.pgm.match.Party;
 import tc.oc.pgm.match.inject.MatchScoped;
 
 @MatchScoped
@@ -92,109 +97,91 @@ public class TeamCommands implements NestedCommands {
         }
     }
 
-//    @Command(
-//            aliases = {"invite"},
-//            desc = "Invite a player to your team",
-//            usage = "<player>",
-//            min = 1,
-//            max = 1
-//    )
-//    public void invite(CommandContext args, CommandSender sender) throws CommandException, SuggestException {
-//        MatchPlayer inviter = CommandUtils.senderToMatchPlayer(sender);
-//        MatchPlayer invitee = CommandUtils.findSingleMatchPlayer(args, sender, 0);
-//
-//        String name = inviter.getParty().getName();
-//        if(name.trim().toLowerCase().startsWith("obs")) {
-//            throw new CommandException(PGMTranslations.get().t("command.team.invite.obs", sender));
-//        } else {
-//            Team team = utils.teamArgument(args, 1);
-////            utils.module().forceJoin(player, team);
-//        }
-//    }
-//
-//    @Command(
-//            aliases = {"accept"},
-//            desc = "Accept an invitation to join a team",
-//            usage = "<player>",
-//            min = 1,
-//            max = 1
-//    )
-//    public void accept(CommandContext args, CommandSender sender) throws CommandException, SuggestException {
-//        MatchPlayer inviter = CommandUtils.senderToMatchPlayer(sender);
-//        MatchPlayer invitee = CommandUtils.findSingleMatchPlayer(args, sender, 0);
-//
-//        List<String> strings = new ArrayList<>();
-//        strings.add("minecraft:tp -348.5 100 403.5");
-//        strings.add("minecraft:tp -1049.5 100 -590.5");
-//        strings.add("minecraft:tp 536.5 100 575.5");
-//        strings.add("minecraft:tp -216.5 100 -26.5");
-//        strings.add("minecraft:tp -999.5 100 1000.5");
-//        strings.add("minecraft:tp 1450.5 100 -370.5");
-//        strings.add("minecraft:tp 223.5 100 -1246.5");
-//        strings.add("minecraft:tp 1001.5 100 -339.5");
-//        strings.add("minecraft:tp -548.5 100 1450.5");
-//        strings.add("minecraft:tp 352.5 100 1450.5");
-//        strings.add("minecraft:tp 691.5 100 -1377.5");
-//        strings.add("minecraft:tp -724.5 100 154.5");
-//        strings.add("minecraft:tp 224.5 100 1002.5");
-//        strings.add("minecraft:tp 1378.5 100 467.5");
-//        strings.add("minecraft:tp -787.5 100 -1149.5");
-//        strings.add("minecraft:tp 284.5 100 185.5");
-//        strings.add("minecraft:tp 675.5 100 1008.5");
-//        strings.add("minecraft:tp -1449.5 100 -374.5");
-//        strings.add("minecraft:tp -621.5 100 -284.5");
-//        strings.add("minecraft:tp 982.5 100 -789.5");
-//        strings.add("minecraft:tp 65.5 100 579.5");
-//        strings.add("minecraft:tp 569.5 100 -467.5");
-//        strings.add("minecraft:tp -207.5 100 -930.5");
-//        strings.add("minecraft:tp -451.5 100 -1449.5");
-//        strings.add("minecraft:tp 1073.5 100 798.5");
-//        strings.add("minecraft:tp -1449.5 100 999.5");
-//        strings.add("minecraft:tp 1348.5 100 -1052.5");
-//        strings.add("minecraft:tp -226.5 100 1003.5");
-//        strings.add("minecraft:tp 1253.5 100 34.5");
-//        strings.add("minecraft:tp 1135.5 100 -1449.5");
-//        strings.add("minecraft:tp 1253.5 100 1450.5");
-//        strings.add("minecraft:tp -97.5 100 1450.5");
-//        strings.add("minecraft:tp 687.5 100 -16.5");
-//        strings.add("minecraft:tp -1065.5 100 -140.5");
-//        strings.add("minecraft:tp -1449.5 100 549.5");
-//        strings.add("minecraft:tp -1155.5 100 -1410.5");
-//        strings.add("minecraft:tp -1449.5 100 99.5");
-//        strings.add("minecraft:tp -611.5 100 770.5");
-//        strings.add("minecraft:tp 173.5 100 -251.5");
-//        strings.add("minecraft:tp 932.5 100 360.5");
-//        strings.add("minecraft:tp -613.5 100 -734.5");
-//        strings.add("minecraft:tp -214.5 100 -478.5");
-//        strings.add("minecraft:tp 1450.5 100 1045.5");
-//        strings.add("minecraft:tp -1449.5 100 1450.5");
-//        strings.add("minecraft:tp 802.5 100 1450.5");
-//        strings.add("minecraft:tp -1420.5 100 -845.5");
-//        strings.add("minecraft:tp 180.5 100 -701.5");
-//        strings.add("minecraft:tp 559.5 100 -946.5");
-//        strings.add("minecraft:tp -999.5 100 541.5");
-//        strings.add("minecraft:tp -998.5 100 1450.5");
-//        Duration duration = Duration.ofSeconds(1);
-//
-//        for (String str : strings) {
-//            inviter.getMatch().getScheduler(MatchScope.RUNNING).createDelayedTask(duration, new Runnable() {
-//                @Override
-//                public void run() {
-//                    Bukkit.broadcastMessage(str);
-//                    inviter.getBukkit().performCommand(str);
-//                }
-//            });
-//            duration = duration.plus(Duration.ofSeconds(1));
-//        }
-//        inviter.getBukkit().performCommand("minecraft:tp ");
-//        String name = inviter.getParty().getName();
-//        if(name.trim().toLowerCase().startsWith("obs")) {
-//            throw new CommandException(PGMTranslations.get().t("command.team.invite.obs", sender));
-//        } else {
-//            Team team = utils.teamArgument(args, 1);
-////            utils.module().forceJoin(player, team);
-//        }
-//    }
+    private Map<UUID, List<Competitor>> invites = new HashMap<>();
+
+    @Command(
+            aliases = {"invite"},
+            desc = "Invite a player to your team",
+            usage = "<player>",
+            min = 1,
+            max = 1
+    )
+    public void invite(CommandContext args, CommandSender sender) throws CommandException, SuggestException {
+        MatchPlayer inviter = CommandUtils.senderToMatchPlayer(sender);
+        MatchPlayer invitee = CommandUtils.findSingleMatchPlayer(args, sender, 0);
+        if (inviter.equals(invitee)) {
+            throw new CommandException(PGMTranslations.get().t("command.team.invite.self", sender));
+        }
+        Competitor team = inviter.getCompetitor();
+        if (!invitee.isOnline()) {
+            throw new CommandException(PGMTranslations.get().t("command.team.invite.offline", sender));
+        }
+        if(inviter.getParty().getName().trim().toLowerCase().startsWith("obs")) {
+            throw new CommandException(PGMTranslations.get().t("command.team.invite.obs", sender));
+        } else {
+            if (!invitee.getParty().getName().trim().toLowerCase().startsWith("obs")) {
+                throw new CommandException(PGMTranslations.get().t("command.team.invite.onteam", sender));
+            } else {
+                List<Competitor> existingInvites = invites.get(invitee.getUniqueId());
+                if (existingInvites == null) {
+                    existingInvites = new ArrayList<>();
+                } else {
+                    if (existingInvites.contains(team)) {
+                        throw new CommandException(PGMTranslations.get().t("command.team.invite.alreadysent", sender));
+                    }
+                }
+                existingInvites.add(team);
+                invites.put(invitee.getUniqueId(), existingInvites);
+                team.sendMessage(PGMTranslations.get().t("command.team.invite.sent", sender, sender.getName()));
+                invitee.sendMessage(PGMTranslations.get().t("command.team.invite.received", invitee, sender.getName()));
+            }
+//            utils.module().forceJoin(player, team);
+        }
+    }
+
+    private static int MAX_TEAM_SIZE = 2;
+
+    @Command(
+            aliases = {"accept"},
+            desc = "Accept an invitation to join a team",
+            usage = "<player>",
+            min = 1,
+            max = 1
+    )
+    public void accept(CommandContext args, CommandSender sender) throws CommandException, SuggestException {
+        MatchPlayer acceptee = CommandUtils.senderToMatchPlayer(sender);
+        MatchPlayer accepter = CommandUtils.findSingleMatchPlayer(args, sender, 0);
+
+        if (acceptee.equals(accepter)) {
+            throw new CommandException(PGMTranslations.get().t("command.team.accept.self", sender));
+        }
+        if (!accepter.isOnline()) {
+            throw new CommandException(PGMTranslations.get().t("command.team.accept.offline", sender));
+        }
+
+        Competitor team = accepter.getCompetitor();
+        String name = accepter.getParty().getName();
+        if(name.trim().toLowerCase().startsWith("obs")) {
+            throw new CommandException(PGMTranslations.get().t("command.team.accept.obs", sender));
+        } else {
+            if (!acceptee.getParty().getName().trim().toLowerCase().startsWith("obs")) {
+                throw new CommandException(PGMTranslations.get().t("command.team.accept.onteam", sender));
+            } else {
+                List<Competitor> existingInvites = invites.get(acceptee.getUniqueId());
+                if (existingInvites == null) {
+                    throw new CommandException(PGMTranslations.get().t("command.team.accept.noinvites", sender));
+                }
+                if (!existingInvites.contains(team)) {
+                    throw new CommandException(PGMTranslations.get().t("command.team.accept.noinvite", sender));
+                }
+                if (accepter.getParty().getPlayers().size() >= MAX_TEAM_SIZE) {
+                    throw new CommandException(PGMTranslations.get().t("command.team.accept.full", sender));
+                }
+                utils.module().forceJoin(acceptee, accepter.getCompetitor());
+                team.sendMessage(PGMTranslations.get().t("command.team.accept.join", sender, sender.getName()));
+            }
+        }
+    }
 
     @Command(
             aliases = {"shuffle"},

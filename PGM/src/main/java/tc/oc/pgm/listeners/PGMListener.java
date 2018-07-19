@@ -127,15 +127,15 @@ public class PGMListener implements PluginFacet, Listener {
         event.getMatch().getWorld().setGameRuleValue(DO_DAYLIGHT_CYCLE, Boolean.toString(false));
     }
 
-    @EventHandler
-    public void nerfFishing(PlayerFishEvent event) {
-        if (Config.Fishing.disableTreasure() && event.getCaught() instanceof Item) {
-            Item caught = (Item) event.getCaught();
-            if (caught.getItemStack().getType() != Material.RAW_FISH) {
-                caught.setItemStack(new ItemStack(Material.RAW_FISH));
-            }
-        }
-    }
+//    @EventHandler
+//    public void nerfFishing(PlayerFishEvent event) {
+//        if (Config.Fishing.disableTreasure() && event.getCaught() instanceof Item) {
+//            Item caught = (Item) event.getCaught();
+//            if (caught.getItemStack().getType() != Material.RAW_FISH) {
+//                caught.setItemStack(new ItemStack(Material.RAW_FISH));
+//            }
+//        }
+//    }
 
 
     @EventHandler(ignoreCancelled = true, priority = EventPriority.NORMAL)

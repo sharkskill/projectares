@@ -22,6 +22,7 @@ import tc.oc.commons.core.chat.Component;
 import tc.oc.commons.core.util.TimeUtils;
 import tc.oc.pgm.PGM;
 import tc.oc.pgm.events.MatchBeginEvent;
+import tc.oc.pgm.events.MatchPlayerAddEvent;
 import tc.oc.pgm.events.MatchPlayerDeathEvent;
 import tc.oc.pgm.match.Match;
 import tc.oc.pgm.match.MatchPlayer;
@@ -59,12 +60,34 @@ public interface UHCMutation extends MutationModule {
         match().sendMessage(broadcast);
     }
 
+    default ItemStack[] items() {
+        return null;
+    }
+
+    default void apply(Player player) {
+        if (items() != null) {
+            player.getInventory().addItem(items());
+        }
+    }
+
     default boolean isUHC() {
         return match().getMap().getContext().needModule(InfoModule.class).getGamemodes().contains(MapDoc.Gamemode.uhc);
     }
 
     default void damage(Player player, double newHealth) {
         player.damage(0);
+        double difference = player.getHealth() - newHealth;
+
+        if (player.getAbsorption() > 0) {
+            if (player.getAbsorption() < difference) {
+                player.setAbsorption(0);
+                player.setHealth(difference - player.getAbsorption());
+                return;
+            } else {
+                player.setAbsorption(player.getAbsorption() - (float)difference);
+                return;
+            }
+        }
         player.setHealth(newHealth);
     }
 
@@ -87,7 +110,14 @@ public interface UHCMutation extends MutationModule {
     abstract class Impl extends MutationModule.Impl implements UHCMutation {
 
         public Impl(final Match match, final Mutation mutation) {
-            super(match, mutation);;
+            super(match, mutation);
+        }
+
+        @EventHandler(priority = EventPriority.HIGHEST)
+        public void onMatchStart(MatchPlayerAddEvent event) {
+            if (items() != null) {
+                apply(event.getPlayer().getBukkit());
+            }
         }
 
         @EventHandler(priority = EventPriority.HIGHEST)
@@ -97,9 +127,14 @@ public interface UHCMutation extends MutationModule {
             mmm.broadcastTime(mmm.broadcastTime().plus(Duration.ofSeconds(10)));
 
             for (MatchPlayer player : event.getMatch().getParticipatingPlayers()) {
+                if (items() != null) {
+                    apply(player.getBukkit());
+                }
                 player.getBukkit().setWhitelisted(true);
                 player.sendMessage(ChatColor.YELLOW + "Whitelisted.");
             }
+
+
 
 //            for (StorageMinecart minecart : event.getMatch().getWorld().getEntitiesByClass(StorageMinecart.class)) {
 //                List<ItemStack> items = minecart.getInventory().storage();
@@ -125,7 +160,6 @@ public interface UHCMutation extends MutationModule {
                 event.getVictim().sendMessage(ChatColor.YELLOW + "Kicking in 30 seconds");
                 event.getMatch().getScheduler(MatchScope.RUNNING).createDelayedTask(Duration.ofSeconds(30), () -> event.getVictim().getBukkit().kickPlayer("Thanks for playing"));
             }
-
         }
 
 //        @EventHandler(priority = EventPriority.HIGHEST)

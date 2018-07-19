@@ -17,48 +17,56 @@ import tc.oc.pgm.mutation.types.other.RageMutation;
 import tc.oc.pgm.mutation.types.targetable.ApocalypseMutation;
 import tc.oc.pgm.mutation.types.targetable.BomberMutation;
 import tc.oc.pgm.mutation.types.targetable.LightningMutation;
+import tc.oc.pgm.mutation.types.uhc.BloodDiamondsScenario;
 import tc.oc.pgm.mutation.types.uhc.CutCleanScenario;
+import tc.oc.pgm.mutation.types.uhc.FlowerPowerScenario;
+import tc.oc.pgm.mutation.types.uhc.GoneFishingScenario;
 import tc.oc.pgm.mutation.types.uhc.MoblessScenario;
 import tc.oc.pgm.mutation.types.uhc.PortalDoorScenario;
 import tc.oc.pgm.mutation.types.uhc.NeophobiaScenario;
 import tc.oc.pgm.mutation.types.uhc.InsomniaScenario;
 import tc.oc.pgm.mutation.types.uhc.RodlessScenario;
 import tc.oc.pgm.mutation.types.uhc.SkyHighScenario;
+import tc.oc.pgm.mutation.types.uhc.TimberScenario;
 import tc.oc.pgm.mutation.types.uhc.TimeBombScenario;
 
 import java.util.stream.Stream;
 
 public enum Mutation {
 
-    BLITZ      (BlitzMutation.class,       Material.IRON_FENCE, false),
-    RAGE       (RageMutation.class,        Material.SKULL_ITEM, false),
-    HARDCORE   (HardcoreMutation.class,    Material.GOLDEN_APPLE),
-    JUMP       (JumpMutation.class,        Material.FEATHER),
-    EXPLOSIVE  (ExplosiveMutation.class,   Material.FLINT_AND_STEEL),
-    ELYTRA     (ElytraMutation.class,      Material.ELYTRA),
-    PROJECTILE (ProjectileMutation.class,  Material.TIPPED_ARROW),
-    ENCHANTMENT(EnchantmentMutation.class, Material.ENCHANTMENT_TABLE),
-    POTION     (PotionMutation.class,      Material.POTION),
-    EQUESTRIAN (EquestrianMutation.class,  Material.SADDLE),
-    HEALTH     (HealthMutation.class,      Material.COOKED_BEEF),
-    GLOW       (GlowMutation.class,        Material.GLOWSTONE_DUST, false),
-    STEALTH    (StealthMutation.class,     Material.THIN_GLASS),
-    ARMOR      (ArmorMutation.class,       Material.DIAMOND_CHESTPLATE),
-    MOBS       (MobsMutation.class,        Material.MONSTER_EGG),
-    LIGHTNING  (LightningMutation.class,   Material.JACK_O_LANTERN),
-    BOMBER     (BomberMutation.class,      Material.TNT),
-    BREAD      (BreadMutation.class,       Material.BREAD),
-    BOAT       (BoatMutation.class,        Material.BOAT, false),
-    TOOLS      (ToolsMutation.class,       Material.DIAMOND_PICKAXE),
-    APOCALYPSE (ApocalypseMutation.class,  Material.NETHER_STAR),
-    CUTCLEAN   (CutCleanScenario.class,    Material.IRON_INGOT, false, true),
-    SKYHIGH    (SkyHighScenario.class,     Material.EYE_OF_ENDER, false, true),
-    TIMEBOMB   (TimeBombScenario.class,    Material.CHEST, false, true),
-    RODLESS    (RodlessScenario.class,     Material.FISHING_ROD, false, true),
-    NEOPHOBIA  (NeophobiaScenario.class,   Material.WORKBENCH, false, true),
-    PORTALDOOR (PortalDoorScenario.class,  Material.WOOD_DOOR, false, true),
-    INSOMNIA   (InsomniaScenario.class,    Material.BED, false, true),
-    MOBLESS    (MoblessScenario.class,     Material.MONSTER_EGG, false, true);
+    BLITZ         (BlitzMutation.class,         Material.IRON_FENCE, false),
+    RAGE          (RageMutation.class,          Material.SKULL_ITEM, false),
+    HARDCORE      (HardcoreMutation.class,      Material.GOLDEN_APPLE),
+    JUMP          (JumpMutation.class,          Material.FEATHER),
+    EXPLOSIVE     (ExplosiveMutation.class,     Material.FLINT_AND_STEEL),
+    ELYTRA        (ElytraMutation.class,        Material.ELYTRA),
+    PROJECTILE    (ProjectileMutation.class,    Material.TIPPED_ARROW),
+    ENCHANTMENT   (EnchantmentMutation.class,   Material.ENCHANTMENT_TABLE),
+    POTION        (PotionMutation.class,        Material.POTION),
+    EQUESTRIAN    (EquestrianMutation.class,    Material.SADDLE),
+    HEALTH        (HealthMutation.class,        Material.COOKED_BEEF),
+    GLOW          (GlowMutation.class,          Material.GLOWSTONE_DUST, false),
+    STEALTH       (StealthMutation.class,       Material.THIN_GLASS),
+    ARMOR         (ArmorMutation.class,         Material.DIAMOND_CHESTPLATE),
+    MOBS          (MobsMutation.class,          Material.MONSTER_EGG),
+    LIGHTNING     (LightningMutation.class,     Material.JACK_O_LANTERN),
+    BOMBER        (BomberMutation.class,        Material.TNT),
+    BREAD         (BreadMutation.class,         Material.BREAD),
+    BOAT          (BoatMutation.class,          Material.BOAT, false),
+    TOOLS         (ToolsMutation.class,         Material.DIAMOND_PICKAXE),
+    APOCALYPSE    (ApocalypseMutation.class,    Material.NETHER_STAR),
+    CUTCLEAN      (CutCleanScenario.class,      Material.IRON_INGOT, false, true),
+    SKYHIGH       (SkyHighScenario.class,       Material.EYE_OF_ENDER, false, true),
+    TIMEBOMB      (TimeBombScenario.class,      Material.CHEST, false, true),
+    RODLESS       (RodlessScenario.class,       Material.FISHING_ROD, false, true),
+    NEOPHOBIA     (NeophobiaScenario.class,     Material.WORKBENCH, false, true),
+    PORTALDOOR    (PortalDoorScenario.class,    Material.WOOD_DOOR, false, true),
+    INSOMNIA      (InsomniaScenario.class,      Material.BED, false, true),
+    MOBLESS       (MoblessScenario.class,       Material.MONSTER_EGG, false, true),
+    TIMBER        (TimberScenario.class,        Material.WOOD_AXE, false, true),
+    FLOWERPOWER   (FlowerPowerScenario.class,   Material.RED_ROSE, false, true),
+    BLOODDIAMONDS (BloodDiamondsScenario.class, Material.REDSTONE, false, true),
+    GONEFISHING   (GoneFishingScenario.class,   Material.FISHING_ROD, false, true);
 
     public static final String TYPE_KEY = "mutation.type.";
     public static final String DESCRIPTION_KEY = ".desc";
