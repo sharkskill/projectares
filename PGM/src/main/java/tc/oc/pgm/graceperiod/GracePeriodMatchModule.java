@@ -1,5 +1,6 @@
 package tc.oc.pgm.graceperiod;
 
+import org.bukkit.entity.Arrow;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
@@ -25,7 +26,7 @@ public class GracePeriodMatchModule extends MatchModule implements Listener {
 
     @EventHandler(priority = EventPriority.MONITOR)
     public void onPlayerDeath(EntityDamageByEntityEvent event) {
-        if (event.getEntity() instanceof Player && event.getDamager() instanceof Player && match.runningTime().compareTo(this.duration) < 0) {
+        if (event.getEntity() instanceof Player && (event.getDamager() instanceof Player || event.getDamager() instanceof Arrow) && match.runningTime().compareTo(this.duration) < 0) {
             event.setCancelled(true);
         }
     }
