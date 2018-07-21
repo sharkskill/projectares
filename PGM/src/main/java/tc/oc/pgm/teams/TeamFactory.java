@@ -72,6 +72,9 @@ public interface TeamFactory extends SluggedFeatureDefinition, Validatable, Feat
     @Property(name="max-overfill")
     Optional<Integer> getMaxOverfill();
 
+    @Property(name="uhc-size")
+    Optional<Integer> getUHCSize();
+
     @Property(name="show-name-tags")
     default org.bukkit.scoreboard.Team.OptionStatus getNameTagVisibility() {
         return org.bukkit.scoreboard.Team.OptionStatus.ALWAYS;

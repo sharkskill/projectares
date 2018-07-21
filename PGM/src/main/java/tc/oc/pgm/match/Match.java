@@ -6,6 +6,7 @@ import java.util.Random;
 import java.util.Set;
 import java.util.UUID;
 import java.util.logging.Logger;
+import java.util.stream.Collectors;
 import java.util.stream.Stream;
 import javax.annotation.Nullable;
 
@@ -569,6 +570,10 @@ public interface Match extends MultiAudience, IMatchQuery, Filterable<IMatchQuer
     @Override
     default Stream<Competitor> competitors() {
         return getCompetitors().stream();
+    }
+
+    default Set<Competitor> getParticipatingCompetitors() {
+        return getCompetitors().stream().filter(competitor -> competitor.getPlayers().size() > 0).collect(Collectors.toSet());
     }
 
     /**

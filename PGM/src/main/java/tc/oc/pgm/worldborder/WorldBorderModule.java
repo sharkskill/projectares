@@ -45,11 +45,9 @@ public class WorldBorderModule implements MapModule, MatchModuleFactory<WorldBor
                 if(!StaticFilter.ALLOW.equals(filter)) {
                     throw new InvalidXMLException("Cannot combine a filter and an explicit time for a world border", el);
                 }
-                filter = MonostableFilter.after(context.features(), after);
             }
 
             WorldBorder border = new WorldBorder(
-                filter,
                 XMLUtils.parse2DVector(Node.fromRequiredAttr(el, "center")),
                 XMLUtils.parseNumber(Node.fromRequiredAttr(el, "size"), Double.class),
                 XMLUtils.parseDuration(Node.fromAttr(el, "duration"), Duration.ZERO),
@@ -69,7 +67,7 @@ public class WorldBorderModule implements MapModule, MatchModuleFactory<WorldBor
         if(borders.isEmpty()) {
             return null;
         } else {
-            return new WorldBorderModule(ImmutableList.copyOf(borders));
+            return new WorldBorderModule(borders);
         }
     }
 }

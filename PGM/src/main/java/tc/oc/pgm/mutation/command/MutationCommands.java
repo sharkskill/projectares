@@ -1,8 +1,11 @@
 package tc.oc.pgm.mutation.command;
 
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashSet;
+import java.util.Set;
 import java.util.logging.Level;
+import java.util.stream.Collectors;
 import javax.inject.Inject;
 
 import com.google.common.collect.Collections2;
@@ -112,7 +115,8 @@ public class MutationCommands implements NestedCommands {
     public void list(final CommandContext args, CommandSender sender) throws CommandException {
         MutationMatchModule module = verify(sender);
         final boolean queued = args.hasFlag('q');
-        final Collection<Mutation> active = queued ? mutationQueue.mutations() : module.mutationsActive();
+        Set<Mutation> mutations = Arrays.stream(Mutation.values()).filter(Mutation::isScenario).collect(Collectors.toSet());
+        final Collection<Mutation> active = queued ? mutationQueue.mutations() : module.scenariosActive();
         new Paginator<Mutation>(8) {
             @Override
             protected BaseComponent title() {
@@ -123,7 +127,7 @@ public class MutationCommands implements NestedCommands {
                 return new Component(new BaseComponent[] {entry.getComponent(active.contains(entry) ? ChatColor.AQUA : ChatColor.GRAY)})
                         .extra(new Component(" (", ChatColor.WHITE).extra(new TranslatableComponent(entry.getDescription())).extra(")"));
             }
-        }.display(sender, Sets.newHashSet(Mutation.values()), args.getInteger(0, 1));
+        }.display(sender, mutations, args.getInteger(0, 1));
 
     }
 

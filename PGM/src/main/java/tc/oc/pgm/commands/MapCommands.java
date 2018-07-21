@@ -1,6 +1,7 @@
 package tc.oc.pgm.commands;
 
 import java.net.URL;
+import java.text.DecimalFormat;
 import java.util.List;
 import java.util.Set;
 
@@ -19,6 +20,7 @@ import net.md_5.bungee.api.ChatColor;
 import net.md_5.bungee.api.chat.BaseComponent;
 import net.md_5.bungee.api.chat.HoverEvent;
 import net.md_5.bungee.api.chat.TranslatableComponent;
+import org.bukkit.Location;
 import org.bukkit.command.CommandSender;
 import tc.oc.api.docs.User;
 import tc.oc.api.docs.virtual.MapDoc;
@@ -46,7 +48,9 @@ import tc.oc.pgm.ffa.FreeForAllModule;
 import tc.oc.pgm.map.Contributor;
 import tc.oc.pgm.map.MapInfo;
 import tc.oc.pgm.map.PGMMap;
+import tc.oc.pgm.match.MatchPlayer;
 import tc.oc.pgm.modules.InfoModule;
+import tc.oc.pgm.mutation.MutationMatchModule;
 import tc.oc.pgm.rotation.RotationManager;
 import tc.oc.pgm.rotation.RotationProviderInfo;
 import tc.oc.pgm.rotation.RotationState;
@@ -63,6 +67,18 @@ public class MapCommands implements Commands {
         this.identityProvider = identityProvider;
         this.syncExecutor = syncExecutor;
         this.renderer = renderer;
+    }
+
+    @Command(
+            aliases = { "pmcoords", "pc", "pmc", "teamcoords", "tc" },
+            desc = "Send your coordinates to your team"
+    )
+    public void clearLag(final CommandContext args, final CommandSender sender) throws CommandException {
+        MatchPlayer player = CommandUtils.senderToMatchPlayer(sender);
+        Location location = player.getLocation();
+
+        DecimalFormat format = new DecimalFormat("#.#");
+        player.getParty().sendMessage(player.getDisplayName() + ChatColor.YELLOW + " > x:" + format.format(location.getX()) + ", y:" + format.format(location.getY()) + ", z:" + format.format(location.getZ()));
     }
 
     @Command(
@@ -154,7 +170,7 @@ public class MapCommands implements Commands {
     }
 
     @Command(
-        aliases = {"mapinfo", "map"},
+        aliases = {"mapinfo", "map", "uhc"},
         desc = "Shows information a certain map",
         usage = "[map name] - defaults to the current map",
         min = 0,
@@ -258,6 +274,17 @@ public class MapCommands implements Commands {
             mapInfoLabel("command.map.mapInfo.playerLimit"),
             new Component(String.valueOf(maxPlayers), ChatColor.GOLD)
         ));
+
+
+        MatchPlayer player = CommandUtils.senderToMatchPlayer(sender);
+        final MutationMatchModule mmm = player.getMatch().getMatchModule(MutationMatchModule.class);
+        if(mmm != null && mmm.scenariosActive().size() > 0) {
+            audience.sendMessage(new Component(ChatColor.DARK_PURPLE, ChatColor.BOLD)
+                    .extra(new TranslatableComponent("command.map.mapInfo.scenarios"))
+                    .extra(": "));
+
+            mmm.scenariosActive().forEach(scenario -> audience.sendMessage(ChatColor.GOLD + ("- " + PGMTranslations.t(scenario.getName(), player))));
+        }
 
         if(sender.hasPermission(Permissions.MAPDEV)) {
             audience.sendMessage(new Component(mapInfoLabel("command.map.mapInfo.genre"), new Component(mapInfo.getLocalizedGenre(), ChatColor.GOLD)));

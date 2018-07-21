@@ -484,21 +484,51 @@ public class TeamMatchModule extends MatchModule implements Listener, JoinHandle
         }
     }
 
+    public int getUHCSize() {
+        for (Team team : getTeams()) {
+            if (team.getInfo().getUHCSize().isPresent()) {
+                return team.getInfo().getUHCSize().get();
+            }
+        }
+        return -1;
+    }
+
     /**
      * Try to balance teams by bumping players to other teams
      */
     public void balanceTeams() {
-        if(!config.autoBalance()) return;
+//        if(!config.autoBalance()) return;
 
         logger.info("Auto-balancing teams");
 
-        for(;;) {
-            Team team = this.getFullestTeam();
-            if(team == null) break;
-            if(!team.isStacked()) break;
-            logger.info("Bumping a player from stacked team " + team.getColoredName());
-            if(!this.kickPlayerOffTeam(team, true)) break;
+        int size = getUHCSize();
+        if (size == -1) {
+            return;
         }
+
+        for (Team team : getTeams()) {
+            if (team.getSize() <= 0 || team.getSize() > 1) {
+                continue;
+            }
+
+            for (Team team2 : getTeams()) {
+                if (team2.getSize() <= 0 || team2.getSize() > 1 || team.equals(team2)) {
+                    continue;
+                }
+
+                forceJoin(team2.getPlayers().iterator().next(), team);
+                break;
+            }
+        }
+
+
+//        for(;;) {
+//            Team team = this.getFullestTeam();
+//            if(team == null) break;
+//            if(!team.isStacked()) break;
+//            logger.info("Bumping a player from stacked team " + team.getColoredName());
+//            if(!this.kickPlayerOffTeam(team, true)) break;
+//        }
     }
 
     public boolean kickPlayerOffTeam(Team kickFrom, boolean forBalance) {

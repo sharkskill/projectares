@@ -1,6 +1,5 @@
 package tc.oc.pgm.teams;
 
-import java.time.Duration;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
@@ -21,6 +20,8 @@ import net.md_5.bungee.api.chat.TranslatableComponent;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
+import org.bukkit.entity.ArmorStand;
+import org.bukkit.entity.Entity;
 import tc.oc.commons.bukkit.localization.Translations;
 import tc.oc.commons.core.commands.Commands;
 import tc.oc.commons.core.commands.NestedCommands;
@@ -30,8 +31,6 @@ import tc.oc.pgm.commands.CommandUtils;
 import tc.oc.pgm.match.Competitor;
 import tc.oc.pgm.match.Match;
 import tc.oc.pgm.match.MatchPlayer;
-import tc.oc.pgm.match.MatchScope;
-import tc.oc.pgm.match.Party;
 import tc.oc.pgm.match.inject.MatchScoped;
 
 @MatchScoped
@@ -133,16 +132,22 @@ public class TeamCommands implements NestedCommands {
                         throw new CommandException(PGMTranslations.get().t("command.team.invite.alreadysent", sender));
                     }
                 }
+                TeamMatchModule tmm = inviter.getMatch().getMatchModule(TeamMatchModule.class);
+                if(tmm != null) {
+                    if (tmm.getUHCSize() > 0) {
+                        if (inviter.getParty().getPlayers().size() >= tmm.getUHCSize()) {
+                            throw new CommandException(PGMTranslations.get().t("command.team.invite.full", sender));
+                        }
+                    }
+                }
                 existingInvites.add(team);
                 invites.put(invitee.getUniqueId(), existingInvites);
-                team.sendMessage(PGMTranslations.get().t("command.team.invite.sent", sender, sender.getName()));
+                team.sendMessage(PGMTranslations.get().t("command.team.invite.sent", sender, invitee.getName()));
                 invitee.sendMessage(PGMTranslations.get().t("command.team.invite.received", invitee, sender.getName()));
             }
 //            utils.module().forceJoin(player, team);
         }
     }
-
-    private static int MAX_TEAM_SIZE = 2;
 
     @Command(
             aliases = {"accept"},
@@ -180,9 +185,15 @@ public class TeamCommands implements NestedCommands {
                 if (!existingInvites.contains(team)) {
                     throw new CommandException(PGMTranslations.get().t("command.team.accept.noinvite", sender));
                 }
-                if (accepter.getParty().getPlayers().size() >= MAX_TEAM_SIZE) {
-                    throw new CommandException(PGMTranslations.get().t("command.team.accept.full", sender));
+                TeamMatchModule tmm = acceptee.getMatch().getMatchModule(TeamMatchModule.class);
+                if(tmm != null) {
+                    if (tmm.getUHCSize() > 0) {
+                        if (accepter.getParty().getPlayers().size() >= tmm.getUHCSize()) {
+                            throw new CommandException(PGMTranslations.get().t("command.team.accept.full", sender));
+                        }
+                    }
                 }
+
                 utils.module().forceJoin(acceptee, accepter.getCompetitor());
                 team.sendMessage(PGMTranslations.get().t("command.team.accept.join", sender, sender.getName()));
             }
@@ -314,5 +325,16 @@ public class TeamCommands implements NestedCommands {
 
         sender.sendMessage(team.getColoredName() +
                 ChatColor.WHITE + " now has min size " + ChatColor.AQUA + team.getMinPlayers());
+    }
+
+    @Command(
+            aliases = {"debug"},
+            desc = "Debug command."
+    )
+    @CommandPermissions("pgm.team.debug")
+    public void debug(CommandContext args, CommandSender sender) throws CommandException, SuggestException {
+        for (Entity armorStand : CommandUtils.getMatch(sender).getWorld().getEntitiesByClass(ArmorStand.class)) {
+            Bukkit.broadcastMessage(armorStand.getLocation().toString());
+        }
     }
 }

@@ -18,7 +18,6 @@ import static com.google.common.base.Preconditions.checkNotNull;
  * Parameters for the world border.
  */
 public class WorldBorder {
-    final Filter filter;                // State should only be applied when a MatchQuery passes this filter
     final Vector center;                // Center of the border
     final double size;                  // Diameter of the border
     final Duration duration;            // Time taken to transition into this state from any previous state
@@ -29,10 +28,9 @@ public class WorldBorder {
     final boolean teleport;             // Teleport players who are outside of the border
     final boolean bedrock;              // Use a bedrock border
     final boolean broadcast;            // Broadcast before the border shrinks
-    final Duration after;
+    public final Duration after;
 
-    public WorldBorder(Filter filter, Vector center, double size, Duration duration, double damage, double buffer, double warningDistance, Duration warningTime, boolean teleport, boolean bedrock, boolean broadcast, Duration after) {
-        this.filter = checkNotNull(filter);
+    public WorldBorder(Vector center, double size, Duration duration, double damage, double buffer, double warningDistance, Duration warningTime, boolean teleport, boolean bedrock, boolean broadcast, Duration after) {
         this.center = checkNotNull(center);
         this.size = size;
         this.duration = checkNotNull(duration);
@@ -56,10 +54,6 @@ public class WorldBorder {
 
     public boolean isMoving() {
         return !Duration.ZERO.equals(duration);
-    }
-
-    public boolean isConditional() {
-        return !StaticFilter.ALLOW.equals(filter);
     }
 
     public void apply(Match match, org.bukkit.WorldBorder bukkit, boolean transition, double oldSize) {
@@ -135,7 +129,6 @@ public class WorldBorder {
                "{center=" + Vectors.format(center) +
                " size=" + size +
                (isMoving() ? " duration=" + duration : "") +
-               (isConditional() ? " filter=" + filter : "") +
                "}";
     }
 }

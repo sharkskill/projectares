@@ -22,6 +22,7 @@ import org.bukkit.util.Vector;
 import tc.oc.commons.bukkit.util.WorldBorderUtils;
 import tc.oc.commons.core.chat.Component;
 import tc.oc.commons.core.formatting.PeriodFormats;
+import tc.oc.commons.core.util.Comparables;
 import tc.oc.commons.core.util.DefaultMapAdapter;
 import tc.oc.pgm.events.ListenerScope;
 import tc.oc.pgm.events.WorldBorderChangeEvent;
@@ -37,7 +38,7 @@ import static com.google.common.base.Preconditions.checkNotNull;
 @ListenerScope(MatchScope.LOADED)
 public class WorldBorderMatchModule extends MatchModule implements Listener {
 
-    private final List<WorldBorder> borders;
+    public List<WorldBorder> borders;
     private final Map<WorldBorder, Boolean> results = new DefaultMapAdapter<>(false);
     private @Nullable WorldBorder appliedBorder;
     private @Nullable Duration appliedAt;
@@ -56,10 +57,7 @@ public class WorldBorderMatchModule extends MatchModule implements Listener {
     public void load() {
         super.load();
 
-        WorldBorder initial = null;
-        for(WorldBorder border : borders) {
-            if(!border.isConditional()) initial = border;
-        }
+        WorldBorder initial = borders.get(0);
 
         if(initial != null) {
             logger.fine("Initializing with " + initial);
@@ -156,7 +154,10 @@ public class WorldBorderMatchModule extends MatchModule implements Listener {
                 }
             }
 
-            boolean newResult = border.filter.query(match).isAllowed();
+            if (border.after == null) {
+                continue;
+            }
+            boolean newResult = Comparables.lessOrEqual(border.after, match.runningTime());
             boolean oldResult = results.put(border, newResult);
             if(newResult) lastMatched = border;
 

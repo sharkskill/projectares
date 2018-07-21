@@ -85,13 +85,13 @@ public class StartCountdown extends PreMatchCountdown {
             for(Team team : this.tmm.getTeams()) {
                 if(team.isStacked()) {
                     this.balanceWarningSent = true;
-                    this.getMatch().sendWarning(new TranslatableComponent("team.balanceWarning", team.getComponentName()), false);
+//                    this.getMatch().sendWarning(new TranslatableComponent("team.balanceWarning", team.getComponentName()), false);
                 }
             }
 
-            if(this.balanceWarningSent) {
-                this.getMatch().playSound(COUNT_SOUND);
-            }
+//            if(this.balanceWarningSent) {
+//                this.getMatch().playSound(COUNT_SOUND);
+//            }
         }
     }
 

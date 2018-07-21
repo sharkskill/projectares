@@ -400,15 +400,24 @@ public class SidebarMatchModule extends MatchModule implements Listener {
                 rows.add(ChatColor.YELLOW + "Time: " + ChatColor.WHITE + PeriodFormats.formatColonsLong(this.match.runningTime()).toPlainText());
                 rows.add("");
 
-                int teamKills = 0;
-                for (MatchPlayer player : viewingParty.getPlayers()) {
-                    teamKills += player.getUserContext().facet(StatsUserFacet.class).matchKills();
+                if (!viewingParty.isObserving()) {
+                    int teamKills = 0;
+                    for (MatchPlayer player : viewingParty.getPlayers()) {
+                        teamKills += player.getUserContext().facet(StatsUserFacet.class).matchKills();
+                    }
+                    rows.add(ChatColor.YELLOW + "Team Kills: " + ChatColor.WHITE + teamKills);
                 }
-                rows.add(ChatColor.YELLOW + "Kills: " + ChatColor.WHITE + teamKills);
+
+                rows.add(ChatColor.YELLOW + "Teams Left: " + ChatColor.WHITE + getMatch().getParticipatingCompetitors().size());
                 rows.add("");
 
-                rows.add(ChatColor.YELLOW + "Players Left: " + ChatColor.WHITE + getMatch().getParticipatingPlayers().size());
-                rows.add("");
+                if (!viewingParty.isObserving() && viewingParty.getPlayers().size() > 1) {
+                    rows.add(ChatColor.YELLOW + "Team:");
+                    for (MatchPlayer player : viewingParty.getPlayers()) {
+                        rows.add("- " + player.getDisplayName());
+                    }
+                    rows.add("");
+                }
 
                 WorldBorderMatchModule borderMatchModule = getMatch().getMatchModule(WorldBorderMatchModule.class);
                 if (borderMatchModule != null) {
@@ -418,15 +427,17 @@ public class SidebarMatchModule extends MatchModule implements Listener {
                     rows.add("");
                 }
 
-                final MutationMatchModule mmm = getMatch().getMatchModule(MutationMatchModule.class);
-                if(mmm != null && mmm.scenariosActive().size() > 0 && viewingParty.getPlayers().size() > 0) {
-                    // Use the first player in a party for translations since they are party dependent
-                    MatchPlayer firstPlayer = viewingParty.getPlayers().iterator().next();
+                if (viewingParty.getPlayers().size() < 2) {
+                    final MutationMatchModule mmm = getMatch().getMatchModule(MutationMatchModule.class);
+                    if(mmm != null && mmm.scenariosActive().size() > 0 && viewingParty.getPlayers().size() > 0) {
+                        // Use the first player in a party for translations since they are party dependent
+                        MatchPlayer firstPlayer = viewingParty.getPlayers().iterator().next();
 
-                    rows.add(ChatColor.YELLOW + "Scenarios: ");
+                        rows.add(ChatColor.YELLOW + "Scenarios: ");
 
-                    mmm.scenariosActive().forEach(scenario -> rows.add("- " + PGMTranslations.t(scenario.getName(), firstPlayer)));
-                    rows.add("");
+                        mmm.scenariosActive().forEach(scenario -> rows.add("- " + PGMTranslations.t(scenario.getName(), firstPlayer)));
+                        rows.add("");
+                    }
                 }
             } else {
                 // Scores/Blitz

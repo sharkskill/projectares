@@ -100,6 +100,11 @@ public class AdminCommands implements Commands {
     public void end(CommandContext args, CommandSender sender) throws CommandException {
         Match match = PGM.getMatchManager().getCurrentMatch(sender);
 
+        if (!args.hasFlag('f')) {
+            sender.sendMessage(ChatColor.RED + "Are you sure you wish to end the match? Use '/" + args.getCommand() + " -f' to confirm.");
+            return;
+        }
+
         Competitor winner = null;
         if(args.argsLength() > 0) {
             winner = CommandUtils.getCompetitor(args.getJoinedStrings(0), sender);
