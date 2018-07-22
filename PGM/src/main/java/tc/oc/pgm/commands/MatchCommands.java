@@ -31,9 +31,12 @@ import tc.oc.pgm.xml.InvalidXMLException;
 
 import java.text.DecimalFormat;
 import java.time.Duration;
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
@@ -110,7 +113,7 @@ public class MatchCommands implements Commands {
         }
     }
 
-    Map<MatchPlayer, Set<MatchPlayer>> tps = new HashMap<>();
+    Map<MatchPlayer, List<MatchPlayer>> tps = new HashMap<>();
     Map<MatchPlayer, Task> tpTasks = new HashMap<>();
 
     @Command(
@@ -127,8 +130,13 @@ public class MatchCommands implements Commands {
             return;
         }
         int duration = args.getInteger(0, 5);
-        Set<MatchPlayer> players = new HashSet<>(player.getMatch().getParticipatingPlayers());
+        List<MatchPlayer> players = new ArrayList<>(player.getMatch().getParticipatingPlayers());
         players.remove(player);
+
+        if (args.hasFlag('r')) {
+            Collections.reverse(players);
+        }
+
         tps.remove(player);
         tps.put(player, players);
         if (tpTasks.containsKey(player)) {
@@ -145,6 +153,10 @@ public class MatchCommands implements Commands {
                     return;
                 }
                 MatchPlayer tp = tps.get(player).iterator().next();
+                if (tp == null || !tp.isOnline()) {
+                    player.sendMessage(org.bukkit.ChatColor.RED + "Teleport failed");
+                    return;
+                }
                 player.getBukkit().teleport(tp.getLocation());
                 player.sendMessage(org.bukkit.ChatColor.AQUA + "Teleported to " + tp.getDisplayName());
                 tps.get(player).remove(tp);
@@ -190,7 +202,12 @@ public class MatchCommands implements Commands {
                     tps.remove(player);
                     return;
                 }
+
                 MatchPlayer tp = tps.get(player).iterator().next();
+                if (tp == null || !tp.isOnline()) {
+                    player.sendMessage(org.bukkit.ChatColor.RED + "Teleport failed");
+                    return;
+                }
                 player.getBukkit().teleport(tp.getLocation());
                 player.sendMessage(org.bukkit.ChatColor.AQUA + "Teleported to " + tp.getDisplayName());
                 tps.get(player).remove(tp);

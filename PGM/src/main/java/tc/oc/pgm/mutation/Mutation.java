@@ -19,6 +19,7 @@ import tc.oc.pgm.mutation.types.targetable.BomberMutation;
 import tc.oc.pgm.mutation.types.targetable.LightningMutation;
 import tc.oc.pgm.mutation.types.uhc.BloodDiamondsScenario;
 import tc.oc.pgm.mutation.types.uhc.CutCleanScenario;
+import tc.oc.pgm.mutation.types.uhc.DelayedMobsScenario;
 import tc.oc.pgm.mutation.types.uhc.FlowerPowerScenario;
 import tc.oc.pgm.mutation.types.uhc.GoneFishingScenario;
 import tc.oc.pgm.mutation.types.uhc.MoblessScenario;
@@ -66,7 +67,8 @@ public enum Mutation {
     TIMBER        (TimberScenario.class,        Material.WOOD_AXE, false, true),
     FLOWERPOWER   (FlowerPowerScenario.class,   Material.RED_ROSE, false, true),
     BLOODDIAMONDS (BloodDiamondsScenario.class, Material.REDSTONE, false, true),
-    GONEFISHING   (GoneFishingScenario.class,   Material.FISHING_ROD, false, true);
+    GONEFISHING   (GoneFishingScenario.class,   Material.FISHING_ROD, false, true),
+    DELAYEDMOBS   (DelayedMobsScenario.class,   Material.WATCH, false, true);
 
     public static final String TYPE_KEY = "mutation.type.";
     public static final String DESCRIPTION_KEY = ".desc";

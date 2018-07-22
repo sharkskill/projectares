@@ -38,6 +38,7 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.PlayerInventory;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.potion.PotionEffect;
+import tc.oc.api.util.Permissions;
 import tc.oc.commons.bukkit.util.BukkitUtils;
 import tc.oc.commons.core.commands.CommandBinder;
 import tc.oc.pgm.PGMTranslations;
@@ -255,6 +256,10 @@ public class ViewInventoryMatchModule extends MatchModule implements Listener {
 
     protected void previewPlayerInventory(Player viewer, PlayerInventory inventory) {
         if(viewer == null) { return; }
+
+        if (viewer.hasPermission(Permissions.STAFF)) {
+            return;
+        }
 
         Player holder = (Player) inventory.getHolder();
         // Ensure that the title of the inventory is <= 32 characters long to appease Minecraft's restrictions on inventory titles

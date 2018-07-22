@@ -13,6 +13,7 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.entity.PlayerDeathEvent;
 import org.bukkit.event.world.ChunkLoadEvent;
+import org.bukkit.event.world.ChunkPopulateEvent;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 import tc.oc.api.docs.virtual.MapDoc;
@@ -130,13 +131,16 @@ public interface UHCMutation extends MutationModule {
                 if (items() != null) {
                     apply(player.getBukkit());
                 }
-                player.getBukkit().setWhitelisted(true);
-                player.sendMessage(ChatColor.YELLOW + "Whitelisted.");
+                if (!player.getBukkit().isWhitelisted()) {
+                    player.getBukkit().setWhitelisted(true);
+                    player.sendMessage(ChatColor.YELLOW + "Whitelisted.");
+                }
             }
 
 
 
-            for (StorageMinecart minecart : event.getMatch().getWorld().getEntitiesByClass(StorageMinecart.class)) {
+        match().getScheduler(MatchScope.RUNNING).createRepeatingTask(Duration.ofMinutes(1), () -> {
+            for (StorageMinecart minecart : event.getWorld().getEntitiesByClass(StorageMinecart.class)) {
 //                List<ItemStack> items = minecart.getInventory().storage();
 //                minecart.getLocation().getBlock().setType(Material.CHEST);
 //                Bukkit.broadcastMessage(minecart.getLocation().getBlock().getType().name());
@@ -149,6 +153,8 @@ public interface UHCMutation extends MutationModule {
                 minecart.getInventory().clear();
                 minecart.remove();
             }
+        });
+
         }
 
         @EventHandler(priority = EventPriority.HIGHEST)
@@ -162,6 +168,27 @@ public interface UHCMutation extends MutationModule {
 
         @EventHandler(priority = EventPriority.HIGHEST)
         public void onMatchStart(ChunkLoadEvent event) {
+
+            for (StorageMinecart minecart : Arrays.stream(event.getChunk().getEntities()).filter(entity -> entity instanceof StorageMinecart).toArray(StorageMinecart[]::new)) {
+//                List<ItemStack> items = minecart.getInventory().storage();
+//                minecart.getLocation().getBlock().setType(Material.CHEST);
+//                Bukkit.broadcastMessage(minecart.getLocation().getBlock().getType().name());
+//                for (ItemStack item : items) {
+//                    if (item == null || item.getType().equals(Material.AIR) || item.getAmount() <= 0) {
+//                        Bukkit.broadcastMessage("null");
+//                        continue;
+//                    }
+//                    Bukkit.broadcastMessage(item.toString());
+//                    ((Chest)minecart.getLocation().getBlock().getState()).getBlockInventory().addItem(item);
+//                }
+                minecart.getInventory().clear();
+                minecart.remove();
+            }
+        }
+
+        @EventHandler(priority = EventPriority.HIGHEST)
+        public void onMatchStart(ChunkPopulateEvent event) {
+
             for (StorageMinecart minecart : Arrays.stream(event.getChunk().getEntities()).filter(entity -> entity instanceof StorageMinecart).toArray(StorageMinecart[]::new)) {
 //                List<ItemStack> items = minecart.getInventory().storage();
 //                minecart.getLocation().getBlock().setType(Material.CHEST);
