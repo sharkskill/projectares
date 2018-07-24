@@ -49,6 +49,7 @@ public class RejoinUserFacet implements MatchUserFacet, Listener {
     private final Map<Slot, ItemStack> inventory = new HashMap<>();
     private double health;
     private int exp;
+    private int level;
     private float saturation;
     private int foodLevel;
     private Collection<PotionEffect> effects;
@@ -99,6 +100,7 @@ public class RejoinUserFacet implements MatchUserFacet, Listener {
         health = event.getPlayer().getHealth();
 
         exp = event.getPlayer().getTotalExperience();
+        level = event.getPlayer().getLevel();
 
         saturation = event.getPlayer().getSaturation();
 
@@ -150,6 +152,7 @@ public class RejoinUserFacet implements MatchUserFacet, Listener {
                     matchPlayer.getBukkit().teleport(latestParticipatingLocation);
                     matchPlayer.getBukkit().setHealth(health);
                     matchPlayer.getBukkit().setTotalExperience(exp);
+                    matchPlayer.getBukkit().setLevel(level);
                     matchPlayer.getBukkit().setSaturation(saturation);
                     matchPlayer.getBukkit().setFoodLevel(foodLevel);
                     matchPlayer.getBukkit().addPotionEffects(effects);

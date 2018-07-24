@@ -45,7 +45,7 @@ public class BlitzMatchModuleImpl extends MatchModule implements BlitzMatchModul
     private final Match match;
     private final World world;
     private final JoinMatchModule join;
-    private final VictoryMatchModule victory;
+//    private final VictoryMatchModule victory;
     private final Optional<TeamMatchModule> teams;
     private BlitzProperties properties;
 
@@ -58,7 +58,7 @@ public class BlitzMatchModuleImpl extends MatchModule implements BlitzMatchModul
         this.match = match;
         this.world = world;
         this.join = join;
-        this.victory = victory;
+//        this.victory = victory;
         this.teams = teams;
         this.properties = properties;
     }
@@ -157,7 +157,7 @@ public class BlitzMatchModuleImpl extends MatchModule implements BlitzMatchModul
     public void load() {
         if(activated()) {
             join.registerHandler(this);
-            victory.setVictoryCondition(new BlitzVictoryCondition(this));
+//            victory.setVictoryCondition(new BlitzVictoryCondition(this));
         } else {
             preload();
         }
@@ -239,7 +239,7 @@ public class BlitzMatchModuleImpl extends MatchModule implements BlitzMatchModul
                                 match.setPlayerParty(eliminated, match.getDefaultParty(), false);
                                 world.spawnParticle(Particle.SMOKE_LARGE, eliminated.getLocation(), 5);
                             });
-                victory.invalidateAndCheckEnd();
+//                victory.invalidateAndCheckEnd();
             });
         }
     }

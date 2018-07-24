@@ -35,7 +35,6 @@ public class FlowerPowerScenario extends UHCMutation.Impl {
     @EventHandler(priority = EventPriority.HIGHEST)
     public void onItemSpawn(ItemSpawnEvent event) {
         if (flowers.contains(event.getEntity().getItemStack().getType())) {
-            Bukkit.broadcastMessage(materials.get(entropy().randomInt(SIZE)).name());
             event.getEntity().getItemStack().setType(materials.get(entropy().randomInt(SIZE)));
         }
     }
