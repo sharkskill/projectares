@@ -91,6 +91,7 @@ public class AdminCommands implements Commands {
 
     @Command(
         aliases = {"end", "finish"},
+        flags = "f",
         desc = "Ends the current running match, optionally with a winner",
         usage = "[competitor]",
         min = 0,

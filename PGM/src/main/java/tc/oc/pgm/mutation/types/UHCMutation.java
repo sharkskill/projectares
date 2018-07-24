@@ -7,6 +7,7 @@ import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.block.Chest;
 import org.bukkit.entity.Entity;
+import org.bukkit.entity.Item;
 import org.bukkit.entity.Player;
 import org.bukkit.entity.minecart.StorageMinecart;
 import org.bukkit.event.EventHandler;
@@ -38,7 +39,10 @@ import java.time.Duration;
 import java.time.Instant;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
+import java.util.UUID;
 
 /**
  * A mutation module that only works on UHC matches
@@ -110,14 +114,19 @@ public interface UHCMutation extends MutationModule {
 
     abstract class Impl extends MutationModule.Impl implements UHCMutation {
 
+        private Set<UUID> applied = new HashSet<>();
+
         public Impl(final Match match, final Mutation mutation) {
             super(match, mutation);
         }
 
         @EventHandler(priority = EventPriority.HIGHEST)
         public void onMatchStart(MatchPlayerAddEvent event) {
-            if (items() != null) {
-                apply(event.getPlayer().getBukkit());
+            if (!applied.contains(event.getPlayer().getUniqueId()) && items() != null) {
+                match().getScheduler(MatchScope.RUNNING).createDelayedTask(Duration.ofSeconds(1), () -> {
+                    apply(event.getPlayer().getBukkit());
+                    applied.add(event.getPlayer().getUniqueId());
+                });
             }
         }
 
@@ -128,8 +137,11 @@ public interface UHCMutation extends MutationModule {
             mmm.broadcastTime(mmm.broadcastTime().plus(Duration.ofSeconds(10)));
 
             for (MatchPlayer player : event.getMatch().getParticipatingPlayers()) {
-                if (items() != null) {
-                    apply(player.getBukkit());
+                if (!applied.contains(player.getUniqueId()) && items() != null) {
+                    match().getScheduler(MatchScope.RUNNING).createDelayedTask(Duration.ofSeconds(1), () -> {
+                        apply(player.getBukkit());
+                        applied.add(player.getUniqueId());
+                    });
                 }
                 if (!player.getBukkit().isWhitelisted()) {
                     player.getBukkit().setWhitelisted(true);
@@ -138,28 +150,31 @@ public interface UHCMutation extends MutationModule {
             }
 
 
-
-        match().getScheduler(MatchScope.RUNNING).createRepeatingTask(Duration.ofMinutes(1), () -> {
-            for (StorageMinecart minecart : event.getWorld().getEntitiesByClass(StorageMinecart.class)) {
-//                List<ItemStack> items = minecart.getInventory().storage();
-//                minecart.getLocation().getBlock().setType(Material.CHEST);
-//                Bukkit.broadcastMessage(minecart.getLocation().getBlock().getType().name());
-//                for (ItemStack item : items) {
-//                    if (item == null || item.getType().equals(Material.AIR) || item.getAmount() <= 0) {
-//                        continue;
-//                    }
-//                    ((Chest)minecart.getLocation().getBlock().getState()).getBlockInventory().addItem(item);
-//                }
-                minecart.getInventory().clear();
-                minecart.remove();
+            for (Item item : event.getWorld().getEntitiesByClass(Item.class)) {
+                item.remove();
             }
-        });
+
+            match().getScheduler(MatchScope.RUNNING).createRepeatingTask(Duration.ofMinutes(1), () -> {
+                for (StorageMinecart minecart : event.getWorld().getEntitiesByClass(StorageMinecart.class)) {
+    //                List<ItemStack> items = minecart.getInventory().storage();
+    //                minecart.getLocation().getBlock().setType(Material.CHEST);
+    //                Bukkit.broadcastMessage(minecart.getLocation().getBlock().getType().name());
+    //                for (ItemStack item : items) {
+    //                    if (item == null || item.getType().equals(Material.AIR) || item.getAmount() <= 0) {
+    //                        continue;
+    //                    }
+    //                    ((Chest)minecart.getLocation().getBlock().getState()).getBlockInventory().addItem(item);
+    //                }
+                    minecart.getInventory().clear();
+                    minecart.remove();
+                }
+            });
 
         }
 
         @EventHandler(priority = EventPriority.HIGHEST)
         public void onMatchStart(MatchPlayerDeathEvent event) {
-            if (event.getMatch().getParticipatingPlayers().size() > 10 && event.getVictim().getBukkit().hasPermission(Permissions.STAFF)) {
+            if (event.getMatch().getParticipatingPlayers().size() > 10 && !event.getVictim().getBukkit().hasPermission(Permissions.STAFF)) {
                 event.getVictim().getBukkit().setWhitelisted(false);
                 event.getVictim().sendMessage(ChatColor.YELLOW + "Kicking in 30 seconds");
                 event.getMatch().getScheduler(MatchScope.RUNNING).createDelayedTask(Duration.ofSeconds(30), () -> event.getVictim().getBukkit().kickPlayer("Thanks for playing"));
@@ -203,6 +218,10 @@ public interface UHCMutation extends MutationModule {
 //                }
                 minecart.getInventory().clear();
                 minecart.remove();
+            }
+
+            for (Item item : Arrays.stream(event.getChunk().getEntities()).filter(entity -> entity instanceof Item).toArray(Item[]::new)) {
+                item.remove();
             }
         }
 

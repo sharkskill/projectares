@@ -118,6 +118,7 @@ public class MatchCommands implements Commands {
 
     @Command(
             aliases = {"tpall", "tpa"},
+            flags = "r",
             desc = "TP to all players",
             min = 0,
             max = 1
@@ -155,9 +156,10 @@ public class MatchCommands implements Commands {
                 MatchPlayer tp = tps.get(player).iterator().next();
                 if (tp == null || !tp.isOnline()) {
                     player.sendMessage(org.bukkit.ChatColor.RED + "Teleport failed");
+                    tps.get(player).remove(tp);
                     return;
                 }
-                player.getBukkit().teleport(tp.getLocation());
+                player.getBukkit().teleport(tp.getBukkit().getLocation());
                 player.sendMessage(org.bukkit.ChatColor.AQUA + "Teleported to " + tp.getDisplayName());
                 tps.get(player).remove(tp);
             }
@@ -206,9 +208,10 @@ public class MatchCommands implements Commands {
                 MatchPlayer tp = tps.get(player).iterator().next();
                 if (tp == null || !tp.isOnline()) {
                     player.sendMessage(org.bukkit.ChatColor.RED + "Teleport failed");
+                    tps.get(player).remove(tp);
                     return;
                 }
-                player.getBukkit().teleport(tp.getLocation());
+                player.getBukkit().teleport(tp.getBukkit().getLocation());
                 player.sendMessage(org.bukkit.ChatColor.AQUA + "Teleported to " + tp.getDisplayName());
                 tps.get(player).remove(tp);
             }

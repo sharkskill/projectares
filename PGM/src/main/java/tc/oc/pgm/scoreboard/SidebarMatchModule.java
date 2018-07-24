@@ -427,7 +427,7 @@ public class SidebarMatchModule extends MatchModule implements Listener {
                     rows.add("");
                 }
 
-                if (viewingParty.getPlayers().size() < 2) {
+                if (viewingParty.getPlayers().size() < 2 || viewingParty.isObserving()) {
                     final MutationMatchModule mmm = getMatch().getMatchModule(MutationMatchModule.class);
                     if(mmm != null && mmm.scenariosActive().size() > 0 && viewingParty.getPlayers().size() > 0) {
                         // Use the first player in a party for translations since they are party dependent

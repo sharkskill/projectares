@@ -33,4 +33,5 @@ public class LegacyPlayerFacet implements MatchPlayerFacet, Listener {
             }
         }
     }
+
 }

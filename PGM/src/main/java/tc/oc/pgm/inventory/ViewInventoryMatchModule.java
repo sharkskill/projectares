@@ -257,7 +257,7 @@ public class ViewInventoryMatchModule extends MatchModule implements Listener {
     protected void previewPlayerInventory(Player viewer, PlayerInventory inventory) {
         if(viewer == null) { return; }
 
-        if (viewer.hasPermission(Permissions.STAFF)) {
+        if (!viewer.hasPermission(Permissions.STAFF)) {
             return;
         }
 
