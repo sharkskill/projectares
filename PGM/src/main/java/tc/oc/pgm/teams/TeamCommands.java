@@ -3,6 +3,7 @@ package tc.oc.pgm.teams;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -96,7 +97,49 @@ public class TeamCommands implements NestedCommands {
         }
     }
 
-    private Map<UUID, List<Competitor>> invites = new HashMap<>();
+    private Map<UUID, List<MatchPlayer>> invites = new HashMap<>();
+    public static Set<MatchPlayer> solos = new HashSet<>();
+
+    @Command(
+            aliases = {"solo"},
+            desc = "Join the UHC with random teammates",
+            min = 0,
+            max = 0
+    )
+    public void solo(CommandContext args, CommandSender sender) throws CommandException {
+        MatchPlayer solo = CommandUtils.senderToMatchPlayer(sender);
+        if (solo.getMatch().hasStarted()) {
+            throw new CommandException(PGMTranslations.get().t("command.team.solo.started", sender));
+        }
+
+        if(!solo.getParty().getName().trim().toLowerCase().startsWith("obs")) {
+            throw new CommandException(PGMTranslations.get().t("command.team.solo.onteam", sender));
+        }
+        if (utils.module().getUHCSize() <= 1) {
+            throw new CommandException(PGMTranslations.get().t("command.team.solo.sologame", sender));
+        }
+        if (solos.contains(solo)) {
+            throw new CommandException(PGMTranslations.get().t("command.team.solo.alreadysolo", sender));
+        }
+        solos.add(solo);
+        solo.sendMessage(PGMTranslations.get().t("command.team.solo.queue", solo, sender));
+    }
+
+    @Command(
+            aliases = {"quitsolo"},
+            desc = "Join the UHC with random teammates",
+            min = 0,
+            max = 0
+    )
+    public void quitsolo(CommandContext args, CommandSender sender) throws CommandException {
+        MatchPlayer solo = CommandUtils.senderToMatchPlayer(sender);
+        if (!solos.contains(solo)) {
+            throw new CommandException(PGMTranslations.get().t("command.team.quitsolo.notsolo", sender));
+        }
+
+        solos.remove(solo);
+        solo.sendMessage(PGMTranslations.get().t("command.team.quitsolo.quitsolo", solo, sender));
+    }
 
     @Command(
             aliases = {"invite"},
@@ -105,48 +148,51 @@ public class TeamCommands implements NestedCommands {
             min = 1,
             max = 1
     )
-    public void invite(CommandContext args, CommandSender sender) throws CommandException, SuggestException {
+    public void invite(CommandContext args, CommandSender sender) throws CommandException {
         MatchPlayer inviter = CommandUtils.senderToMatchPlayer(sender);
         MatchPlayer invitee = CommandUtils.findSingleMatchPlayer(args, sender, 0);
+        if (utils.module().getUHCSize() <= 1) {
+            throw new CommandException(PGMTranslations.get().t("command.team.invite.sologame", sender));
+        }
         if (inviter.equals(invitee)) {
             throw new CommandException(PGMTranslations.get().t("command.team.invite.self", sender));
         }
         if (inviter.getMatch().hasStarted()) {
             throw new CommandException(PGMTranslations.get().t("command.team.invite.started", sender));
         }
-        Competitor team = inviter.getCompetitor();
         if (!invitee.isOnline()) {
             throw new CommandException(PGMTranslations.get().t("command.team.invite.offline", sender));
         }
-        if(inviter.getParty().getName().trim().toLowerCase().startsWith("obs")) {
-            throw new CommandException(PGMTranslations.get().t("command.team.invite.obs", sender));
-        } else {
-            if (!invitee.getParty().getName().trim().toLowerCase().startsWith("obs")) {
-                throw new CommandException(PGMTranslations.get().t("command.team.invite.onteam", sender));
-            } else {
-                List<Competitor> existingInvites = invites.get(invitee.getUniqueId());
-                if (existingInvites == null) {
-                    existingInvites = new ArrayList<>();
-                } else {
-                    if (existingInvites.contains(team)) {
-                        throw new CommandException(PGMTranslations.get().t("command.team.invite.alreadysent", sender));
-                    }
-                }
-                TeamMatchModule tmm = inviter.getMatch().getMatchModule(TeamMatchModule.class);
-                if(tmm != null) {
-                    if (tmm.getUHCSize() > 0) {
-                        if (inviter.getParty().getPlayers().size() >= tmm.getUHCSize()) {
-                            throw new CommandException(PGMTranslations.get().t("command.team.invite.full", sender));
-                        }
-                    }
-                }
-                existingInvites.add(team);
-                invites.put(invitee.getUniqueId(), existingInvites);
-                team.sendMessage(PGMTranslations.get().t("command.team.invite.sent", sender, invitee.getName()));
-                invitee.sendMessage(PGMTranslations.get().t("command.team.invite.received", invitee, sender.getName()));
-            }
-//            utils.module().forceJoin(player, team);
+        if(!inviter.getParty().getName().trim().toLowerCase().startsWith("obs")) {
+            throw new CommandException(PGMTranslations.get().t("command.team.invite.onteam.self", sender));
         }
+        if (!invitee.getParty().getName().trim().toLowerCase().startsWith("obs")) {
+            throw new CommandException(PGMTranslations.get().t("command.team.invite.onteam", sender));
+        }
+        boolean availableTeams = false;
+        for (Team randomTeam : utils.module().getTeams()) {
+            if (randomTeam.getPlayers().size() <= 0) {
+                availableTeams = true;
+                break;
+            }
+        }
+        if (!availableTeams) {
+            throw new CommandException(PGMTranslations.get().t("command.team.invite.nospace", sender));
+        }
+        List<MatchPlayer> existingInvites = invites.get(invitee.getUniqueId());
+        if (existingInvites == null) {
+            existingInvites = new ArrayList<>();
+        } else {
+            if (existingInvites.contains(inviter)) {
+                throw new CommandException(PGMTranslations.get().t("command.team.invite.alreadysent", sender));
+            }
+        }
+
+        existingInvites.add(inviter);
+        invites.put(invitee.getUniqueId(), existingInvites);
+        inviter.sendMessage(PGMTranslations.get().t("command.team.invite.sent", sender, invitee.getName()));
+        invitee.sendMessage(PGMTranslations.get().t("command.team.invite.received", invitee, sender.getName()));
+
     }
 
     @Command(
@@ -156,10 +202,12 @@ public class TeamCommands implements NestedCommands {
             min = 1,
             max = 1
     )
-    public void accept(CommandContext args, CommandSender sender) throws CommandException, SuggestException {
+    public void accept(CommandContext args, CommandSender sender) throws CommandException {
         MatchPlayer acceptee = CommandUtils.senderToMatchPlayer(sender);
         MatchPlayer accepter = CommandUtils.findSingleMatchPlayer(args, sender, 0);
-
+        if (utils.module().getUHCSize() <= 1) {
+            throw new CommandException(PGMTranslations.get().t("command.team.accept.sologame", sender));
+        }
         if (acceptee.getMatch().hasStarted()) {
             throw new CommandException(PGMTranslations.get().t("command.team.accept.started", sender));
         }
@@ -170,33 +218,51 @@ public class TeamCommands implements NestedCommands {
             throw new CommandException(PGMTranslations.get().t("command.team.accept.offline", sender));
         }
 
-        Competitor team = accepter.getCompetitor();
         String name = accepter.getParty().getName();
-        if(name.trim().toLowerCase().startsWith("obs")) {
-            throw new CommandException(PGMTranslations.get().t("command.team.accept.obs", sender));
-        } else {
-            if (!acceptee.getParty().getName().trim().toLowerCase().startsWith("obs")) {
-                throw new CommandException(PGMTranslations.get().t("command.team.accept.onteam", sender));
-            } else {
-                List<Competitor> existingInvites = invites.get(acceptee.getUniqueId());
-                if (existingInvites == null) {
-                    throw new CommandException(PGMTranslations.get().t("command.team.accept.noinvites", sender));
-                }
-                if (!existingInvites.contains(team)) {
-                    throw new CommandException(PGMTranslations.get().t("command.team.accept.noinvite", sender));
-                }
-                TeamMatchModule tmm = acceptee.getMatch().getMatchModule(TeamMatchModule.class);
-                if(tmm != null) {
-                    if (tmm.getUHCSize() > 0) {
-                        if (accepter.getParty().getPlayers().size() >= tmm.getUHCSize()) {
-                            throw new CommandException(PGMTranslations.get().t("command.team.accept.full", sender));
-                        }
-                    }
-                }
+        if(!name.trim().toLowerCase().startsWith("obs")) {
+            throw new CommandException(PGMTranslations.get().t("command.team.accept.onteam", sender));
+        }
+        if (!acceptee.getParty().getName().trim().toLowerCase().startsWith("obs")) {
+            throw new CommandException(PGMTranslations.get().t("command.team.accept.onteam.self", sender));
+        }
+        List<MatchPlayer> existingInvites = invites.get(acceptee.getUniqueId());
+        if (existingInvites == null) {
+            throw new CommandException(PGMTranslations.get().t("command.team.accept.noinvites", sender));
+        }
+        if (!existingInvites.contains(accepter)) {
+            throw new CommandException(PGMTranslations.get().t("command.team.accept.noinvite", sender));
+        }
 
-                utils.module().forceJoin(acceptee, accepter.getCompetitor());
-                team.sendMessage(PGMTranslations.get().t("command.team.accept.join", sender, sender.getName()));
+        for (Team randomTeam : utils.module().getTeams()) {
+            if (randomTeam.getPlayers().size() > 0) {
+                continue;
             }
+            solos.remove(accepter);
+            solos.remove(acceptee);
+            utils.module().forceJoin(acceptee, randomTeam);
+            utils.module().forceJoin(accepter, randomTeam);
+            randomTeam.sendMessage(PGMTranslations.get().t("command.team.accept.join", sender, sender.getName()));
+            invites.remove(acceptee.getUniqueId());
+            return;
+        }
+        acceptee.sendMessage(PGMTranslations.get().t("command.team.accept.nospace", sender));
+        accepter.sendMessage(PGMTranslations.get().t("command.team.accept.nospace", sender));
+    }
+
+
+    @Command(
+            aliases = {"uhcsize"},
+            desc = "Change the size of the UHC",
+            min = 0,
+            max = 1
+    )
+    @CommandPermissions("pgm.team.uhcsize")
+    public void uhcsize(CommandContext args, CommandSender sender) throws CommandException {
+        if (args.argsLength() == 0) {
+            sender.sendMessage(PGMTranslations.get().t("command.team.uhcsize.size", sender, utils.module().getUHCSize() <= -1 ? 1 : utils.module().getUHCSize()));
+        } else {
+            utils.module().setUHCSize(args.getInteger(0));
+            sender.sendMessage(PGMTranslations.get().t("command.team.uhcsize.set", sender, args.getInteger(0)));
         }
     }
 

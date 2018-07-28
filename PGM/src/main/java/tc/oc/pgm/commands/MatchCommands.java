@@ -66,8 +66,14 @@ public class MatchCommands implements Commands {
             max = 1
     )
     public void health(CommandContext args, CommandSender sender) throws CommandException {
-        Player player = tc.oc.commons.bukkit.commands.CommandUtils.getPlayerOrSelf(args, sender, 0);
-        sender.sendMessage(ChatColor.YELLOW.toString() + new DecimalFormat("#.##").format(player.getHealth()));
+        if (args.getString(0).equals("*")) {
+            for (MatchPlayer player : CommandUtils.getMatch(sender).getParticipatingPlayers()) {
+                sender.sendMessage(player.getDisplayName(sender) + ChatColor.YELLOW + " - " + new DecimalFormat("#.##").format(player.getBukkit().getHealth()));
+            }
+        } else {
+            Player player = tc.oc.commons.bukkit.commands.CommandUtils.getPlayerOrSelf(args, sender, 0);
+            sender.sendMessage(ChatColor.YELLOW.toString() + new DecimalFormat("#.##").format(player.getHealth()));
+        }
     }
 
     @Command(

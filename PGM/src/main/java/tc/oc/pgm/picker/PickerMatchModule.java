@@ -98,15 +98,17 @@ public class PickerMatchModule extends MatchModule implements Listener {
     private final ComponentRenderContext renderer;
     private final JoinMatchModule jmm;
     private final BlitzMatchModule bmm;
+    private final TeamMatchModule tmm;
     private final boolean hasTeams;
     private final boolean hasClasses;
 
     private final Set<MatchPlayer> picking = new HashSet<>();
 
-    @Inject PickerMatchModule(ComponentRenderContext renderer, JoinMatchModule jmm, BlitzMatchModule bmm, Optional<TeamModule> teamModule, Optional<ClassModule> classModule) {
+    @Inject PickerMatchModule(ComponentRenderContext renderer, JoinMatchModule jmm, BlitzMatchModule bmm, TeamMatchModule tmm, Optional<TeamModule> teamModule, Optional<ClassModule> classModule) {
         this.renderer = renderer;
         this.jmm = jmm;
         this.bmm = bmm;
+        this.tmm = tmm;
         this.hasTeams = teamModule.isPresent();
         this.hasClasses = classModule.isPresent();
     }
@@ -143,6 +145,10 @@ public class PickerMatchModule extends MatchModule implements Listener {
      */
     private boolean canUse(MatchPlayer player) {
         if(player == null) return false;
+
+        if (tmm != null && tmm.getUHCSize() > 1) {
+            return false;
+        }
 
         // Player is eliminated from Blitz
         if(bmm.activated() && getMatch().isRunning()) return false;
@@ -308,6 +314,9 @@ public class PickerMatchModule extends MatchModule implements Listener {
                 showWindow(player);
             } else {
                 // If there is nothing to pick, just join immediately
+                if (this.tmm != null && this.tmm.getUHCSize() > 1) {
+                    return;
+                }
                 jmm.requestJoin(player, JoinRequest.user());
             }
         } else if(hand.getType() == Button.LEAVE.material) {
@@ -640,6 +649,9 @@ public class PickerMatchModule extends MatchModule implements Listener {
     }
 
     private void scheduleJoin(final MatchPlayer player, @Nullable final Team team) {
+        if (this.tmm != null && this.tmm.getUHCSize() > 1) {
+            return;
+        }
         player.nextTick(() -> {
             if(team == null) {
                 if(hasJoined(player)) return;

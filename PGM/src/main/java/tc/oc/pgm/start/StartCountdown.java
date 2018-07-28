@@ -73,7 +73,7 @@ public class StartCountdown extends PreMatchCountdown {
     public void onTick(Duration remaining, Duration total) {
         super.onTick(remaining, total);
 
-        if(remaining.getSeconds() >= 1 && remaining.getSeconds() <= 3) {
+        if(remaining.getSeconds() >= 1 && remaining.getSeconds() <= 45) {
             // Auto-balance runs at match start as well, but try to run it a few seconds in advance
             if(this.tmm != null && !this.autoBalanced) {
                 this.autoBalanced = true;
@@ -99,7 +99,7 @@ public class StartCountdown extends PreMatchCountdown {
     public void onEnd(Duration total) {
         super.onEnd(total);
 
-        if(this.tmm != null) this.tmm.balanceTeams();
+//        if(this.tmm != null) this.tmm.balanceTeams();
 
         if(willHuddle()) {
             match.countdowns().start(new HuddleCountdown(getMatch()), huddle);

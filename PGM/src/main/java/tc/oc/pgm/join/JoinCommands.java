@@ -67,6 +67,10 @@ public class JoinCommands implements Commands {
         JoinMatchModule jmm = match.needMatchModule(JoinMatchModule.class);
         TeamMatchModule tmm = match.getMatchModule(TeamMatchModule.class);
 
+        if (tmm != null && tmm.getUHCSize() > 1) {
+            throw new CommandException(PGMTranslations.get().t("command.uhcTeams", sender));
+        }
+
         boolean force = sender.hasPermission("pgm.join.force") && args.hasFlag('f');
         Competitor chosenParty = null;
 

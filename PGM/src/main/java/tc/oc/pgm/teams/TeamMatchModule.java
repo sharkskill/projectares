@@ -33,6 +33,7 @@ import tc.oc.commons.core.util.Streams;
 import tc.oc.pgm.Config;
 import tc.oc.commons.bukkit.chat.Links;
 import tc.oc.pgm.events.ListenerScope;
+import tc.oc.pgm.events.MatchBeginEvent;
 import tc.oc.pgm.events.PlayerPartyChangeEvent;
 import tc.oc.pgm.features.FeatureDefinitionContext;
 import tc.oc.pgm.features.MatchFeatureContext;
@@ -124,9 +125,12 @@ public class TeamMatchModule extends MatchModule implements Listener, JoinHandle
     // Minimum at any time of the number of additional players needed to start the match
     private int minPlayersNeeded = Integer.MAX_VALUE;
 
+    private int uhcSize;
+
     public TeamMatchModule(Match match, Optional<Boolean> requireEven) {
         super(match);
         this.requireEven = requireEven;
+        this.uhcSize = 1;
     }
 
     @Override
@@ -484,12 +488,20 @@ public class TeamMatchModule extends MatchModule implements Listener, JoinHandle
         }
     }
 
+    public void setUHCSize(int uhcSize) {
+        this.uhcSize = uhcSize;
+    }
+
     public int getUHCSize() {
+        if (uhcSize > -1) {
+            return uhcSize;
+        }
         for (Team team : getTeams()) {
             if (team.getInfo().getUHCSize().isPresent()) {
                 return team.getInfo().getUHCSize().get();
             }
         }
+        setUHCSize(-2);
         return -1;
     }
 
@@ -501,25 +513,38 @@ public class TeamMatchModule extends MatchModule implements Listener, JoinHandle
 
         logger.info("Auto-balancing teams");
 
-        int size = getUHCSize();
-        if (size == -1) {
-            return;
-        }
-
-        for (Team team : getTeams()) {
-            if (team.getSize() <= 0 || team.getSize() > 1) {
+        for (MatchPlayer player : TeamCommands.solos) {
+            if (player == null || !player.isOnline() || !player.getParty().getName().trim().toLowerCase().startsWith("obs")) {
                 continue;
             }
 
-            for (Team team2 : getTeams()) {
-                if (team2.getSize() <= 0 || team2.getSize() > 1 || team.equals(team2)) {
-                    continue;
+            for (Team team : getTeams()) {
+                if (team.getPlayers().size() < getUHCSize()) {
+                    forceJoin(player, team, false);
+                    break;
                 }
-
-                forceJoin(team2.getPlayers().iterator().next(), team);
-                break;
             }
         }
+
+//        int size = getUHCSize();
+//        if (size <= -1) {
+//            return;
+//        }
+//
+//        for (Team team : getTeams()) {
+//            if (team.getSize() <= 0 || team.getSize() > 1) {
+//                continue;
+//            }
+//
+//            for (Team team2 : getTeams()) {
+//                if (team2.getSize() <= 0 || team2.getSize() > 1 || team.equals(team2)) {
+//                    continue;
+//                }
+//
+//                forceJoin(team2.getPlayers().iterator().next(), team);
+//                break;
+//            }
+//        }
 
 
 //        for(;;) {
