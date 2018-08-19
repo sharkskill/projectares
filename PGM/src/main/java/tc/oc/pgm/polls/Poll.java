@@ -26,7 +26,7 @@ public abstract class Poll implements Runnable {
         this.pollManager = pollManager;
         this.server = server;
         this.initiator = initiator;
-        this.voteFor(initiator);
+        this.vote(true, initiator);
         timeLeftSeconds = 60;
     }
 
@@ -107,12 +107,8 @@ public abstract class Poll implements Runnable {
         return this.votes.containsKey(playerName);
     }
 
-    public void voteFor(String playerName) {
-        this.votes.put(playerName, true);
-    }
-
-    public void voteAgainst(String playerName) {
-        this.votes.put(playerName, false);
+    public void vote(boolean yes, String playerName) {
+        this.votes.put(playerName, yes);
     }
 
     @Override
