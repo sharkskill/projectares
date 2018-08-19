@@ -91,7 +91,7 @@ public abstract class Poll implements Runnable {
         BaseComponent yes = Components.clickEvent(new TextComponent("YES"), ClickEvent.Action.RUN_COMMAND, "/vote yes");
         yes.setColor(net.md_5.bungee.api.ChatColor.GREEN);
 
-        BaseComponent no = Components.clickEvent(new TextComponent("NO"), ClickEvent.Action.RUN_COMMAND, "/vote yes");
+        BaseComponent no = Components.clickEvent(new TextComponent("NO"), ClickEvent.Action.RUN_COMMAND, "/vote no");
         no.setColor(net.md_5.bungee.api.ChatColor.RED);
 
         return new TextComponent(
