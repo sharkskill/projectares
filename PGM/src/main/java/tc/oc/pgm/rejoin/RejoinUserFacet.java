@@ -74,9 +74,7 @@ public class RejoinUserFacet implements MatchUserFacet, Listener {
     public void processPlayerPartyChange(PlayerChangePartyEvent event) {
         if(!rules.isPresent()) return;
 
-        if(event.getNewParty() instanceof Competitor) {
-            this.allowedToRejoin = true;
-        }
+        this.allowedToRejoin = event.getNewParty() instanceof Competitor;
     }
 //
     @SuppressWarnings("deprecation")
