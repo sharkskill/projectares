@@ -3,44 +3,30 @@ package tc.oc.pgm.mutation.types;
 import net.md_5.bungee.api.ChatColor;
 import net.md_5.bungee.api.chat.BaseComponent;
 import net.md_5.bungee.api.chat.TranslatableComponent;
-import org.bukkit.Bukkit;
-import org.bukkit.Material;
-import org.bukkit.block.Chest;
-import org.bukkit.entity.Entity;
 import org.bukkit.entity.Item;
 import org.bukkit.entity.Player;
 import org.bukkit.entity.minecart.StorageMinecart;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
-import org.bukkit.event.entity.PlayerDeathEvent;
 import org.bukkit.event.world.ChunkLoadEvent;
 import org.bukkit.event.world.ChunkPopulateEvent;
-import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 import tc.oc.api.docs.virtual.MapDoc;
-
 import tc.oc.api.util.Permissions;
 import tc.oc.commons.core.chat.Component;
-import tc.oc.commons.core.util.TimeUtils;
-import tc.oc.pgm.PGM;
 import tc.oc.pgm.events.MatchBeginEvent;
-import tc.oc.pgm.events.MatchPlayerAddEvent;
 import tc.oc.pgm.events.MatchPlayerDeathEvent;
+import tc.oc.pgm.events.PlayerChangePartyEvent;
 import tc.oc.pgm.match.Match;
 import tc.oc.pgm.match.MatchPlayer;
 import tc.oc.pgm.match.MatchScope;
-import tc.oc.pgm.match.Repeatable;
 import tc.oc.pgm.modules.InfoModule;
 import tc.oc.pgm.mutation.Mutation;
 import tc.oc.pgm.mutation.MutationMatchModule;
-import tc.oc.time.Time;
 
 import java.time.Duration;
-import java.time.Instant;
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashSet;
-import java.util.List;
 import java.util.Set;
 import java.util.UUID;
 
@@ -121,11 +107,13 @@ public interface UHCMutation extends MutationModule {
         }
 
         @EventHandler(priority = EventPriority.HIGHEST)
-        public void onMatchStart(MatchPlayerAddEvent event) {
+        public void onMatchStart(PlayerChangePartyEvent event) {
             if (!applied.contains(event.getPlayer().getUniqueId()) && items() != null) {
                 match().getScheduler(MatchScope.RUNNING).createDelayedTask(Duration.ofSeconds(1), () -> {
-                    apply(event.getPlayer().getBukkit());
-                    applied.add(event.getPlayer().getUniqueId());
+                    if (event.getNewParty() != null && event.getNewParty().isParticipating()) {
+                        apply(event.getPlayer().getBukkit());
+                        applied.add(event.getPlayer().getUniqueId());
+                    }
                 });
             }
         }
