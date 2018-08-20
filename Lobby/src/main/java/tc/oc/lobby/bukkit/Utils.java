@@ -57,6 +57,7 @@ public class Utils {
         player.setGravity(true);
         player.setPotionParticles(false);
         player.hideTitle();
+        player.setCollidesWithEntities(false);
         player.getWorld().spawnParticle(Particle.CLOUD, player.getLocation(), 15, 0.5, 0.5, 0.5, 0);
     }
 
