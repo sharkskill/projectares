@@ -13,6 +13,7 @@ import org.bukkit.event.enchantment.PrepareItemEnchantEvent;
 import org.bukkit.event.entity.PlayerDeathEvent;
 import org.bukkit.event.inventory.InventoryCloseEvent;
 import org.bukkit.event.inventory.InventoryOpenEvent;
+import org.bukkit.event.inventory.PrepareAnvilEvent;
 import org.bukkit.event.player.PlayerItemConsumeEvent;
 import org.bukkit.inventory.EnchantingInventory;
 import org.bukkit.inventory.ItemStack;
@@ -115,6 +116,16 @@ public class GoldenHeadMatchModule extends MatchModule implements Listener {
         if (item.hasItemMeta() && GOLDEN_HEAD_DISPLAY.equals(item.getItemMeta().getDisplayName())) {
             event.getActor().addPotionEffect(new PotionEffect(PotionEffectType.REGENERATION, 20 * 10, 1));
         }
+    }
+
+    @EventHandler(priority = EventPriority.MONITOR)
+    public void onAnvil(PrepareAnvilEvent event) {
+        Player player = event.getActor();
+        if (MinecraftVersion.atLeast(MinecraftVersion.MINECRAFT_1_8, player.getProtocolVersion())) {
+            return;
+        }
+        player.sendMessage(ChatColor.AQUA + "------------------------");
+        player.sendMessage(event.getInventory().getRepairCost() + " levels required");
     }
 
     @EventHandler(priority = EventPriority.MONITOR)

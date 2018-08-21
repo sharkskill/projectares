@@ -49,14 +49,13 @@ public class RejoinUserFacet implements MatchUserFacet, Listener {
     private final Map<Slot, ItemStack> inventory = new HashMap<>();
     private double health;
     private int exp;
-    private int level;
     private float saturation;
     private int foodLevel;
     private Collection<PotionEffect> effects;
 
     private Competitor latestParticipatingTeam;
     private Location latestParticipatingLocation;
-    private boolean allowedToRejoin;
+    private boolean allowedToRejoin = false;
     private Task offlineTask;
     private Duration offlineTime = Duration.ZERO;
     private int rejoins = 0;
@@ -68,19 +67,22 @@ public class RejoinUserFacet implements MatchUserFacet, Listener {
         this.rules = rules;
     }
 
-
     @SuppressWarnings("deprecation")
     @TargetedEventHandler(priority = EventPriority.LOWEST, ignoreCancelled = true)
     public void processPlayerPartyChange(PlayerChangePartyEvent event) {
+        if(!event.getPlayer().getUniqueId().equals(player)) return;
+        MatchPlayer matchPlayer = event.getPlayer();
         if(!rules.isPresent()) return;
-        if(event.getNewParty() == null) return;
 
-        this.allowedToRejoin = event.getNewParty() instanceof Competitor;
+        if(event.getNewParty() instanceof Competitor) {
+            this.allowedToRejoin = true;
+        }
     }
 //
     @SuppressWarnings("deprecation")
     @TargetedEventHandler(priority = EventPriority.LOWEST, ignoreCancelled = true)
     public void processPlayerQuit(PlayerQuitEvent event) {
+        if(!event.getPlayer().getUniqueId().equals(player)) return;
         MatchPlayer matchPlayer = matchPlayerFinder.getPlayer(event.getPlayer());
         if(matchPlayer == null) return;
         if(!rules.isPresent()) return;
@@ -99,7 +101,6 @@ public class RejoinUserFacet implements MatchUserFacet, Listener {
         health = event.getPlayer().getHealth();
 
         exp = event.getPlayer().getTotalExperience();
-        level = event.getPlayer().getLevel();
 
         saturation = event.getPlayer().getSaturation();
 
@@ -143,7 +144,7 @@ public class RejoinUserFacet implements MatchUserFacet, Listener {
         final TeamMatchModule tmm = matchPlayer.getMatch().getMatchModule(TeamMatchModule.class);
         if (tmm != null) {
             tmm.forceJoin(matchPlayer, latestParticipatingTeam);
-            offlineTask = matchPlayer.getMatch().getScheduler(MatchScope.RUNNING).createDelayedTask(Duration.ofSeconds(1), new Runnable() {
+            offlineTask = matchPlayer.getMatch().getScheduler(MatchScope.RUNNING).createDelayedTask(Duration.ofMillis(500), new Runnable() {
                 @Override
                 public void run() {
                     matchPlayer.getBukkit().getInventory().clear();
@@ -151,7 +152,6 @@ public class RejoinUserFacet implements MatchUserFacet, Listener {
                     matchPlayer.getBukkit().teleport(latestParticipatingLocation);
                     matchPlayer.getBukkit().setHealth(health);
                     matchPlayer.getBukkit().setTotalExperience(exp);
-                    matchPlayer.getBukkit().setLevel(level);
                     matchPlayer.getBukkit().setSaturation(saturation);
                     matchPlayer.getBukkit().setFoodLevel(foodLevel);
                     matchPlayer.getBukkit().addPotionEffects(effects);

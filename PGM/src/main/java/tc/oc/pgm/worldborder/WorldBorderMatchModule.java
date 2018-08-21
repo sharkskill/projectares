@@ -145,11 +145,7 @@ public class WorldBorderMatchModule extends MatchModule implements Listener {
             if (border.broadcast && border.after != null) {
                 Duration durationUntilShrink = border.after.minus(getMatch().runningTime()).plus(Duration.ofSeconds(1));
                 if (!durationUntilShrink.isNegative() && isBroadcastTime(durationUntilShrink)) {
-                    BaseComponent alert = new Component(ChatColor.GRAY, ChatColor.BOLD)
-                            .extra("[")
-                            .extra(new Component(new TranslatableComponent("prefixed.alert"), ChatColor.YELLOW))
-                            .extra("] ")
-                            .extra((new Component(new TranslatableComponent("match.worldborder.shrinking", PeriodFormats.formatColons(durationUntilShrink), border.getSize()/2), ChatColor.AQUA)).bold(false));
+                    BaseComponent alert = new Component(new TranslatableComponent("match.worldborder.shrinking", PeriodFormats.formatColons(durationUntilShrink), border.getSize()/2), ChatColor.AQUA);
                     match.sendMessage(alert);
                 }
             }
