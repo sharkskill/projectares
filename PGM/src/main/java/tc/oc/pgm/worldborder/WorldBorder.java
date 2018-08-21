@@ -108,10 +108,11 @@ public class WorldBorder {
                     Location highestBlockLocation = highestBlock.getLocation();
                     highestBlockLocation.subtract(0, 1, 0);
                     highestBlockLocation.getBlock().setType(Material.SMOOTH_BRICK);
-                    location.setY(highestBlockLocation.getY() + 1);
+                    location.setY(highestBlockLocation.getY() + 2);
 
                     player.getBukkit().teleport(location);
                     player.sendMessage(ChatColor.YELLOW + PGMTranslations.get().t("border.teleport", player.getBukkit()));
+                    player.playSound(Sound.BLOCK_PORTAL_TRIGGER, 1, 1.25f);
                 }
             }
         }
