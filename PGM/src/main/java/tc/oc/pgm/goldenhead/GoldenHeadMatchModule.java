@@ -1,11 +1,6 @@
 package tc.oc.pgm.goldenhead;
 
-import org.bukkit.Bukkit;
-import org.bukkit.ChatColor;
-import org.bukkit.Location;
-import org.bukkit.Material;
-import org.bukkit.Server;
-import org.bukkit.SkullType;
+import org.bukkit.*;
 import org.bukkit.block.BlockFace;
 import org.bukkit.block.Skull;
 import org.bukkit.enchantments.Enchantment;
@@ -14,10 +9,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
-import org.bukkit.event.block.BlockBreakEvent;
-import org.bukkit.event.enchantment.EnchantItemEvent;
 import org.bukkit.event.enchantment.PrepareItemEnchantEvent;
-import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.entity.PlayerDeathEvent;
 import org.bukkit.event.inventory.InventoryCloseEvent;
 import org.bukkit.event.inventory.InventoryOpenEvent;
@@ -29,21 +21,15 @@ import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.material.MaterialData;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
-import tc.oc.api.util.Permissions;
-import tc.oc.commons.core.util.Comparables;
 import tc.oc.minecraft.protocol.MinecraftVersion;
 import tc.oc.pgm.events.ListenerScope;
-import tc.oc.pgm.events.PlayerBlockTransformEvent;
 import tc.oc.pgm.match.Match;
 import tc.oc.pgm.match.MatchModule;
-import tc.oc.pgm.match.MatchPlayer;
 import tc.oc.pgm.match.MatchScope;
 
 import javax.inject.Inject;
 import java.time.Duration;
-import java.util.Arrays;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
@@ -75,8 +61,6 @@ public class GoldenHeadMatchModule extends MatchModule implements Listener {
         recipe.setIngredient('H', new MaterialData(Material.SKULL_ITEM, (byte)3));
 
         server.addRecipe(recipe);
-
-
 
         fillEnchantNames();
     }
@@ -132,25 +116,6 @@ public class GoldenHeadMatchModule extends MatchModule implements Listener {
             event.getActor().addPotionEffect(new PotionEffect(PotionEffectType.REGENERATION, 20 * 10, 1));
         }
     }
-
-    private Map<UUID, Integer> xray = new HashMap<>();
-
-    @EventHandler(priority = EventPriority.MONITOR)
-    public void onItemConsume(BlockBreakEvent event) {
-        if (!event.getBlock().getType().equals(Material.DIAMOND_ORE)) {
-            return;
-        }
-        UUID uuid = event.getPlayer().getUniqueId();
-        xray.put(uuid, xray.containsKey(uuid) ? xray.get(uuid) + 1 : 1);
-        if (xray.get(uuid) >= 16) {
-            for (MatchPlayer player : match.getObservingPlayers()) {
-                if (player.getBukkit().hasPermission(Permissions.STAFF)) {
-                    player.sendMessage(ChatColor.RED + "Warning: " + event.getPlayer().getDisplayName() + " has mined " + xray.get(uuid) + " diamonds");
-                }
-            }
-        }
-    }
-
 
     @EventHandler(priority = EventPriority.MONITOR)
     public void onEnchant(PrepareItemEnchantEvent event) {

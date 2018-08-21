@@ -35,6 +35,7 @@ import tc.oc.pgm.tnt.TNTManifest;
 import tc.oc.pgm.tokens.TokenManifest;
 import tc.oc.pgm.tracker.TrackerManifest;
 import tc.oc.pgm.tutorial.TutorialManifest;
+import tc.oc.pgm.uhc.UHCManifest;
 import tc.oc.pgm.wool.WoolManifest;
 
 /**
@@ -80,5 +81,6 @@ public class PGMModulesManifest extends HybridManifest {
         install(new BlitzManifest());
         install(new HighlightManifest());
         install(new MenuManifest());
+        install(new UHCManifest());
     }
 }
