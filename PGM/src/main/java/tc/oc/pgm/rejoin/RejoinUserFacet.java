@@ -73,6 +73,7 @@ public class RejoinUserFacet implements MatchUserFacet, Listener {
     @TargetedEventHandler(priority = EventPriority.LOWEST, ignoreCancelled = true)
     public void processPlayerPartyChange(PlayerChangePartyEvent event) {
         if(!rules.isPresent()) return;
+        if(event.getNewParty() == null) return;
 
         this.allowedToRejoin = event.getNewParty() instanceof Competitor;
     }
