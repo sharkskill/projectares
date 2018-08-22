@@ -68,15 +68,13 @@ public class RejoinUserFacet implements MatchUserFacet, Listener {
     }
 
     @SuppressWarnings("deprecation")
-    @TargetedEventHandler(priority = EventPriority.LOWEST, ignoreCancelled = true)
+    @TargetedEventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
     public void processPlayerPartyChange(PlayerChangePartyEvent event) {
         if(!event.getPlayer().getUniqueId().equals(player)) return;
-        MatchPlayer matchPlayer = event.getPlayer();
+        if (event.getNewParty() == null) return;
         if(!rules.isPresent()) return;
 
-        if(event.getNewParty() instanceof Competitor) {
-            this.allowedToRejoin = true;
-        }
+        this.allowedToRejoin = event.isParticipating();
     }
 //
     @SuppressWarnings("deprecation")
@@ -94,7 +92,6 @@ public class RejoinUserFacet implements MatchUserFacet, Listener {
         final Map<Slot, ItemStack> carrying = new HashMap<>();
         Slot.Player.player().forEach(slot -> slot.item(event.getPlayer())
                                                  .ifPresent(item -> carrying.put(slot, item)));
-
         inventory.clear();
         inventory.putAll(carrying);
 
