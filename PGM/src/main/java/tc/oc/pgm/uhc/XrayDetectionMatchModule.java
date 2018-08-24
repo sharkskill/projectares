@@ -35,7 +35,6 @@ public class XrayDetectionMatchModule extends MatchModule implements Listener {
     private final PGMMap map;
     private static final MaterialBundle[] MATERIALS = new MaterialBundle[]{
             MaterialBundle.of(Material.DIAMOND_ORE, 16, "diamonds"),
-            MaterialBundle.of(Material.GOLD_ORE, 25, "gold"),
             MaterialBundle.of(Material.MOB_SPAWNER, 2, "mob spawners"),
     };
     private final Audiences audiences;
