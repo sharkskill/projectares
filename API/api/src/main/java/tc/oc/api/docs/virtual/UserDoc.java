@@ -30,6 +30,7 @@ public interface UserDoc {
         public String realm;
         public String text;
         public int priority;
+        public boolean visible_while_participating;
     }
 
     @Serialize

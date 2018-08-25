@@ -7,6 +7,7 @@ import tc.oc.commons.core.plugin.PluginFacetBinder;
 import tc.oc.minecraft.api.event.ListenerBinder;
 import tc.oc.pgm.analytics.MatchAnalyticsManifest;
 import tc.oc.pgm.antigrief.DefuseListener;
+import tc.oc.pgm.chat.MatchFlairCache;
 import tc.oc.pgm.chat.MatchFlairRenderer;
 import tc.oc.pgm.chat.MatchNameInvalidator;
 import tc.oc.pgm.chat.MatchUsernameRenderer;
@@ -83,6 +84,7 @@ public final class PGMManifest extends HybridManifest {
         final PluginFacetBinder facets = new PluginFacetBinder(binder());
         facets.register(AdminCommands.class);
         facets.register(PollCommands.class);
+        facets.register(MatchFlairCache.class);
         facets.register(MatchNameInvalidator.class);
         facets.register(MapDevelopmentCommands.class);
         facets.register(MapErrorTracker.class);

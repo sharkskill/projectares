@@ -1,48 +1,57 @@
 package tc.oc.pgm.chat;
 
-import javax.inject.Inject;
-import javax.inject.Singleton;
-
 import net.md_5.bungee.api.ChatColor;
 import tc.oc.api.bukkit.users.BukkitUserStore;
+import tc.oc.api.docs.virtual.UserDoc;
 import tc.oc.api.minecraft.MinecraftService;
-import tc.oc.commons.bukkit.flairs.FlairConfiguration;
-import tc.oc.commons.bukkit.flairs.FlairRenderer;
 import tc.oc.commons.bukkit.chat.NameFlag;
 import tc.oc.commons.bukkit.chat.NameType;
+import tc.oc.commons.bukkit.flairs.FlairConfiguration;
+import tc.oc.commons.bukkit.flairs.FlairRenderer;
 import tc.oc.commons.bukkit.nick.Identity;
-import tc.oc.pgm.match.Match;
-import tc.oc.pgm.match.MatchManager;
+
+import javax.inject.Inject;
+import javax.inject.Singleton;
+import java.util.stream.Stream;
 
 /**
- * Add mapmaker flair
+ * Add mapmaker flair and hide flairs not shown while participating
  */
 @Singleton
 public class MatchFlairRenderer extends FlairRenderer {
 
     private static final String MAPMAKER_FLAIR_LEGACY = ChatColor.BLUE + "*";
 
-    private final MatchManager matchManager;
+    private final MatchFlairCache cache;
 
-    @Inject MatchFlairRenderer(MinecraftService minecraftService, BukkitUserStore userStore, MatchManager matchManager, FlairConfiguration flairConfiguration) {
+    @Inject MatchFlairRenderer(MinecraftService minecraftService, BukkitUserStore userStore, FlairConfiguration flairConfiguration, MatchFlairCache cache) {
         super(minecraftService, userStore, flairConfiguration);
-        this.matchManager = matchManager;
+        this.cache = cache;
     }
 
     @Override
     public String getLegacyName(Identity identity, NameType type) {
-        String name = super.getLegacyName(identity, type);
+        String name;
+        if (!(type.style.contains(NameFlag.FLAIR) && type.reveal)) {
+            name = "";
+        }
+        else if (identity.isConsole()) {
+            name = ChatColor.GOLD + "❖";
+        }
+        else {
+            boolean playing = this.cache.isParticipating(identity.getPlayerId());
+
+            Stream<UserDoc.Flair> flairs = getFlairs(identity);
+            if (playing) {
+                flairs = flairs.filter(f -> f.visible_while_participating);
+            }
+            name = flairs.map(flair -> flair.text).reduce("", String::concat);
+        }
 
         if(!type.style.contains(NameFlag.MAPMAKER)) return name;
 
-        // If we ever have multiple simulataneous matches, the mapmaker flair will show
-        // in all matches, not just the one for the player's map. We can't avoid this
-        // without some way to render names differently in each match (which we could do).
-        for(Match match : matchManager.currentMatches()) {
-            if(!match.isUnloaded() && match.getMap().getInfo().isAuthor(identity.getPlayerId())) {
-                name = MAPMAKER_FLAIR_LEGACY + name;
-                break;
-            }
+        if (this.cache.isMapMaker(identity.getPlayerId())) {
+            name = MAPMAKER_FLAIR_LEGACY + name;
         }
 
         return name;

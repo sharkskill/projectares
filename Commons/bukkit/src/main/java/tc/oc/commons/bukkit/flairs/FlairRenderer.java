@@ -2,6 +2,7 @@ package tc.oc.commons.bukkit.flairs;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.Set;
 import java.util.stream.Stream;
 import javax.inject.Inject;
@@ -39,7 +40,7 @@ public class FlairRenderer implements PartialNameRenderer {
     public String getLegacyName(Identity identity, NameType type) {
         if(!(type.style.contains(NameFlag.FLAIR) && type.reveal)) return "";
         if(identity.isConsole()) return ChatColor.GOLD + "❖";
-        return getFlairs(identity).reduce("", String::concat);
+        return getFlairTexts(identity).reduce("", String::concat);
     }
 
     @Override
@@ -47,7 +48,11 @@ public class FlairRenderer implements PartialNameRenderer {
         return Components.fromLegacyText(getLegacyName(identity, type));
     }
 
-    public Stream<String> getFlairs(Identity identity) {
+    public Stream<String> getFlairTexts(Identity identity) {
+        return getFlairs(identity).map(flair -> flair.text);
+    }
+
+    public Stream<UserDoc.Flair> getFlairs(Identity identity) {
         final UserDoc.Identity user;
         if(identity.getPlayerId() instanceof UserDoc.Identity) {
             // Flair may already be stashed inside the Identity
@@ -62,10 +67,9 @@ public class FlairRenderer implements PartialNameRenderer {
         return user.minecraft_flair()
                 .stream()
                 .filter(flair -> realms.contains(flair.realm) && flair.text != null && !flair.text.isEmpty())
-                .sorted((flair1, flair2) -> flair1.priority - flair2.priority)
+                .sorted(Comparator.comparingInt(flair3 -> flair3.priority))
                 .limit(flairConfiguration.maxFlairs() < 0 ? Long.MAX_VALUE : flairConfiguration.maxFlairs())
-                .sorted((flair1, flair2) -> flair2.priority - flair1.priority)
-                .map(flair -> flair.text);
+                .sorted((flair1, flair2) -> flair2.priority - flair1.priority);
     }
 
     public int getNumberOfFlairs(Identity identity) {
