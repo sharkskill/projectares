@@ -2,12 +2,13 @@ package tc.oc.pgm.enchantment;
 
 import org.bukkit.enchantments.Enchantment;
 
+import javax.inject.Inject;
 import java.util.Set;
 
-class EnchantmentProperties {
+public class EnchantmentProperties {
     private final Set<Enchantment> disabledEnchantments;
 
-    EnchantmentProperties(Set<Enchantment> disabledEnchantments) {
+    @Inject EnchantmentProperties(Set<Enchantment> disabledEnchantments) {
         this.disabledEnchantments = disabledEnchantments;
     }
 
