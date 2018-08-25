@@ -70,9 +70,9 @@ public class RejoinUserFacet implements MatchUserFacet, Listener {
     @SuppressWarnings("deprecation")
     @TargetedEventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
     public void processPlayerPartyChange(PlayerChangePartyEvent event) {
-        if(!event.getPlayer().getUniqueId().equals(player)) return;
+        if (!event.getPlayer().getUniqueId().equals(player)) return;
         if (event.getNewParty() == null) return;
-        if(!rules.isPresent()) return;
+        if (!rules.isPresent()) return;
 
         this.allowedToRejoin = event.isParticipating();
     }
@@ -80,18 +80,18 @@ public class RejoinUserFacet implements MatchUserFacet, Listener {
     @SuppressWarnings("deprecation")
     @TargetedEventHandler(priority = EventPriority.LOWEST, ignoreCancelled = true)
     public void processPlayerQuit(PlayerQuitEvent event) {
-        if(!event.getPlayer().getUniqueId().equals(player)) return;
+        if (!event.getPlayer().getUniqueId().equals(player)) return;
         MatchPlayer matchPlayer = matchPlayerFinder.getPlayer(event.getPlayer());
-        if(matchPlayer == null) return;
-        if(!rules.isPresent()) return;
-        if(!matchPlayer.isParticipating()) return;
-        if(!matchPlayer.getMatch().hasStarted() || matchPlayer.getMatch().isFinished()) return;
+        if (matchPlayer == null) return;
+        if (!rules.isPresent()) return;
+        if (!matchPlayer.isParticipating()) return;
+        if (!matchPlayer.getMatch().hasStarted() || matchPlayer.getMatch().isFinished()) return;
 
         rejoins++;
 
         final Map<Slot, ItemStack> carrying = new HashMap<>();
         Slot.Player.player().forEach(slot -> slot.item(event.getPlayer())
-                                                 .ifPresent(item -> carrying.put(slot, item)));
+                .ifPresent(item -> carrying.put(slot, item)));
         inventory.clear();
         inventory.putAll(carrying);
 
@@ -106,7 +106,7 @@ public class RejoinUserFacet implements MatchUserFacet, Listener {
         effects = new ArrayList<>();
         effects.addAll(event.getPlayer().getActivePotionEffects());
 
-        if(allowedToRejoin && rejoins >= rules.get().maxRejoins) {
+        if (allowedToRejoin && rejoins >= rules.get().maxRejoins) {
             blockPlayerFromRejoining(matchPlayer.getMatch(), event.getPlayer().getDisplayName(), true);
             return;
         }
@@ -127,14 +127,14 @@ public class RejoinUserFacet implements MatchUserFacet, Listener {
     @SuppressWarnings("deprecation")
     @EventHandler(priority = EventPriority.LOWEST, ignoreCancelled = true)
     public void processPlayerJoin(MatchPlayerAddEvent event) {
-        if(!event.getPlayer().getUniqueId().equals(player)) return;
+        if (!event.getPlayer().getUniqueId().equals(player)) return;
 
         MatchPlayer matchPlayer = event.getPlayer();
-        if(matchPlayer == null) return;
-        if(!rules.isPresent()) return;
-        if(!matchPlayer.getMatch().hasStarted()) return;
+        if (matchPlayer == null) return;
+        if (!rules.isPresent()) return;
+        if (!matchPlayer.getMatch().hasStarted()) return;
 
-        if(!allowedToRejoin) return;
+        if (!allowedToRejoin) return;
 
         offlineTask.cancel();
 
@@ -175,10 +175,10 @@ public class RejoinUserFacet implements MatchUserFacet, Listener {
 
         match.sendMessage(
                 new Component(ChatColor.RED)
-                .extra(displayName + " ")
-                .extra(new TranslatableComponent("broadcast.rejoin.message"), ChatColor.RED)
-                .extra(" ")
-                .extra(new TranslatableComponent("broadcast.rejoin." + (diedDueToRejoins ? "rejoins" : "offlineTime")), ChatColor.RED));
+                        .extra(displayName + " ")
+                        .extra(new TranslatableComponent("broadcast.rejoin.message"), ChatColor.RED)
+                        .extra(" ")
+                        .extra(new TranslatableComponent("broadcast.rejoin." + (diedDueToRejoins ? "rejoins" : "offlineTime")), ChatColor.RED));
     }
 
     private void addOfflineTime(Match match, String displayName, Map<Slot, ItemStack> inventory) {
@@ -198,20 +198,20 @@ public class RejoinUserFacet implements MatchUserFacet, Listener {
         inventory.forEach((slot, keptStack) -> {
             final ItemStack invStack = slot.getItem(bukkit);
 
-            if(invStack == null || slot instanceof Slot.Armor) {
+            if (invStack == null || slot instanceof Slot.Armor) {
                 slot.putItem(inv, keptStack);
             } else {
-                if(invStack.isSimilar(keptStack)) {
+                if (invStack.isSimilar(keptStack)) {
                     int n = Math.min(keptStack.getAmount(), invStack.getMaxStackSize() - invStack.getAmount());
                     invStack.setAmount(invStack.getAmount() + n);
                     keptStack.setAmount(keptStack.getAmount() - n);
                 }
-                if(keptStack.getAmount() > 0) {
+                if (keptStack.getAmount() > 0) {
                     displaced.add(keptStack);
                 }
             }
 
-            for(ItemStack stack : displaced) {
+            for (ItemStack stack : displaced) {
                 inv.addItem(stack);
             }
         });

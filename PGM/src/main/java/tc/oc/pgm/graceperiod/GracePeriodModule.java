@@ -23,22 +23,22 @@ public class GracePeriodModule implements MapModule, MatchModuleFactory<GracePer
         this.duration = duration;
     }
 
-    @Override
-    public GracePeriodMatchModule createMatchModule(Match match) {
-        return new GracePeriodMatchModule(match, this.duration);
+    public static GracePeriodModule parse(MapModuleContext context, Logger logger, Document doc) throws InvalidXMLException {
+        Element el = doc.getRootElement().getChild("graceperiod");
+        if (el != null) {
+            Duration duration = XMLUtils.parseDuration(Node.fromAttr(el, "duration"));
+            return new GracePeriodModule(duration);
+        } else {
+            return null;
+        }
     }
 
     // ---------------------
     // ---- XML Parsing ----
     // ---------------------
 
-    public static GracePeriodModule parse(MapModuleContext context, Logger logger, Document doc) throws InvalidXMLException {
-        Element el = doc.getRootElement().getChild("graceperiod");
-        if(el != null) {
-            Duration duration = XMLUtils.parseDuration(Node.fromAttr(el, "duration"));
-            return new GracePeriodModule(duration);
-        } else {
-            return null;
-        }
+    @Override
+    public GracePeriodMatchModule createMatchModule(Match match) {
+        return new GracePeriodMatchModule(match, this.duration);
     }
 }

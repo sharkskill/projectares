@@ -17,6 +17,7 @@ import tc.oc.api.docs.virtual.ReportDoc;
 import tc.oc.api.engagement.EngagementService;
 import tc.oc.api.friendships.FriendshipService;
 import tc.oc.api.games.TicketService;
+import tc.oc.api.leaderboard.UHCLeaderboardEntryService;
 import tc.oc.api.maps.MapService;
 import tc.oc.api.model.ModelBinders;
 import tc.oc.api.servers.ServerService;
@@ -78,6 +79,7 @@ public class OCNModelsManifest extends HybridManifest implements ModelBinders {
                 forOptional(UserService.class).setBinding().to(OCNUserService.class);
                 forOptional(WhisperService.class).setBinding().to(OCNWhisperService.class);
                 forOptional(FriendshipService.class).setBinding().to(OCNFriendshipService.class);
+                forOptional(UHCLeaderboardEntryService.class).setBinding().to(OCNUHCLeaderboardEntryService.class);
             }
         });
     }

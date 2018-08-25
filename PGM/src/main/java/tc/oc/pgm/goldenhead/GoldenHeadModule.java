@@ -17,16 +17,16 @@ public class GoldenHeadModule implements MapModule, MatchModuleFactory<GoldenHea
 
     }
 
-    @Override
-    public GoldenHeadMatchModule createMatchModule(Match match) {
-        return new GoldenHeadMatchModule(match);
+    public static GoldenHeadModule parse(MapModuleContext context, Logger logger, Document doc) throws InvalidXMLException {
+        return doc.getRootElement().getChild("goldenhead") != null ? new GoldenHeadModule() : null;
     }
 
     // ---------------------
     // ---- XML Parsing ----
     // ---------------------
 
-    public static GoldenHeadModule parse(MapModuleContext context, Logger logger, Document doc) throws InvalidXMLException {
-        return doc.getRootElement().getChild("goldenhead") != null ? new GoldenHeadModule() : null;
+    @Override
+    public GoldenHeadMatchModule createMatchModule(Match match) {
+        return new GoldenHeadMatchModule(match);
     }
 }

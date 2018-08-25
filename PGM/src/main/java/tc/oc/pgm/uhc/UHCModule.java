@@ -2,7 +2,6 @@ package tc.oc.pgm.uhc;
 
 import net.md_5.bungee.api.chat.BaseComponent;
 import net.md_5.bungee.api.chat.TranslatableComponent;
-import org.bukkit.Bukkit;
 import org.jdom2.Document;
 import org.jdom2.Element;
 import tc.oc.api.docs.virtual.MapDoc;
@@ -16,6 +15,8 @@ import java.util.Set;
 import java.util.logging.Logger;
 
 public class UHCModule implements MapModule {
+
+    enum Type {SOLO, TEAMS}
 
     private Element uhcElement;
 

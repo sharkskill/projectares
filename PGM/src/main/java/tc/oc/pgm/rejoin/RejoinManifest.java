@@ -10,7 +10,7 @@ public class RejoinManifest extends HybridManifest implements MapBinders, MatchB
     @Override
     protected void configure() {
         bindRootElementParser(Keys.optional(RejoinRules.class))
-            .to(RejoinParser.class);
+                .to(RejoinParser.class);
 
 
         installUserModule(binder -> new MatchUserFacetBinder(binder).register(RejoinUserFacet.class));

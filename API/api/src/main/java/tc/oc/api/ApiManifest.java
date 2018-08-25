@@ -6,6 +6,7 @@ import tc.oc.api.engagement.EngagementModelManifest;
 import tc.oc.api.friendships.FriendshipModelManifest;
 import tc.oc.api.games.GameModelManifest;
 import tc.oc.api.http.HttpManifest;
+import tc.oc.api.leaderboard.UHCLeaderboardEntryModelManifest;
 import tc.oc.api.maps.MapModelManifest;
 import tc.oc.api.match.MatchModelManifest;
 import tc.oc.api.message.MessagesManifest;
@@ -48,5 +49,6 @@ public final class ApiManifest extends HybridManifest {
         install(new TournamentModelManifest());
         install(new FriendshipModelManifest());
         install(new ChatModelManifest());
+        install(new UHCLeaderboardEntryModelManifest());
     }
 }

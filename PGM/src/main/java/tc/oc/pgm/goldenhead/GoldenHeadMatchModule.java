@@ -1,6 +1,10 @@
 package tc.oc.pgm.goldenhead;
 
-import org.bukkit.*;
+import org.bukkit.ChatColor;
+import org.bukkit.Location;
+import org.bukkit.Material;
+import org.bukkit.Server;
+import org.bukkit.SkullType;
 import org.bukkit.block.BlockFace;
 import org.bukkit.block.Skull;
 import org.bukkit.enchantments.Enchantment;
@@ -37,9 +41,11 @@ import java.util.UUID;
 @ListenerScope(MatchScope.RUNNING)
 public class GoldenHeadMatchModule extends MatchModule implements Listener {
 
-    @Inject private Server server;
-
     private static String GOLDEN_HEAD_DISPLAY = ChatColor.BOLD.toString() + ChatColor.AQUA + "Golden Head";
+    @Inject
+    private Server server;
+    private HashMap<Enchantment, String> names = new HashMap<>();
+    private Map<UUID, Duration> fights = new HashMap<UUID, Duration>();
 
     public GoldenHeadMatchModule(Match match) {
         super(match);
@@ -59,7 +65,7 @@ public class GoldenHeadMatchModule extends MatchModule implements Listener {
         recipe.shape("GGG", "GHG", "GGG");
 
         recipe.setIngredient('G', Material.GOLD_INGOT);
-        recipe.setIngredient('H', new MaterialData(Material.SKULL_ITEM, (byte)3));
+        recipe.setIngredient('H', new MaterialData(Material.SKULL_ITEM, (byte) 3));
 
         server.addRecipe(recipe);
 
@@ -74,8 +80,6 @@ public class GoldenHeadMatchModule extends MatchModule implements Listener {
         server.resetRecipes();
         super.disable();
     }
-
-    private HashMap<Enchantment, String> names = new HashMap<>();
 
     private void fillEnchantNames() {
         names.put(Enchantment.PROTECTION_ENVIRONMENTAL, "Protection");
@@ -171,8 +175,6 @@ public class GoldenHeadMatchModule extends MatchModule implements Listener {
             secondary.setAmount(0);
         }
     }
-
-    private Map<UUID, Duration> fights = new HashMap<UUID, Duration>();
 
 //    @EventHandler(priority = EventPriority.MONITOR)
 //    public void onFight(EntityDamageByEntityEvent event) {

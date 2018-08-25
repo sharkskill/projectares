@@ -81,7 +81,7 @@ public class XrayDetectionMatchModule extends MatchModule implements Listener {
 
     @Override
     public boolean shouldLoad() {
-        return map.getDocument().gamemode().contains(MapDoc.Gamemode.uhc);
+        return super.shouldLoad() && map.getDocument().gamemode().contains(MapDoc.Gamemode.uhc);
     }
 
     private ChatColor determineSeverity(int count, int base) {
