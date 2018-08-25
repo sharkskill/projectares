@@ -83,6 +83,6 @@ public class PGMModulesManifest extends HybridManifest {
         install(new HighlightManifest());
         install(new MenuManifest());
         install(new UHCManifest());
-        install(new EnchantmentManifest());
+        // install(new EnchantmentManifest());
     }
 }
