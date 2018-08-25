@@ -9,6 +9,7 @@ import tc.oc.pgm.control.ControllableGoalManifest;
 import tc.oc.pgm.core.CoreManifest;
 import tc.oc.pgm.damage.DamageManifest;
 import tc.oc.pgm.destroyable.DestroyableManifest;
+import tc.oc.pgm.enchantment.EnchantmenManifest;
 import tc.oc.pgm.filters.FilterManifest;
 import tc.oc.pgm.flag.FlagManifest;
 import tc.oc.pgm.highlights.HighlightManifest;
@@ -82,5 +83,6 @@ public class PGMModulesManifest extends HybridManifest {
         install(new HighlightManifest());
         install(new MenuManifest());
         install(new UHCManifest());
+        install(new EnchantmenManifest());
     }
 }
