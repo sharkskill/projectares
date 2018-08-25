@@ -18,6 +18,8 @@ import tc.oc.pgm.mutation.types.targetable.ApocalypseMutation;
 import tc.oc.pgm.mutation.types.targetable.BomberMutation;
 import tc.oc.pgm.mutation.types.targetable.LightningMutation;
 import tc.oc.pgm.mutation.types.uhc.BloodDiamondsScenario;
+import tc.oc.pgm.mutation.types.uhc.ChickenScenario;
+import tc.oc.pgm.mutation.types.uhc.SharingScenario;
 import tc.oc.pgm.mutation.types.uhc.CutCleanScenario;
 import tc.oc.pgm.mutation.types.uhc.DelayedMobsScenario;
 import tc.oc.pgm.mutation.types.uhc.FlowerPowerScenario;
@@ -25,11 +27,11 @@ import tc.oc.pgm.mutation.types.uhc.GoneFishingScenario;
 import tc.oc.pgm.mutation.types.uhc.MoblessScenario;
 import tc.oc.pgm.mutation.types.uhc.PortalDoorScenario;
 import tc.oc.pgm.mutation.types.uhc.NeophobiaScenario;
-import tc.oc.pgm.mutation.types.uhc.InsomniaScenario;
 import tc.oc.pgm.mutation.types.uhc.RodlessScenario;
 import tc.oc.pgm.mutation.types.uhc.SkyHighScenario;
 import tc.oc.pgm.mutation.types.uhc.TimberScenario;
 import tc.oc.pgm.mutation.types.uhc.TimeBombScenario;
+import tc.oc.pgm.mutation.types.uhc.WeakestLinkScenario;
 
 import java.util.stream.Stream;
 
@@ -62,13 +64,16 @@ public enum Mutation {
     RODLESS       (RodlessScenario.class,       Material.FISHING_ROD, false, true),
     NEOPHOBIA     (NeophobiaScenario.class,     Material.WORKBENCH, false, true),
     PORTALDOOR    (PortalDoorScenario.class,    Material.WOOD_DOOR, false, true),
-    INSOMNIA      (InsomniaScenario.class,      Material.BED, false, true),
+//    INSOMNIA      (InsomniaScenario.class,      Material.BED, false, true),
     MOBLESS       (MoblessScenario.class,       Material.MONSTER_EGG, false, true),
     TIMBER        (TimberScenario.class,        Material.WOOD_AXE, false, true),
     FLOWERPOWER   (FlowerPowerScenario.class,   Material.RED_ROSE, false, true),
     BLOODDIAMONDS (BloodDiamondsScenario.class, Material.REDSTONE, false, true),
     GONEFISHING   (GoneFishingScenario.class,   Material.FISHING_ROD, false, true),
-    DELAYEDMOBS   (DelayedMobsScenario.class,   Material.WATCH, false, true);
+    DELAYEDMOBS   (DelayedMobsScenario.class,   Material.WATCH, false, true),
+    SHARING       (SharingScenario.class,       Material.STONE_HOE, false, true),
+    WEAKESTLINK   (WeakestLinkScenario.class,   Material.WEB, false, true),
+    CHICKEN       (ChickenScenario.class,       Material.RAW_CHICKEN, false, true);
 
     public static final String TYPE_KEY = "mutation.type.";
     public static final String DESCRIPTION_KEY = ".desc";

@@ -27,7 +27,7 @@ public class CutCleanScenario extends UHCMutation.Impl {
     final static Range<Integer> LEATHER_RANGE = Range.closed(1, 2);
     final static Range<Integer> BEEF_RANGE = Range.closed(1, 3);
 
-    private Map<Material, Material> replacements;
+    protected static Map<Material, Material> replacements;
     private Map<Material, Integer> xp;
 
 

@@ -328,4 +328,45 @@ public class MatchCommands implements Commands {
             player.sendMessage(ChatColor.YELLOW + "Border added");
         }
     }
+
+    @Command(
+            aliases = {"help"},
+            desc = "UHC help"
+    )
+    public void help(CommandContext args, CommandSender sender) throws CommandException {
+        sender.sendMessage(ChatColor.AQUA + "-------------------------------");
+        sender.sendMessage(ChatColor.GOLD + "/uhc" + ChatColor.GRAY + " (lists information about the match)");
+        sender.sendMessage(ChatColor.GOLD + "/rules" + ChatColor.GRAY + " (lists all of the UHC rules)");
+        sender.sendMessage(ChatColor.GOLD + "/border" + ChatColor.GRAY + " (displays time and size changes for border)");
+        sender.sendMessage(ChatColor.GOLD + "/h <username>" + ChatColor.GRAY + " (/h * to display everyones health)");
+        sender.sendMessage(ChatColor.GOLD + "/scenario list" + ChatColor.GRAY + " (lists all scenarios)");
+        sender.sendMessage("");
+        sender.sendMessage(ChatColor.GOLD + "/teams" + ChatColor.GRAY + " (/teams <username> to display a specific person's team)");
+        sender.sendMessage(ChatColor.GOLD + "/team invite <username>" + ChatColor.GRAY + " (send a party invite to your friend)");
+        sender.sendMessage(ChatColor.GOLD + "/team accept <username>" + ChatColor.GRAY + " (accept a party invite from your friend)");
+        sender.sendMessage(ChatColor.GOLD + "/team solo" + ChatColor.GRAY + " (added to the solo queue)");
+        sender.sendMessage(ChatColor.GOLD + "/team soloquit" + ChatColor.GRAY + " (removed from the solo queue)");
+    }
+
+    @Command(
+            aliases = {"rules"},
+            desc = "UHC rules"
+    )
+    public void rules(CommandContext args, CommandSender sender) throws CommandException {
+        sender.sendMessage(ChatColor.AQUA + "-------------------------------");
+        sender.sendMessage(ChatColor.GRAY + "- " + ChatColor.GOLD + "No strip mining or pokeholing below y: 32");
+        sender.sendMessage(ChatColor.GRAY + "  - " + ChatColor.GOLD + "Digging to sounds and players is allowed");
+        sender.sendMessage(ChatColor.GRAY + "- " + ChatColor.GOLD + "Rollercoastering is allowed (staircasing from y=32 to y=0 back to y=32)");
+        sender.sendMessage(ChatColor.GRAY + "- " + ChatColor.GOLD + "No stalling, unless the scenarios permit it");
+        sender.sendMessage(ChatColor.GRAY + "  - " + ChatColor.GOLD + "Includes but is not limited to");
+        sender.sendMessage(ChatColor.GRAY + "    - " + ChatColor.GOLD + "Hiding underground once the border reaches a radius of 100 blocks");
+        sender.sendMessage(ChatColor.GRAY + "    - " + ChatColor.GOLD + "Making a skybase within a radius of 100 blocks of 0,0");
+        sender.sendMessage(ChatColor.GRAY + "- " + ChatColor.GOLD + "iPVP during the grace period is not allowed (lava bucketing, flint and steel, etc)");
+        sender.sendMessage(ChatColor.GRAY + "- " + ChatColor.GOLD + "Cross teaming is not allowed");
+        sender.sendMessage(ChatColor.GRAY + "- " + ChatColor.GOLD + "Sacrificing yourself to give your gear to another team is not allowed");
+        sender.sendMessage(ChatColor.GRAY + "- " + ChatColor.GOLD + "You cannot mention coordinates or a players loots after death");
+        sender.sendMessage(ChatColor.GRAY + "- " + ChatColor.GOLD + "Relogging is allowed, but there is a limit to how often and how long you get disconnected.");
+    }
+
+
 }

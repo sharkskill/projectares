@@ -42,25 +42,33 @@ public class TimeBombScenario extends UHCMutation.Impl {
         killedLocation = killedLocation.add(0, 0, -1);
 
         killedLocation.getBlock().setType(Material.CHEST);
+        Chest chest1 = (Chest) killedLocation.getBlock().getState();
 
         killedLocation = killedLocation.add(0, 0, -1);
 
         killedLocation.getBlock().setType(Material.CHEST);
 
-        Chest chest = (Chest) killedLocation.getBlock().getState();
-        drops.forEach(drop -> chest.getBlockInventory().addItem(drop));
+        Chest chest2 = (Chest) killedLocation.getBlock().getState();
+
+        for (ItemStack drop : drops) {
+            if (chest1.getBlockInventory().getContents().length >= chest1.getBlockInventory().getSize()) {
+                chest1.getBlockInventory().addItem(drop);
+            } else {
+                chest2.getBlockInventory().addItem(drop);
+            }
+        }
         drops.clear();
 
         if (EXPLODE_AFTER != null) {
             match().getScheduler(MatchScope.RUNNING).createDelayedTask(EXPLODE_AFTER, () -> {
-                TNTPrimed tnt = (TNTPrimed) match().getWorld().spawnEntity(chest.getLocation(), EntityType.PRIMED_TNT);
+                TNTPrimed tnt = (TNTPrimed) match().getWorld().spawnEntity(chest1.getLocation(), EntityType.PRIMED_TNT);
                 tnt.setFuseTicks(0);
-                tnt.setYield(2);
+                tnt.setYield(5);
 
                 //Blow up the stuff as well
-                TNTPrimed tnt2 = (TNTPrimed) match().getWorld().spawnEntity(chest.getLocation(), EntityType.PRIMED_TNT);
+                TNTPrimed tnt2 = (TNTPrimed) match().getWorld().spawnEntity(chest2.getLocation(), EntityType.PRIMED_TNT);
                 tnt2.setFuseTicks(0);
-                tnt2.setYield(2);
+                tnt2.setYield(5);
             });
         }
     }

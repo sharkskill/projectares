@@ -76,7 +76,7 @@ public class RejoinUserFacet implements MatchUserFacet, Listener {
 
         this.allowedToRejoin = event.isParticipating();
     }
-//
+
     @SuppressWarnings("deprecation")
     @TargetedEventHandler(priority = EventPriority.LOWEST, ignoreCancelled = true)
     public void processPlayerQuit(PlayerQuitEvent event) {

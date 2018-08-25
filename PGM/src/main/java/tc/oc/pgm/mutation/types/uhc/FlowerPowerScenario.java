@@ -69,6 +69,25 @@ public class FlowerPowerScenario extends UHCMutation.Impl {
         bannedItems.add(Material.RED_GLAZED_TERRACOTTA);
         bannedItems.add(Material.SILVER_GLAZED_TERRACOTTA);
         bannedItems.add(Material.YELLOW_GLAZED_TERRACOTTA);
+        bannedItems.add(Material.BLACK_SHULKER_BOX);
+        bannedItems.add(Material.BLUE_SHULKER_BOX);
+        bannedItems.add(Material.BROWN_SHULKER_BOX);
+        bannedItems.add(Material.CYAN_SHULKER_BOX);
+        bannedItems.add(Material.GRAY_SHULKER_BOX);
+        bannedItems.add(Material.GREEN_SHULKER_BOX);
+        bannedItems.add(Material.LIGHT_BLUE_SHULKER_BOX);
+        bannedItems.add(Material.LIME_SHULKER_BOX);
+        bannedItems.add(Material.MAGENTA_SHULKER_BOX);
+        bannedItems.add(Material.ORANGE_SHULKER_BOX);
+        bannedItems.add(Material.PINK_SHULKER_BOX);
+        bannedItems.add(Material.PURPLE_SHULKER_BOX);
+        bannedItems.add(Material.RED_SHULKER_BOX);
+        bannedItems.add(Material.SILVER_SHULKER_BOX);
+        bannedItems.add(Material.YELLOW_SHULKER_BOX);
+
+        //scenario stuff
+        bannedItems.add(Material.FISHING_ROD);
+        bannedItems.add(Material.SHIELD);
     }
 
     @Override
