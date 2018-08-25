@@ -4,10 +4,10 @@ import tc.oc.api.annotations.Serialize;
 import tc.oc.api.docs.UserId;
 import tc.oc.api.model.ModelName;
 
-public interface UHCLeaderboardEntryDoc {
+public interface UhcLeaderboardEntryDoc {
     interface Partial extends PartialModel {}
 
-    @ModelName(value = "UHCLeaderboardEntry", singular = "uhc_leaderboard_entry", plural = "uhc_leaderboard_entries")
+    @ModelName(value = "UhcLeaderboardEntry", singular = "uhc_leaderboard_entry", plural = "uhc_leaderboard_entries")
     interface Base extends Partial, Model {
     }
 

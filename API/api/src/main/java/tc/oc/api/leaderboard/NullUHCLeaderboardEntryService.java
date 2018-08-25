@@ -2,15 +2,15 @@ package tc.oc.api.leaderboard;
 
 import com.google.common.util.concurrent.Futures;
 import com.google.common.util.concurrent.ListenableFuture;
-import tc.oc.api.docs.UHCLeaderboardEntry;
+import tc.oc.api.docs.UhcLeaderboardEntry;
 import tc.oc.api.docs.UserId;
-import tc.oc.api.docs.virtual.UHCLeaderboardEntryDoc;
+import tc.oc.api.docs.virtual.UhcLeaderboardEntryDoc;
 import tc.oc.api.model.NullModelService;
 
-public class NullUHCLeaderboardEntryService extends NullModelService<UHCLeaderboardEntry, UHCLeaderboardEntryDoc.Partial> implements UHCLeaderboardEntryService {
+public class NullUHCLeaderboardEntryService extends NullModelService<UhcLeaderboardEntry, UhcLeaderboardEntryDoc.Partial> implements UHCLeaderboardEntryService {
     @Override
-    public ListenableFuture<UHCLeaderboardEntry> findOrCreate(UserId userId) {
-        return Futures.immediateFuture(new UHCLeaderboardEntry() {
+    public ListenableFuture<UhcLeaderboardEntry> findOrCreate(UserId userId) {
+        return Futures.immediateFuture(new UhcLeaderboardEntry() {
             @Override
             public int gold_solo() {
                 return 0;

@@ -6,9 +6,9 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import tc.oc.api.docs.PlayerId;
-import tc.oc.api.docs.UHCLeaderboardEntry;
+import tc.oc.api.docs.UhcLeaderboardEntry;
 import tc.oc.api.docs.virtual.MapDoc;
-import tc.oc.api.docs.virtual.UHCLeaderboardEntryDoc;
+import tc.oc.api.docs.virtual.UhcLeaderboardEntryDoc;
 import tc.oc.api.leaderboard.UHCLeaderboardEntryService;
 import tc.oc.commons.core.concurrent.Flexecutor;
 import tc.oc.minecraft.scheduler.Sync;
@@ -113,13 +113,13 @@ public class LeaderboardPublishingMatchModule extends MatchModule implements Lis
         entries.clear();
     }
 
-    abstract class AtomicLeaderboardEntryBase implements UHCLeaderboardEntryDoc.Base {
-        private final UHCLeaderboardEntry base;
+    abstract class AtomicLeaderboardEntryBase implements UhcLeaderboardEntryDoc.Base {
+        private final UhcLeaderboardEntry base;
         private final AtomicInteger wins;
         private final AtomicInteger kills;
         private final AtomicInteger gold;
 
-        public AtomicLeaderboardEntryBase(UHCLeaderboardEntry base, AtomicInteger wins, AtomicInteger kills, AtomicInteger gold) {
+        public AtomicLeaderboardEntryBase(UhcLeaderboardEntry base, AtomicInteger wins, AtomicInteger kills, AtomicInteger gold) {
             this.base = base;
             this.wins = wins;
             this.kills = kills;
@@ -144,8 +144,8 @@ public class LeaderboardPublishingMatchModule extends MatchModule implements Lis
         }
     }
 
-    class AtomicSoloLeaderboardEntry extends AtomicLeaderboardEntryBase implements UHCLeaderboardEntryDoc.Solo {
-        public AtomicSoloLeaderboardEntry(UHCLeaderboardEntry base) {
+    class AtomicSoloLeaderboardEntry extends AtomicLeaderboardEntryBase implements UhcLeaderboardEntryDoc.Solo {
+        public AtomicSoloLeaderboardEntry(UhcLeaderboardEntry base) {
             super(base, new AtomicInteger(base.wins_solo()), new AtomicInteger(base.kills_solo()), new AtomicInteger(base.gold_solo()));
         }
 
@@ -165,8 +165,8 @@ public class LeaderboardPublishingMatchModule extends MatchModule implements Lis
         }
     }
 
-    class AtomicTeamLeaderboardEntry extends AtomicLeaderboardEntryBase implements UHCLeaderboardEntryDoc.Teams {
-        public AtomicTeamLeaderboardEntry(UHCLeaderboardEntry base) {
+    class AtomicTeamLeaderboardEntry extends AtomicLeaderboardEntryBase implements UhcLeaderboardEntryDoc.Teams {
+        public AtomicTeamLeaderboardEntry(UhcLeaderboardEntry base) {
             super(base, new AtomicInteger(base.wins_teams()), new AtomicInteger(base.kills_teams()), new AtomicInteger(base.gold_teams()));
         }
 
