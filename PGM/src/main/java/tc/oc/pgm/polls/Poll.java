@@ -28,7 +28,7 @@ public abstract class Poll implements Runnable {
         this.server = server;
         this.initiator = initiator;
         this.vote(true, initiator);
-        timeLeftSeconds = 59; // Fixes double broadcast
+        timeLeftSeconds = 60;
     }
 
     public String getInitiator() {
