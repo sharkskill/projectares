@@ -304,7 +304,7 @@ public class MatchCommands implements Commands {
 
             WorldBorder border = new WorldBorder(
                     new Vector(0d, 0d, 0d),
-                    args.getDouble(1),
+                    args.getDouble(1)*2,
                     Duration.ZERO,
                     0.2d,
                     5d,
