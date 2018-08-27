@@ -66,10 +66,14 @@ public interface UHCMutation extends MutationModule {
     }
 
     default void damage(Player player, double newHealth) {
+        damage(player, newHealth, true);
+    }
+
+    default void damage(Player player, double newHealth, boolean absorption) {
         player.damage(0);
         double difference = player.getHealth() - newHealth;
 
-        if (player.getAbsorption() > 0) {
+        if (absorption && player.getAbsorption() > 0) {
             if (player.getAbsorption() < difference) {
                 player.setAbsorption(0);
                 player.setHealth(difference - player.getAbsorption());

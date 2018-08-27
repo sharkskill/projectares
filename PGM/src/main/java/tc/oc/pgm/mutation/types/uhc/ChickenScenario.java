@@ -6,6 +6,8 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
+import org.bukkit.potion.PotionEffect;
+import org.bukkit.potion.PotionEffectType;
 import tc.oc.commons.bukkit.event.targeted.TargetedEventHandler;
 import tc.oc.pgm.events.PlayerChangePartyEvent;
 import tc.oc.pgm.match.Match;
@@ -33,7 +35,11 @@ public class ChickenScenario extends UHCMutation.Impl {
     @EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
     public void processPlayerPartyChange(ParticipantReleaseEvent event) {
         if (event.getPlayer().isParticipating()) {
-            match().getScheduler(MatchScope.RUNNING).createDelayedTask(Duration.ofSeconds(1), () -> damage(event.getPlayer().getBukkit(), 1));
+            match().getScheduler(MatchScope.RUNNING).createDelayedTask(Duration.ofSeconds(1), () -> {
+                event.getPlayer().getBukkit().addPotionEffect(new PotionEffect(PotionEffectType.DAMAGE_RESISTANCE, 20 * 30, 3));
+                event.getPlayer().getBukkit().addPotionEffect(new PotionEffect(PotionEffectType.ABSORPTION, 20 * 30, 1));
+                damage(event.getPlayer().getBukkit(), 1, false);
+            });
         }
 
     }
