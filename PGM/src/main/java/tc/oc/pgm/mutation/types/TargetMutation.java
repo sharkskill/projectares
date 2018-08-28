@@ -1,11 +1,5 @@
 package tc.oc.pgm.mutation.types;
 
-import java.time.Duration;
-import java.time.Instant;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
-
 import com.google.api.client.util.Lists;
 import tc.oc.commons.core.random.MutableWeightedRandomChooser;
 import tc.oc.commons.core.util.TimeUtils;
@@ -14,6 +8,12 @@ import tc.oc.pgm.match.MatchPlayer;
 import tc.oc.pgm.match.Repeatable;
 import tc.oc.pgm.mutation.Mutation;
 import tc.oc.time.Time;
+
+import java.time.Duration;
+import java.time.Instant;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
 
 /**
  * A mutation module that executes a task on random {@link MatchPlayer}s.

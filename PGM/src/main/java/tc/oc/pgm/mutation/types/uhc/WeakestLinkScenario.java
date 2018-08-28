@@ -2,12 +2,8 @@ package tc.oc.pgm.mutation.types.uhc;
 
 import com.google.common.math.DoubleMath;
 import net.md_5.bungee.api.ChatColor;
-import org.bukkit.Material;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
-import org.bukkit.event.block.Action;
-import org.bukkit.event.block.BlockBreakEvent;
-import org.bukkit.event.player.PlayerInteractEvent;
 import tc.oc.commons.core.formatting.PeriodFormats;
 import tc.oc.commons.core.scheduler.Task;
 import tc.oc.commons.core.util.Comparables;
@@ -19,9 +15,6 @@ import tc.oc.pgm.mutation.Mutation;
 import tc.oc.pgm.mutation.types.UHCMutation;
 
 import java.time.Duration;
-import java.util.HashSet;
-import java.util.Set;
-import java.util.UUID;
 
 public class WeakestLinkScenario extends UHCMutation.Impl {
     final private static Duration KILL_TIME = Duration.ofMinutes(5);

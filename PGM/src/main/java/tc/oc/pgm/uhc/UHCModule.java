@@ -16,8 +16,6 @@ import java.util.logging.Logger;
 
 public class UHCModule implements MapModule {
 
-    enum Type {SOLO, TEAMS}
-
     private Element uhcElement;
 
     public UHCModule(Element uhcElement) {
@@ -33,6 +31,8 @@ public class UHCModule implements MapModule {
     public BaseComponent getGameName(MapModuleContext context) {
         return new TranslatableComponent("match.scoreboard.uhc.title");
     }
+
+    enum Type {SOLO, TEAMS}
 
     public static class Factory extends MapModuleFactory<UHCModule> {
 

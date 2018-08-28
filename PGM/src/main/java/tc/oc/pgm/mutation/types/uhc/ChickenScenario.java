@@ -1,21 +1,16 @@
 package tc.oc.pgm.mutation.types.uhc;
 
 import org.bukkit.Material;
-import org.bukkit.enchantments.Enchantment;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.inventory.ItemStack;
-import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
-import tc.oc.commons.bukkit.event.targeted.TargetedEventHandler;
-import tc.oc.pgm.events.PlayerChangePartyEvent;
 import tc.oc.pgm.match.Match;
 import tc.oc.pgm.match.MatchScope;
 import tc.oc.pgm.mutation.Mutation;
 import tc.oc.pgm.mutation.types.UHCMutation;
 import tc.oc.pgm.spawns.events.ParticipantReleaseEvent;
-import tc.oc.pgm.spawns.events.PlayerSpawnEvent;
 
 import java.time.Duration;
 

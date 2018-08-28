@@ -1,25 +1,17 @@
 package tc.oc.pgm.mutation.types.uhc;
 
-import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.block.BlockBreakEvent;
-import org.bukkit.event.inventory.CraftItemEvent;
-import org.bukkit.inventory.CraftingInventory;
-import org.bukkit.inventory.ItemStack;
 import tc.oc.pgm.match.Match;
-import tc.oc.pgm.match.MatchScope;
 import tc.oc.pgm.mutation.Mutation;
 import tc.oc.pgm.mutation.types.UHCMutation;
 
-import java.time.Duration;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
-import java.util.Map;
 import java.util.Set;
 
 public class TimberScenario extends UHCMutation.Impl {

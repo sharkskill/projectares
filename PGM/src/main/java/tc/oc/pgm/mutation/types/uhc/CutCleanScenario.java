@@ -1,7 +1,6 @@
 package tc.oc.pgm.mutation.types.uhc;
 
 import com.google.common.collect.Range;
-import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.entity.Chicken;
 import org.bukkit.entity.Cow;
@@ -18,7 +17,6 @@ import tc.oc.pgm.mutation.Mutation;
 import tc.oc.pgm.mutation.types.UHCMutation;
 
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 public class CutCleanScenario extends UHCMutation.Impl {

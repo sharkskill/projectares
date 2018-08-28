@@ -32,11 +32,11 @@ import java.util.stream.Stream;
 @ListenerScope(MatchScope.LOADED)
 public class XrayDetectionMatchModule extends MatchModule implements Listener {
 
-    private final PGMMap map;
     private static final MaterialBundle[] MATERIALS = new MaterialBundle[]{
             MaterialBundle.of(Material.DIAMOND_ORE, 16, "diamonds"),
             MaterialBundle.of(Material.MOB_SPAWNER, 2, "mob spawners"),
     };
+    private final PGMMap map;
     private final Audiences audiences;
     private final IdentityProvider identityProvider;
     private Table<UUID, Material, Integer> xray = HashBasedTable.create();

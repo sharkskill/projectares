@@ -1,14 +1,10 @@
 package tc.oc.pgm.mutation.types.uhc;
 
 import com.google.common.collect.Range;
-import org.bukkit.Bukkit;
-import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
-import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.event.entity.ItemSpawnEvent;
-import tc.oc.pgm.events.BlockTransformEvent;
 import tc.oc.pgm.match.Match;
 import tc.oc.pgm.mutation.Mutation;
 import tc.oc.pgm.mutation.types.UHCMutation;
@@ -16,9 +12,7 @@ import tc.oc.pgm.mutation.types.UHCMutation;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 
 public class FlowerPowerScenario extends UHCMutation.Impl {
     private List<Material> flowers;

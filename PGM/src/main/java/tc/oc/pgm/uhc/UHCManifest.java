@@ -14,8 +14,9 @@ public class UHCManifest extends HybridManifest implements MapBinders, MatchBind
                 .to(UHCParser.class);
 
         install(new MatchModuleFixtureManifest<XrayDetectionMatchModule>() {});
-        install(new MatchModuleFixtureManifest<LeaderboardPublishingMatchModule>() {
-        });
+        install(new MatchModuleFixtureManifest<LeaderboardPublishingMatchModule>() {});
+        install(new MatchModuleFixtureManifest<WorldModificationMatchModule>() {});
+        install(new MatchModuleFixtureManifest<WhitelistAutomationMatchModule>() {});
     }
 
 }
