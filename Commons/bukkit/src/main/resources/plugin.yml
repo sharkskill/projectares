@@ -53,3 +53,15 @@ permissions:
       - tokens.give
       - sudo
       - sudo.others
+  ocn.broadcast.family:
+    default: false
+  ocn.broadcast.game:
+    default: false
+  ocn.broadcast.network:
+    default: false
+  ocn.broadcast.global:
+    default: false
+  ocn.trophies.list:
+    default: false
+  ocn.trophies.modify:
+    default: false
