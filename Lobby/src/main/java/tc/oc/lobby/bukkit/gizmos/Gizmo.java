@@ -1,8 +1,7 @@
 package tc.oc.lobby.bukkit.gizmos;
 
-import java.util.List;
-
 import com.google.common.collect.Lists;
+import java.util.List;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
@@ -10,7 +9,7 @@ import org.bukkit.event.Listener;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import tc.oc.lobby.bukkit.LobbyTranslations;
-import tc.oc.lobby.bukkit.gizmos.halloween.HeadlessHorsemanGizmo;
+import tc.oc.lobby.bukkit.gizmos.halloween.horse.HeadlessHorsemanGizmo;
 import tc.oc.lobby.bukkit.listeners.RaindropsListener;
 
 public abstract class Gizmo implements Listener {
