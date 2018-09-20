@@ -6,14 +6,19 @@ import org.bukkit.Bukkit;
 import org.bukkit.Effect;
 import org.bukkit.Location;
 import org.bukkit.Material;
+import org.bukkit.PoseFlag;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerInteractEvent;
+import org.bukkit.event.player.PlayerMoveEvent;
+import org.bukkit.event.player.PlayerQuitEvent;
 import org.bukkit.scheduler.BukkitRunnable;
+import tc.oc.commons.bukkit.chat.WarningComponent;
 import tc.oc.lobby.bukkit.Lobby;
 import tc.oc.lobby.bukkit.gizmos.Gizmo;
 import tc.oc.lobby.bukkit.gizmos.Gizmos;
+import tc.oc.minecraft.protocol.MinecraftVersion;
 
 public class HeadlessHorsemanGizmo extends Gizmo implements Listener {
     private Map<Player, HeadlessHorseman> mutated;
@@ -30,6 +35,11 @@ public class HeadlessHorsemanGizmo extends Gizmo implements Listener {
         Bukkit.getPluginManager().registerEvents(this, Lobby.get());
     }
 
+    @Override
+    public boolean canPurchase(Player player) {
+        return player.hasPermission("lobby.gizmo.buy.horse") || player.isOp();
+    }
+
     @EventHandler(ignoreCancelled = true)
     public void onPlayerInteract(PlayerInteractEvent e) {
         if(!(Gizmos.gizmoMap.get(e.getPlayer()) instanceof HeadlessHorsemanGizmo)
@@ -37,15 +47,38 @@ public class HeadlessHorsemanGizmo extends Gizmo implements Listener {
 
         final Player player = e.getPlayer();
         if(mutated.get(player) == null) {
-            HeadlessHorseman horseman = new HeadlessHorseman(player);
-            mutated.put(player, horseman);
-            horseByPlayer.put(player, horseman.getHeadlessHorse());
-            createEffect(player);
+            if (MinecraftVersion.atLeast(MinecraftVersion.MINECRAFT_1_9, player.getProtocolVersion())) {
+                HeadlessHorseman horseman = new HeadlessHorseman(player);
+                mutated.put(player, horseman);
+                horseByPlayer.put(player, horseman.getHeadlessHorse());
+                createEffect(player);
+            } else {
+                player.sendMessage(new WarningComponent("version.too.old.gizmo"));
+            }
         } else {
             mutated.get(player).restore();
             mutated.remove(player);
             horseByPlayer.remove(player);
         }
+    }
+
+    @EventHandler
+    public void onDismount(PlayerMoveEvent event) {
+      if (event.getEntityTo().poseFlags().contains(PoseFlag.RIDING)) return;
+      if (!mutated.containsKey(event.getPlayer())) return;
+
+      mutated.get(event.getPlayer()).restore();
+      mutated.remove(event.getPlayer());
+      horseByPlayer.remove(event.getPlayer());
+    }
+
+    @EventHandler
+    public void onQuit(PlayerQuitEvent event) {
+        if (!mutated.containsKey(event.getPlayer())) return;
+
+        mutated.get(event.getPlayer()).restore();
+        mutated.remove(event.getPlayer());
+        horseByPlayer.remove(event.getPlayer());
     }
 
     private void createEffect(Player viewer) {
