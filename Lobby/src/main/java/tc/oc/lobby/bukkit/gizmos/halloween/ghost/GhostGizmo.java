@@ -13,17 +13,17 @@ import org.bukkit.event.player.PlayerInteractEvent;
 import tc.oc.commons.bukkit.chat.Audiences;
 import tc.oc.commons.bukkit.util.OnlinePlayerMapAdapter;
 import tc.oc.lobby.bukkit.Lobby;
-import tc.oc.lobby.bukkit.gizmos.Gizmo;
 import tc.oc.lobby.bukkit.gizmos.Gizmos;
+import tc.oc.lobby.bukkit.gizmos.halloween.HalloweenGizmo;
 
-public class GhostGizmo extends Gizmo implements Listener {
+public class GhostGizmo extends HalloweenGizmo implements Listener {
     private final OnlinePlayerMapAdapter<Instant> coolDowns = new OnlinePlayerMapAdapter<>(Lobby.get());
     private static final Duration COOLDOWN = Duration.ofMinutes(1);
 
     @Inject private static Audiences audiences;
 
-    public GhostGizmo(String name, String prefix, String description, Material icon, int cost) {
-        super(name, prefix, description, icon, cost);
+    public GhostGizmo(String name, String prefix, String description, Material icon) {
+        super(name, prefix, description, icon);
         this.coolDowns.enable();
     }
 

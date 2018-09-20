@@ -1,8 +1,13 @@
 package tc.oc.lobby.bukkit;
 
 import java.util.List;
-
-import net.minecraft.server.*;
+import net.minecraft.server.EntityPlayer;
+import net.minecraft.server.Packet;
+import net.minecraft.server.PacketPlayOutScoreboardDisplayObjective;
+import net.minecraft.server.PacketPlayOutScoreboardScore;
+import net.minecraft.server.ScoreboardObjective;
+import net.minecraft.server.ScoreboardScore;
+import net.minecraft.server.ScoreboardServer;
 import org.bukkit.ChatColor;
 import org.bukkit.GameMode;
 import org.bukkit.Material;

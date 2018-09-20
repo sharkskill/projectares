@@ -9,7 +9,7 @@ import org.bukkit.event.Listener;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import tc.oc.lobby.bukkit.LobbyTranslations;
-import tc.oc.lobby.bukkit.gizmos.halloween.horse.HeadlessHorsemanGizmo;
+import tc.oc.lobby.bukkit.gizmos.halloween.HalloweenGizmo;
 import tc.oc.lobby.bukkit.listeners.RaindropsListener;
 
 public abstract class Gizmo implements Listener {
@@ -60,7 +60,7 @@ public abstract class Gizmo implements Listener {
     }
 
     public String getCostText(Player player) {
-        if (this.getClass().isInstance(HeadlessHorsemanGizmo.class)) {
+        if (this instanceof HalloweenGizmo) {
             return ChatColor.YELLOW + LobbyTranslations.get().t("gizmo.specialEvent", player);
         } else if(this.getClass().isInstance(Gizmos.purchasingMap.get(player))) {
             return ChatColor.GOLD + LobbyTranslations.get().t("gizmo.purchasing", player);

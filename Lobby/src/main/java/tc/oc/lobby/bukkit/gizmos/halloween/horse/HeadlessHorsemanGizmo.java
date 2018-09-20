@@ -16,16 +16,16 @@ import org.bukkit.event.player.PlayerQuitEvent;
 import org.bukkit.scheduler.BukkitRunnable;
 import tc.oc.commons.bukkit.chat.WarningComponent;
 import tc.oc.lobby.bukkit.Lobby;
-import tc.oc.lobby.bukkit.gizmos.Gizmo;
 import tc.oc.lobby.bukkit.gizmos.Gizmos;
+import tc.oc.lobby.bukkit.gizmos.halloween.HalloweenGizmo;
 import tc.oc.minecraft.protocol.MinecraftVersion;
 
-public class HeadlessHorsemanGizmo extends Gizmo implements Listener {
+public class HeadlessHorsemanGizmo extends HalloweenGizmo implements Listener {
     private Map<Player, HeadlessHorseman> mutated;
     private Map<Player, HeadlessHorse> horseByPlayer;
 
-    public HeadlessHorsemanGizmo(String name, String prefix, String description, Material icon, int cost) {
-        super(name, prefix, description, icon, cost);
+    public HeadlessHorsemanGizmo(String name, String prefix, String description, Material icon) {
+        super(name, prefix, description, icon);
         this.mutated = new WeakHashMap<>();
         this.horseByPlayer = new WeakHashMap<>();
     }
@@ -33,11 +33,6 @@ public class HeadlessHorsemanGizmo extends Gizmo implements Listener {
     @Override
     protected void initialize() {
         Bukkit.getPluginManager().registerEvents(this, Lobby.get());
-    }
-
-    @Override
-    public boolean canPurchase(Player player) {
-        return player.hasPermission("lobby.gizmo.buy.horse") || player.isOp();
     }
 
     @EventHandler(ignoreCancelled = true)

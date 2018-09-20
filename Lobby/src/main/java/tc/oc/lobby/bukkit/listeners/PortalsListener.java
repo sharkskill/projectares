@@ -2,6 +2,10 @@ package tc.oc.lobby.bukkit.listeners;
 
 import com.google.common.collect.Sets;
 import com.google.inject.Inject;
+import java.time.Duration;
+import java.util.HashSet;
+import java.util.Set;
+import java.util.UUID;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
@@ -11,11 +15,6 @@ import tc.oc.commons.core.plugin.PluginFacet;
 import tc.oc.commons.core.scheduler.Scheduler;
 import tc.oc.lobby.bukkit.portals.Portal;
 import tc.oc.lobby.bukkit.portals.PortalsConfig;
-
-import java.time.Duration;
-import java.util.HashSet;
-import java.util.Set;
-import java.util.UUID;
 
 public class PortalsListener implements PluginFacet, Listener {
 

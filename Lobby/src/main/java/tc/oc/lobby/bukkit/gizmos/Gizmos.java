@@ -32,8 +32,8 @@ public class Gizmos implements Listener {
     public static GunGizmo gunGizmo = new GunGizmo("Raindrop Gun", ChatColor.AQUA.toString(), "Gift raindrops with a punch :D", Material.IRON_HOE, 7500);
     public static ChickenGizmo chickenGizmo = new ChickenGizmo("Chickenifier5000", ChatColor.YELLOW.toString(), "bok B'GAWK", Material.EGG, 10000);
     public static LauncherGizmo launcherGizmo = new LauncherGizmo("Murica", ChatColor.RED.toString(), "Show your pride!", Material.FEATHER, 17760);
-    public static HeadlessHorsemanGizmo headlessHorsemanGizmo = new HeadlessHorsemanGizmo("The Headless Horseman", ChatColor.RED.toString(), "You have been taken over by the darkness...", Material.NETHER_STAR, 999999);
-    public static GhostGizmo ghostGizmo = new GhostGizmo("Ghosts", ChatColor.RED.toString(), "Surround yourself in ghosts!", Material.BONE, 999999);
+    public static HeadlessHorsemanGizmo headlessHorsemanGizmo = new HeadlessHorsemanGizmo("The Headless Horseman", ChatColor.RED.toString(), "You have been taken over by the darkness...", Material.NETHER_STAR);
+    public static GhostGizmo ghostGizmo = new GhostGizmo("Ghosts", ChatColor.RED.toString(), "Surround yourself in ghosts!", Material.BONE);
 
     public static final List<Gizmo> gizmos = Lists.newArrayList(emptyGizmo, popperGizmo, rocketGizmo, gunGizmo, chickenGizmo, launcherGizmo, headlessHorsemanGizmo, ghostGizmo);
     public static Map<Player, Gizmo> gizmoMap = Maps.newHashMap();
