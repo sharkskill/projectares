@@ -28,7 +28,7 @@ public abstract class Gizmo implements Listener {
 
         this.initialize();
     }
-
+ 
     protected abstract void initialize();
 
     public String getName(Player viewer) {
@@ -76,7 +76,7 @@ public abstract class Gizmo implements Listener {
     }
 
     public boolean ownsGizmo(Player player) {
-        if(cost <= 0) {
+        if(cost <= 0 && (!(this instanceof HalloweenGizmo))) {
             return true;
         } else {
             return player.hasPermission(this.getPermissionNode());
