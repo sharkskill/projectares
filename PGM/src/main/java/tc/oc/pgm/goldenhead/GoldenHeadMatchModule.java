@@ -26,6 +26,7 @@ import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.material.MaterialData;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
+import tc.oc.commons.core.util.Comparables;
 import tc.oc.minecraft.protocol.MinecraftVersion;
 import tc.oc.pgm.events.ListenerScope;
 import tc.oc.pgm.match.Match;
@@ -34,7 +35,9 @@ import tc.oc.pgm.match.MatchScope;
 
 import javax.inject.Inject;
 import java.time.Duration;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
@@ -45,6 +48,7 @@ public class GoldenHeadMatchModule extends MatchModule implements Listener {
     @Inject
     private Server server;
     private HashMap<Enchantment, String> names = new HashMap<>();
+    private HashMap<Material, Double> itemMultipliers = new HashMap<>();
     private Map<UUID, Duration> fights = new HashMap<UUID, Duration>();
 
     public GoldenHeadMatchModule(Match match) {
@@ -69,7 +73,7 @@ public class GoldenHeadMatchModule extends MatchModule implements Listener {
 
         server.addRecipe(recipe);
 
-        fillEnchantNames();
+        fillEnchants();
     }
 
     @Override
@@ -81,7 +85,7 @@ public class GoldenHeadMatchModule extends MatchModule implements Listener {
         super.disable();
     }
 
-    private void fillEnchantNames() {
+    private void fillEnchants() {
         names.put(Enchantment.PROTECTION_ENVIRONMENTAL, "Protection");
         names.put(Enchantment.PROTECTION_FIRE, "Fire Protection");
         names.put(Enchantment.PROTECTION_FALL, "Feather Falling");
@@ -112,13 +116,25 @@ public class GoldenHeadMatchModule extends MatchModule implements Listener {
         names.put(Enchantment.LURE, "Lure");
         names.put(Enchantment.MENDING, "Mending");
         names.put(Enchantment.VANISHING_CURSE, "Curse of Vanishing");
+
+        itemMultipliers.put(Material.DIAMOND_HELMET, 1.25);
+        itemMultipliers.put(Material.DIAMOND_CHESTPLATE, 1.25);
+        itemMultipliers.put(Material.DIAMOND_LEGGINGS, 1.25);
+        itemMultipliers.put(Material.DIAMOND_BOOTS, 1.25);
+        itemMultipliers.put(Material.DIAMOND_SWORD, 1.25);
     }
+
+    private Map<UUID, Duration> gapplesAte = new HashMap<UUID, Duration>();
+    private Map<UUID, Duration> headsAte = new HashMap<UUID, Duration>();
 
     @EventHandler(priority = EventPriority.MONITOR)
     public void onItemConsume(PlayerItemConsumeEvent event) {
         ItemStack item = event.getItem();
         if (item.hasItemMeta() && GOLDEN_HEAD_DISPLAY.equals(item.getItemMeta().getDisplayName())) {
             event.getActor().addPotionEffect(new PotionEffect(PotionEffectType.REGENERATION, 20 * 10, 1));
+            headsAte.put(event.getActor().getUniqueId(), match.runningTime());
+        } else {
+            gapplesAte.put(event.getActor().getUniqueId(), match.runningTime());
         }
     }
 
@@ -218,5 +234,31 @@ public class GoldenHeadMatchModule extends MatchModule implements Listener {
         skull.setRotation(BlockFace.NORTH);
         skull.setOwner(event.getEntity().getName());
         skull.update();
+
+        double points = 0;
+        for (Duration duration : gapplesAte.values()) {
+            points += getPoints(match.runningTime().minus(duration));
+        }
+        for (Duration duration : headsAte.values()) {
+            points += 2 * getPoints(match.runningTime().minus(duration));
+        }
+
+        ItemStack gapples = new ItemStack(Material.GOLDEN_APPLE, (int) points);
+
+        event.getDrops().add(gapples);
+    }
+
+    double getPoints(Duration durationSinceConsumption) {
+        if (Comparables.greaterThan(durationSinceConsumption, Duration.ofMinutes(2))) {
+            return 0;
+        } else if (Comparables.greaterThan(durationSinceConsumption, Duration.ofMinutes(1))) {
+            return 0.1;
+        } else if (Comparables.greaterThan(durationSinceConsumption, Duration.ofSeconds(30))) {
+            return 0.25;
+        } else if (Comparables.greaterThan(durationSinceConsumption, Duration.ofSeconds(5))) {
+            return 0.5;
+        } else {
+            return 0.75;
+        }
     }
 }
