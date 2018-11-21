@@ -5,7 +5,6 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import tc.oc.commons.core.chat.Audience;
 import tc.oc.commons.core.chat.Audiences;
-import tc.oc.commons.core.plugin.PluginFacet;
 import tc.oc.pgm.polls.event.PollEndEvent;
 
 public class PollListener implements Listener {

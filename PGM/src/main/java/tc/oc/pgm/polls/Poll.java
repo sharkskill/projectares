@@ -26,6 +26,7 @@ public abstract class Poll implements Runnable {
         this.pollManager = pollManager;
         this.initiator = initiator;
         this.audiences = audiences;
+        this.voteFor(initiator);
     }
 
     protected final Map<PlayerId, Boolean> votes = new HashMap<>();

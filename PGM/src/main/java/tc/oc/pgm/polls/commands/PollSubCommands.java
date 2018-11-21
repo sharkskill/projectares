@@ -5,6 +5,9 @@ import com.sk89q.minecraft.util.commands.Command;
 import com.sk89q.minecraft.util.commands.CommandContext;
 import com.sk89q.minecraft.util.commands.CommandException;
 import com.sk89q.minecraft.util.commands.CommandPermissions;
+import java.util.List;
+import javax.inject.Inject;
+import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import tc.oc.api.bukkit.users.OnlinePlayers;
@@ -20,14 +23,11 @@ import tc.oc.pgm.mutation.Mutation;
 import tc.oc.pgm.mutation.MutationQueue;
 import tc.oc.pgm.polls.PollBlacklist;
 import tc.oc.pgm.polls.PollConfig;
+import tc.oc.pgm.polls.PollManager;
 import tc.oc.pgm.polls.types.PollCustom;
 import tc.oc.pgm.polls.types.PollKick;
-import tc.oc.pgm.polls.PollManager;
 import tc.oc.pgm.polls.types.PollMutation;
 import tc.oc.pgm.polls.types.PollNextMap;
-
-import javax.inject.Inject;
-import java.util.List;
 
 public class PollSubCommands {
 
@@ -43,6 +43,9 @@ public class PollSubCommands {
     private final OnlinePlayers onlinePlayers;
     private final MatchManager matchManager;
     private final PollConfig pollConfig;
+
+    private static final String VOTE_FOR = ChatColor.GREEN + "in favor of";
+    private static final String VOTE_AGAINST = ChatColor.RED + "against";
 
     @Inject
     PollSubCommands(RestartManager restartManager,

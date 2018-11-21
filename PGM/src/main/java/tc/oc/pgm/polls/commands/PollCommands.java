@@ -5,6 +5,7 @@ import com.sk89q.minecraft.util.commands.CommandContext;
 import com.sk89q.minecraft.util.commands.CommandException;
 import com.sk89q.minecraft.util.commands.CommandPermissions;
 import com.sk89q.minecraft.util.commands.NestedCommand;
+import javax.inject.Inject;
 import net.md_5.bungee.api.ChatColor;
 import org.bukkit.command.CommandSender;
 import tc.oc.api.docs.PlayerId;
@@ -17,8 +18,6 @@ import tc.oc.pgm.commands.CommandUtils;
 import tc.oc.pgm.polls.Poll;
 import tc.oc.pgm.polls.PollEndReason;
 import tc.oc.pgm.polls.PollManager;
-
-import javax.inject.Inject;
 
 public class PollCommands {
 

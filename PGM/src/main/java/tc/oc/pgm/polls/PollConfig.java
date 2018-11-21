@@ -1,14 +1,12 @@
 package tc.oc.pgm.polls;
 
-import org.bukkit.configuration.ConfigurationSection;
-import tc.oc.pgm.PGM;
-import tc.oc.pgm.match.MatchManager;
+import static com.google.common.base.Preconditions.checkNotNull;
 
-import javax.inject.Inject;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-
-import static com.google.common.base.Preconditions.checkNotNull;
+import javax.inject.Inject;
+import org.bukkit.configuration.ConfigurationSection;
+import tc.oc.pgm.match.MatchManager;
 
 public class PollConfig {
 

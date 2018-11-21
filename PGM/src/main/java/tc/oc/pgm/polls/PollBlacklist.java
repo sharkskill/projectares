@@ -4,13 +4,6 @@ import com.google.common.base.Charsets;
 import com.google.common.collect.ImmutableList;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
-import tc.oc.commons.core.logging.Loggers;
-import tc.oc.commons.core.plugin.PluginFacet;
-import tc.oc.pgm.PGM;
-import tc.oc.pgm.map.MapId;
-import tc.oc.pgm.map.MapLibrary;
-import tc.oc.pgm.map.PGMMap;
-
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -18,6 +11,10 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.logging.Logger;
+import tc.oc.commons.core.logging.Loggers;
+import tc.oc.commons.core.plugin.PluginFacet;
+import tc.oc.pgm.map.MapLibrary;
+import tc.oc.pgm.map.PGMMap;
 
 @Singleton
 public class PollBlacklist implements PluginFacet {

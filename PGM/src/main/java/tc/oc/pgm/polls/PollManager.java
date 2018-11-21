@@ -3,6 +3,7 @@ package tc.oc.pgm.polls;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
 import com.sk89q.minecraft.util.commands.CommandException;
+import java.time.Duration;
 import org.bukkit.Bukkit;
 import org.bukkit.event.EventBus;
 import tc.oc.commons.core.chat.Audiences;
@@ -12,8 +13,6 @@ import tc.oc.commons.core.scheduler.Scheduler;
 import tc.oc.commons.core.scheduler.Task;
 import tc.oc.pgm.polls.event.PollEndEvent;
 import tc.oc.pgm.polls.event.PollStartEvent;
-
-import java.time.Duration;
 
 @Singleton
 public class PollManager implements PluginFacet {
