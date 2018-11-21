@@ -78,7 +78,7 @@ public class PollCommands {
     public void veto(CommandContext args, CommandSender sender) throws CommandException {
         if(pollManager.isPollRunning()) {
             pollManager.endPoll(PollEndReason.Cancelled);
-            audiences.localServer().sendMessage(new Component(ChatColor.RED).translate("poll.veto", new PlayerComponent(identityProvider.currentIdentity(sender))));
+            audiences.all().sendMessage(new Component(ChatColor.RED).translate("poll.veto", new PlayerComponent(identityProvider.currentIdentity(sender))));
         } else {
             throw new TranslatableCommandException("poll.noPollRunning");
         }
